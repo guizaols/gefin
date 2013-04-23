@@ -1,0 +1,72 @@
+\begin{table}{\vspace{500pt}}
+\end{table}
+
+<%#= hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo]) %>}
+\fontsize{7pt}{12pt}\selectfont
+\begin{longtable}{|p{7.3cm}|p{2.7cm}|p{2.7cm}|p{1.7cm}|p{1.7cm}|p{1.8cm}|p{6.5cm}|}
+\hline
+     \textbf{Cliente} & \textbf{Valor a Receber} & \textbf{Valor Corrigido} & \textbf{Vencimento} & \textbf{Situação} & \textbf{Dias em Atraso} & \textbf{Telefone Cliente} \\
+\hline
+
+<% total_bruto = 0 %>
+<% total_corrigido = 0 %>
+<% cont = 0 %>
+
+<% @parcelas.each do |grupo, parcelas| %>
+    <% cont += 1 %>
+
+    \multicolumn{2}{|c}{\textbf{Entidade:} <%=hl parcelas.first.conta.unidade.entidade.nome %>} &
+    \multicolumn{3}{c}{\textbf{Unidade:} <%=hl parcelas.first.conta.unidade.nome %>} &
+    \multicolumn{2}{c|}{\textbf{Serviço:} <%=hl grupo %>} \\
+    \hline
+
+    <% total_grupo = 0 %>
+    <% total_parcelas = 0 %>
+    <% valor_liquido_da_parcela_com_juros_e_multa = [] %>
+
+    <% parcelas.each do |parcela| %>
+        <% cont += 1 %>
+
+        <% dias_em_atraso = ((Date.today.to_datetime) - ((parcela.data_vencimento).to_date).to_datetime) %>
+        <% dias_em_atraso = dias_em_atraso.to_i < 0 ? 0 : dias_em_atraso.to_i %>
+        <% valor_liquido_da_parcela_com_juros_e_multa = Gefin.calcular_juros_e_multas(:vencimento => parcela.data_vencimento, :data_base => Date.today, :valor => parcela.valor, :juros => parcela.conta.juros_por_atraso, :multa => parcela.conta.multa_por_atraso)%>
+
+        <%=hl parcela.conta.pessoa.nome %> &
+        <%=hl preco_formatado(parcela.valor, 'R$') %> &
+        <%=hl preco_formatado(valor_liquido_da_parcela_com_juros_e_multa[2], 'R$') %> &
+        <%=hl parcela.data_vencimento %> &
+        <%=hl parcela.situacao_verbose %> &
+        <%=hl dias_em_atraso %> &
+        <%=hl parcela.conta.pessoa.telefone.join(", ") unless parcela.conta.pessoa.telefone.blank? %> \\
+        <% total_parcelas += parcela.valor %>
+        <% total_grupo += valor_liquido_da_parcela_com_juros_e_multa[2]  %>
+        \hline
+
+        <% if cont > 20 %>
+            \newpage
+            \hline
+            <% cont = 0 %>
+        <% end %>
+    <% end %>
+
+    <% total_bruto += total_parcelas %>
+    <% total_corrigido += total_grupo %>
+
+    \multicolumn{1}{|l|}{\textbf{Total Atividade...>>>}} &
+    \multicolumn{1}{|l|}{<%=hl preco_formatado(total_parcelas, 'R$') %>} &
+    \multicolumn{1}{|l|}{<%=hl preco_formatado(total_grupo, 'R$') %>} &
+    \multicolumn{4}{l|}{} \\
+    \hline
+<% end %>
+
+\multicolumn{1}{|l|}{\textbf{Totais...>>>}} &
+\multicolumn{1}{|l|}{\textbf{<%=hl preco_formatado(total_bruto, 'R$') %>}} &
+\multicolumn{1}{|l|}{\textbf{<%=hl preco_formatado(total_corrigido, 'R$') %>}} &
+\multicolumn{4}{l|}{}
+\hline
+
+\end{longtable}
+\end{center}

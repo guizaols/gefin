@@ -1,0 +1,32 @@
+<table class="listagem">
+  <% @compromissos.each do |nome,compromissos|%>
+    <tr><td colspan="5"><b>Cliente: </b><%=h nome %></td></tr>
+    <% compromissos = compromissos.group_by{|compromisso| compromisso.conta.numero_de_controle }%>
+    <% compromissos.each do |contrato,compromissos| %>
+      <tr><td colspan="5"><b>Contrato:</b><%=h contrato %></td></tr>
+      <tr>
+        <th>Dias Atrasados</th>
+        <th>Descrição</th>
+        <th>Telefone</th>
+        <th>Responsável</th>
+        <th>Valor em Atraso</th>
+      </tr>
+      <% @parcelas = [] %>
+      <% dias_atrasados_por_contrato = 0 %>
+      <% valor_atrasado = 0 %>
+      <% compromissos.each do |compromisso|%>
+        <% compromisso.conta.parcelas.each{|parcela| @parcelas << parcela if (parcela.data_da_baixa.blank?) && (Date.today > parcela.data_vencimento.to_date) }%>
+        <% @parcelas.each{|parcela| dias_atrasados_por_contrato = (Date.today - parcela.data_vencimento.to_date).to_i if (Date.today - parcela.data_vencimento.to_date).to_i > dias_atrasados_por_contrato}%>
+        <% @parcelas.each{|parcela| valor_atrasado += parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa if parcela.verifica_situacoes }%>
+        <tr>
+          <td style="text-align: center"><%=h dias_atrasados_por_contrato %></td>
+          <td style="text-align: center"><%=h compromisso.descricao %></td>
+          <td style="text-align: center"><%=h compromisso.conta.pessoa.telefone.first %></td>
+          <td style="text-align: center"><%=h compromisso.conta.cobrador.nil? ? "Sem cobrador" : compromisso.conta.cobrador.nome %></td>
+          <td style="text-align: center"><%=h preco_formatado_com_ponto(valor_atrasado) %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    <tr></tr>
+  <% end %>
+</table>

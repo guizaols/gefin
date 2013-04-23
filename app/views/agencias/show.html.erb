@@ -1,0 +1,24 @@
+<% content_for :titulo, "Detalhes" %>
+
+<table>
+  <%= show_unless_blank 'Nome', @agencia.nome %>
+  <%= show_unless_blank 'Número', @agencia.numero %>
+  <%= show_unless_blank 'Dígito verificador', @agencia.digito_verificador %>
+  <%= show_unless_blank 'Banco', @agencia.banco.descricao %>
+  <%= show_unless_blank 'Localidade', @agencia.localidade.nome %>
+  <%= show_unless_blank 'Endereco', @agencia.endereco %>
+  <%= show_unless_blank 'CEP', @agencia.cep %>
+  <%= show_unless_blank 'Complemento', @agencia.complemento %>
+  <%= show_unless_blank 'Telefone', @agencia.telefone %>
+  <%= show_unless_blank 'Fax', @agencia.fax %>
+  <%= show_unless_blank 'E-mail', @agencia.email %>
+  <%= show_unless_blank 'Nome Contato', @agencia.nome_contato %>
+  <%= show_unless_blank 'Email Contato', @agencia.email_contato %>
+  <%= show_unless_blank 'Telefone Contato', @agencia.telefone_contato %>
+  <tr>
+    <td><b>Ativo:</b></td><td><%= @agencia.ativo ? "Sim" : "Não" %> </td>
+  </tr>
+</table>
+
+<%= link_to 'Alterar', edit_agencia_path(@agencia) %> |
+<%= link_to 'Voltar', agencias_path %>

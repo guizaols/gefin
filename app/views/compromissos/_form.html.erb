@@ -1,0 +1,47 @@
+<% form_for @compromisso, :builder => TableFormBuilder do |f| %>
+  <%= error_messages_for :compromisso %>
+  <%= hidden_field_tag('tipo','1') if params[:tipo]=='1' %>
+  <%= f.hidden_field :conta_id %>
+  <table>
+    <tr><th class="field_descriptor">Data</th><td><%=calendar_date_select_com_mascara(f,"data_agendada") %></td></tr>
+    <tr><th class="field_descriptor">Descrição</th><td><%= f.select :descricao, Compromisso.retorna_tipos_de_parametro, { :include_blank => true }%></td></tr>
+
+    <% if params[:tipo]=='1' %>
+    <tr>
+      <td><br /></td>
+    </tr>
+      <tr>
+        <th>Busca por Clientes</th>
+        <td>          
+          <%= auto_complete_tag_para_qualquer_campo(:cliente, auto_complete_for_cliente_pessoas_path) %>
+        </td>
+      </tr>
+      <tr>
+        <th>Outros Parâmetros</th>
+        <td>
+          <div class="div_explicativa">
+            <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+              <div id="explicacao_texto"></div>
+              <%= image_tag 'seta_tooltip.gif' %>
+            </div>            
+            <%= select("opcoes", "situacao", @combo_para_situacao.collect {|s| [ s.first, s.last ] }) %>
+            <%= insere_campos_para_busca_de_contas([['Ordenar por - Valor', 'valor_do_documento'],['Ordenar por - Data Início','data_inicio'], ['Pesquisar por - Situação', 'situacao'],['Pesquisar por - Dependente', 'dependentes.nome'],['Pesquisar por - Serviço','servicos.descricao']],"Você pode fazer uma busca digitando campos nº de controle do contrato, serviços, dependentes do documento e situação do contrato. A digitação para a busca dos mesmos pode ser parcial. Valor e data de início são apenas para ordenar os resultados.") %>
+          </div>
+        </td>
+      </tr>
+      <%= "<div id='tabela_lista_de_contratos'>#{render :partial => 'lista_de_contratos'}</div>" if params[:tipo]=='1' %>
+
+      <%= javascript_tag "if($('busca_ordem').value == 'situacao') { $('busca_texto').hide(); $('opcoes_situacao').show(); $('opcoes_situacao').value = $('busca_texto').value; } else { $('busca_texto').show();  $('opcoes_situacao').hide(); } " %>
+      <%= observe_field 'busca_ordem', :frequency => 1, :function => "if($('busca_ordem').value == 'situacao') { $('busca_texto').hide(); $('opcoes_situacao').show(); $('busca_texto').value=$('opcoes_situacao').value; } else { $('busca_texto').show();  $('opcoes_situacao').hide(); $('busca_texto').value=''; }" %>
+      <%= observe_field 'opcoes_situacao', :frequency => 1, :on => 'change', :function => "$('busca_texto').value = $('opcoes_situacao').value;" %>
+    <% end %>
+    <tr>
+      <td>
+        <% if @compromisso.conta_id %>
+          <%="#{submit_tag "Salvar"} | #{link_to 'Voltar', recebimento_de_conta_path(@compromisso.conta_id)}" unless params[:tipo]=='1' %>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+
+<% end %>

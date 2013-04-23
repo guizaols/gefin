@@ -1,0 +1,58 @@
+sesi_colider_unidade_organizacional_2008:
+    ano: 2008
+    entidade: sesi
+    codigo_da_unidade_organizacional: 1303010803
+    nome: SESI COLIDER
+    codigo_reduzido: 12
+    objeto_do_proximo_ano: sesi_colider_unidade_organizacional
+
+sesi_colider_unidade_organizacional:
+    ano: 2009
+    entidade: sesi
+    codigo_da_unidade_organizacional: 1303010803
+    nome: SESI COLIDER
+    codigo_reduzido: 12
+    objeto_do_proximo_ano: sesi_colider_unidade_organizacional_2010
+
+senai_unidade_organizacional:
+    ano: 2009
+    entidade: senai
+    codigo_da_unidade_organizacional: 134234239039
+    nome: Senai Matriz
+    codigo_reduzido: 15
+
+senai_unidade_organizacional_nova:
+    ano: 2009
+    entidade: senai
+    codigo_da_unidade_organizacional: 131344278639
+    nome: Senai Novo
+    codigo_reduzido: 20
+
+unidade_organizacional_empresa:
+    ano: 2009
+    entidade: senai
+    codigo_da_unidade_organizacional: 999999999999
+    nome: Unidade Empresa
+    codigo_reduzido: 99
+
+sesi_colider_unidade_organizacional_2010:
+    ano: 2010
+    entidade: sesi
+    codigo_da_unidade_organizacional: 1303010803
+    nome: SESI COLIDER
+    codigo_reduzido: 12
+    objeto_do_proximo_ano: sesi_colider_unidade_organizacional_2011
+
+sesi_colider_unidade_organizacional_2011:
+    ano: 2011
+    entidade: sesi
+    codigo_da_unidade_organizacional: 1303010803
+    nome: SESI COLIDER
+    codigo_reduzido: 12
+
+sesi_colider_unidade_organizacional_2012:
+    ano: 2012
+    entidade: sesi
+    codigo_da_unidade_organizacional: 1303010803
+    nome: SESI COLIDER
+    codigo_reduzido: 12

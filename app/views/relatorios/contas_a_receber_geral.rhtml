@@ -1,0 +1,38 @@
+<h1>Contas a Receber - Geral</h1>
+
+<% form_remote_tag :loading => "Element.show('loading_form_receber_geral');", :success => "Element.hide('loading_form_receber_geral');" do %>
+
+  <table>
+    <%= campo_de_cadastro 'Serviço', auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+    <%= campo_de_cadastro 'Cliente', auto_complete_tag_para_qualquer_campo(:cliente, auto_complete_for_cliente_pessoas_path) %>
+    <%= campo_de_cadastro 'Modalidade', auto_complete_tag_para_qualquer_campo(:modalidade, auto_complete_for_modalidade_servicos_path) %>
+    <%= campo_de_cadastro 'Contratos vendidos entre', campo_para_busca_por_faixa_de_data(:vendido) %>
+    <%= campo_de_cadastro 'Vendedor', auto_complete_tag_para_qualquer_campo(:vendedor, auto_complete_for_funcionario_pessoas_path) %>
+    <tr>
+      <td class="field_descriptor">Período </td>
+      <td>
+        <label for="busca_periodo_recebimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'recebimento'), true %><b>Recebimento</b></label>
+        <label for="busca_periodo_vencimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'vencimento'), false %><b>Vencimento</b></label>
+      </td>
+    </tr>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Provisão', select_tag('busca[provisao]', options_for_select(['', 'SIM', 'NÃO'])) %>
+    <%= campo_de_cadastro 'Tipo de Relatório', select_tag('busca[opcoes]', options_for_select(['Recebimentos', 'Inadimplência', 'Contas a Receber', 'Recebimentos com Atraso', 'Vendas Realizadas', 'Geral do Contas a Receber']), :onchange => "verifica_filtro_tipo_de_relatorio()") %>
+    <tr id='tipo_situacao' style='display:none'>
+      <td class="field_descriptor">Situação </td>
+      <td>
+        <%#= select_tag('busca[situacao]', options_for_select(['', 'Todas', 'Pendentes', 'Vincendas', 'Em Atraso', 'Quitadas - Baixa DR', 'Jurídico', 'Permuta', 'Baixa do Conselho', 'Inativo', 'Enviado ao DR', 'Perdas no Recebimento de Creditos - Clientes', 'Todas - Exceto Jurídico', 'Todas - Exceto Permuta', 'Todas - Exceto Baixa do Conselho', 'Todas - Exceto Inativo', 'Todas - Exceto Canceladas'],:selected => '')) %>
+        <%= select_tag('busca[situacao]', options_for_select(['', 'Todas','Vincendas', 'Em Atraso', 'Quitadas - Baixa DR', 'Jurídico', 'Permuta', 'Baixa do Conselho','Enviado ao DR', 'Perdas no Recebimento de Creditos - Clientes', 'Todas - Exceto Jurídico', 'Todas - Exceto Permuta', 'Todas - Exceto Baixa do Conselho', 'Todas - Exceto Inativo', 'Todas - Exceto Canceladas'],:selected => '')) %>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Ordenação', select_tag('busca[ordenacao]', options_for_select([['Alfabética','pessoas.nome ASC, pessoas.razao_social ASC'],['Data de Recebimentos/Venda','parcelas.data_da_baixa'],['Data de Vencimento','parcelas.data_vencimento']],:selected=>'pessoas.nome'))%>
+    <tr><td class="field_descriptor">Opção de Impressão:</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %><%= image_tag('loading.gif', :id => "loading_form_receber_geral", :style => "display:none") %></td></tr>
+  </table>
+
+<% end %>

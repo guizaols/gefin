@@ -1,0 +1,29 @@
+<% if !@contratos.blank? %>
+  <% listagem_table :headers => ['Sel', 'CPF/CNPJ', 'Cliente', 'Número de Controle', 'Serviço', 'Início', 'Valor do Contrato', 'Parcelas', 'Situacao'] do %>
+    <% @contratos.each_with_index do |conta, index| %>
+      <tr class="<%= cycle 'impar', 'par' %>" >
+        <td>
+          <%= radio_button_tag 'contas[ids][]', conta.id, (@compromisso.conta ? (@compromisso.conta_id==conta.id ? true : false) : (index==0 ? true : false)), :id => "rb_#{conta.id}", :class => 'selecionados', :onchange => "" %>
+        </td>
+        <td>
+          <% cpf_ou_cnpj = conta.pessoa.fisica? ? conta.pessoa.cpf : conta.pessoa.cnpj  %>
+          <%= link_to h(cpf_ou_cnpj), pessoa_path(conta.pessoa), :permissoes => Perfil::Pessoas %>
+        </td>
+        <td><%= link_to h(conta.pessoa.nome), pessoa_path(conta.pessoa), :permissoes => Perfil::Pessoas %></td>
+        <td><%= link_to h(conta.numero_de_controle), conta %></td>
+        <td><%=h conta.servico.descricao %></td>
+        <td><%=h conta.data_inicio %></td>
+        <td><%=h preco_formatado(conta.valor_do_documento) %></td>
+        <td><%=h conta.numero_de_parcelas %></td>
+        <td><%=h conta.situacoes %></td>
+      </tr>
+    <% end %>
+  <% end %>
+  <tr>
+    <td>
+    </td>
+  <% end %>
+  <td>
+    <%="#{submit_tag "Salvar"} | " if !@contratos.blank? %> <%= link_to 'Voltar',compromissos_path %>
+  </td>
+</tr>

@@ -1,0 +1,4 @@
+  <%= link_to image_tag('layout/sair.gif'), logout_path, :style => 'float:right' %>
+  <span class="barra_sair">|</span>
+  <%= image_tag 'layout/voce_esta_logado_como.gif' %>  
+  <span id="nome_do_usuario"><%=h current_usuario.nome.upcase %></span>

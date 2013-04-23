@@ -1,0 +1,402 @@
+\fontsize{12pt}{12pt}\selectfont
+
+<% params[:recebimentos][:ids].each_with_index do |identificador, index| %>
+    <% recebimento = RecebimentoDeConta.find(identificador) %>
+
+    <% if index == 0 %>
+	\begin{table}{\vspace{50pt}}
+	\end{table}
+    <% end %>
+
+    \hspace{9pt}
+    <%=hl @unidade.localidade.nome_localidade %>, <%=hl Date.today.strftime("%d de %B de %Y") %>.\\
+    \\
+
+    <% if params[:recebimentos][:municipio] == "unidade" %>
+	<% if params[:recebimentos][:tipo_de_carta] == "1" %>
+	    \hspace{7pt}
+	    Ao(A) Sr(a). \textbf{<%=hl recebimento.pessoa.nome rescue 'Pessoa Excluída' %>} \\
+	    \\
+	    \\
+	    Referente a: <%=hl recebimento.servico.descricao %> (<%=hl recebimento.numero_de_controle %>) \\
+	    \\
+	    \\
+	    Prezado(a),\\
+	    \\
+	    {\hspace{30pt} Verificando nossos controles, detectamos a falta de pagamento da(s) parcela(s) com vencimento(s) em <%=hl recebimento.resumo_de_parcelas_atrasadas.collect(&:first).join(", ") %>, totalizando o valor de <%=hl preco_formatado(recebimento.resumo_de_parcelas_atrasadas.sum(&:last), 'R$') %>, sem os acréscimos contratuais e legais cabíveis. Solicitamos seu comparecimento a <%=hl @unidade.nome %>, neste município.} \\
+
+	    {\hspace{30pt} Caso já tenha efetuado o pagamento, favor desconsiderar esta notificação e nos enviar o comprovante de pagamento pelo fax <%=hl @unidade.fax %>, para que possamos efetuar a baixa do título.} \\
+
+	    {\hspace{30pt} Para maiores esclarecimentos, sugerimos consultar a <%=hl @unidade.nome %> na área de arrecadação/cobrança, através do(s) telefone(s) <%=hl @unidade.telefone.join(", ") %>  ou via e-mail: <%=hl @unidade.email.gsub("@", "@ ") %>.} \\
+            \\
+	    \\
+	    \\
+	    Respeitosamente, \\
+	    \\
+	    \\
+	    \\
+	    \line(1,0){200pt}
+	    \\
+	    \\
+	    \fontsize{10pt}{10pt}\selectfont
+	    <%=hl current_usuario.funcionario.nome.upcase %>
+	    \\
+	    \\
+	    <%=hl current_usuario.funcionario.cargo.upcase if current_usuario.funcionario.cargo %>
+
+            \newpage
+            \begin{table}
+                {\vspace{70pt}}
+            \end{table}
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO DESTINATÁRIO/CLIENTE}
+            {\vspace{35pt}}
+            \\
+            Cliente: <%=hl recebimento.pessoa.fisica? ? recebimento.pessoa.nome : recebimento.pessoa.razao_social %>\\
+            Endereço: <%=hl recebimento.pessoa.endereco %>\\
+            Número: <%=hl recebimento.pessoa.numero %>\\
+            Complemento: <%=hl recebimento.pessoa.complemento %>\\
+            Bairro: <%=hl recebimento.pessoa.bairro %>\\
+            CEP: <%=hl recebimento.pessoa.cep %>\\
+            Cidade/UF: <%=hl recebimento.pessoa.localidade.nome rescue nil %>-<%=hl recebimento.pessoa.localidade.uf rescue nil %>}\\
+
+            {\vspace{200pt}}
+
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO REMETENTE/UNIDADE}}
+            {\vspace{35pt}}
+            \\
+            Remetente: <%=hl @unidade.nome %>\\
+            Endereço: <%=hl @unidade.endereco %>\\
+            Número: <%=hl @unidade.complemento %>\\
+            Bairro: <%=hl @unidade.bairro %>\\
+            CEP: <%=hl @unidade.cep %>\\
+            Cidade/UF: <%=hl @unidade.localidade.nome %>-<%=hl @unidade.localidade.uf %>}\\
+	<% elsif params[:recebimentos][:tipo_de_carta] == "2" %>
+	    \hspace{7pt}
+	    Ao(A) Sr(a). \textbf{<%=hl recebimento.pessoa.nome rescue 'Pessoa Excluída' %>}\\
+	    \\
+	    \\
+	    Referente a: <%=hl recebimento.servico.descricao %> (<%=hl recebimento.numero_de_controle %>) \\
+	    \\
+	    \\
+	    Prezado(a),\\
+	    \\
+
+	    {\hspace{30pt} Verificando nossos controles, detectamos a falta de pagamento da(s) parcela(s) com vencimento(s) <%=hl recebimento.resumo_de_parcelas_atrasadas.collect(&:first).join(", ") %>, totalizando o valor de <%=hl preco_formatado(recebimento.resumo_de_parcelas_atrasadas.sum(&:last), 'R$') %>, sem os acréscimos contratuais e legais cabíveis. Solicitamos seu comparecimento a <%=hl @unidade.nome %>, neste município.} \\
+
+	    {\hspace{30pt} Ressaltamos que o não pronunciamento de Vossa Senhoria no prazo de 10 dias, contado da data de recebimento desta, implicará a adoção das providências legais correspondentes, tais como inclusão SERASA, SPC - Serviço de Proteção ao Crédito e protesto.} \\
+
+	    {\hspace{30pt} Caso já tenha efetuado o pagamento, favor desconsiderar esta notificação e nos enviar o comprovante de pagamento pelo fax <%=hl @unidade.fax %>, para que possamos efetuar a baixa do título.} \\
+
+	    {\hspace{30pt} Para maiores esclarecimentos, sugerimos consultar a <%=hl @unidade.nome %> na área de arrecadação/cobrança, através do(s) telefone(s) <%=hl @unidade.telefone.join(", ") %> ou via e-mail: <%=hl @unidade.email.gsub("@", "@ ") %>.} \\
+            \\
+	    \\
+	    \\
+	    Respeitosamente, \\
+	    \\
+	    \\
+	    \\
+	    \line(1,0){200pt}
+	    \\
+	    \\
+	    \fontsize{10pt}{10pt}\selectfont
+	    <%=hl current_usuario.funcionario.nome.upcase %>
+	    \\
+	    \\
+	    <%=hl current_usuario.funcionario.cargo.upcase if current_usuario.funcionario.cargo %>
+
+            \newpage
+            \begin{table}
+                {\vspace{70pt}}
+            \end{table}
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO DESTINATÁRIO/CLIENTE}
+            {\vspace{35pt}}
+            \\
+            Cliente: <%=hl recebimento.pessoa.fisica? ? recebimento.pessoa.nome : recebimento.pessoa.razao_social %>\\
+            Endereço: <%=hl recebimento.pessoa.endereco %>\\
+            Número: <%=hl recebimento.pessoa.numero %>\\
+            Complemento: <%=hl recebimento.pessoa.complemento %>\\
+            Bairro: <%=hl recebimento.pessoa.bairro %>\\
+            CEP: <%=hl recebimento.pessoa.cep %>\\
+            Cidade/UF: <%=hl recebimento.pessoa.localidade.nome rescue nil %>-<%=hl recebimento.pessoa.localidade.uf rescue nil %>}\\
+
+            {\vspace{200pt}}
+
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO REMETENTE/UNIDADE}}
+            {\vspace{35pt}}
+            \\
+            Remetente: <%=hl @unidade.nome %>\\
+            Endereço: <%=hl @unidade.endereco %>\\
+            Número: <%=hl @unidade.complemento %>\\
+            Bairro: <%=hl @unidade.bairro %>\\
+            CEP: <%=hl @unidade.cep %>\\
+            Cidade/UF: <%=hl @unidade.localidade.nome %>-<%=hl @unidade.localidade.uf %>}\\
+	<% else %>
+	    \hspace{7pt}
+	    Ao(A) Sr(a). \textbf{<%=hl recebimento.pessoa.nome rescue 'Pessoa Excluída' %>} \\
+	    \\
+            \\
+	    Atividade: <%=hl recebimento.servico.descricao %> (<%=hl recebimento.numero_de_controle %>) \\
+	    \\
+	    \\
+	    \textbf{Prezado(a) Senhor(a),}
+	    \\
+	    \\
+	    <% data = Date.today + 15 %>
+
+	    {\hspace{30pt} Tendo em vista a constatação em nossos registros da falta de pagamento da(s) parcela(s) com vencimento(s), <%=hl recebimento.resumo_de_parcelas_atrasadas.collect(&:first).join(", ") %>, totalizando até a presente data o valor de <%=hl preco_formatado(recebimento.resumo_de_parcelas_atrasadas.sum(&:last), 'R$') %>, sem os respectivos acréscimos legais. Solicitamos a V. Sa. entrar em contato com o nosso Departamento de Cobrança até <%= data.to_s_br %>, a fim de efetuar o adimplemento do referido débito, sob pena de sanções judiciais, nos termos do Código de Processo Civil Pátrio.} \\
+
+	    {\hspace{30pt} Caso já tenha efetuado o pagamento, favor desconsiderar esta notificação e nos enviar o comprovante de pagamento pelo fax <%=hl @unidade.fax %>, para que possamos efetuar a baixa do título.} \\
+
+	    {\hspace{30pt} Para maiores esclarecimentos, sugerimos consultar o <%=hl @unidade.nome %>, através do(s) telefone(s) <%=hl @unidade.telefone.join(", ") %>, ou via e-mail: <%=hl @unidade.email.gsub("@", "@ ") %>.} \\
+	    \\
+	    \\
+	    \\
+	    Atenciosamente, \\
+	    \\
+	    \\
+	    \\
+	    \line(1,0){200pt}
+	    \\
+	    \\
+	    \fontsize{10pt}{10pt}\selectfont
+	    <%=hl current_usuario.funcionario.nome.upcase %>
+	    \\
+	    \\
+	    <%=hl current_usuario.funcionario.cargo.upcase if current_usuario.funcionario.cargo %>
+            
+            \newpage
+            \begin{table}
+                {\vspace{70pt}}
+            \end{table}
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO DESTINATÁRIO/CLIENTE}
+            {\vspace{35pt}}
+            \\
+            Cliente: <%=hl recebimento.pessoa.fisica? ? recebimento.pessoa.nome : recebimento.pessoa.razao_social %>\\
+            Endereço: <%=hl recebimento.pessoa.endereco %>\\
+            Número: <%=hl recebimento.pessoa.numero %>\\
+            Complemento: <%=hl recebimento.pessoa.complemento %>\\
+            Bairro: <%=hl recebimento.pessoa.bairro %>\\
+            CEP: <%=hl recebimento.pessoa.cep %>\\
+            Cidade/UF: <%=hl recebimento.pessoa.localidade.nome rescue nil %>-<%=hl recebimento.pessoa.localidade.uf rescue nil %>}\\
+
+            {\vspace{200pt}}
+
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO REMETENTE/UNIDADE}}
+            {\vspace{35pt}}
+            \\
+            Remetente: <%=hl @unidade.nome %>\\
+            Endereço: <%=hl @unidade.endereco %>\\
+            Número: <%=hl @unidade.complemento %>\\
+            Bairro: <%=hl @unidade.bairro %>\\
+            CEP: <%=hl @unidade.cep %>\\
+            Cidade/UF: <%=hl @unidade.localidade.nome %>-<%=hl @unidade.localidade.uf %>}\\
+	<% end %>
+    <% elsif params[:recebimentos][:municipio] == "dr" %>
+	<% if params[:recebimentos][:tipo_de_carta] == "1" %>
+	    \hspace{7pt}
+	    Ao(A) Sr(a). \textbf{<%=hl recebimento.pessoa.nome rescue 'Pessoa Excluída' %>} \\
+	    \\
+	    \\
+	    Referente a: <%=hl recebimento.servico.descricao %> (<%=hl recebimento.numero_de_controle %>) \\
+	    \\
+	    \\
+	    Prezado(a),\\
+	    \\
+	    {\hspace{30pt} Verificando nossos controles, detectamos a falta de pagamento da(s) parcela(s) com vencimento(s) em <%=hl recebimento.resumo_de_parcelas_atrasadas.collect(&:first).join(", ") %>, totalizando o valor de <%=hl preco_formatado(recebimento.resumo_de_parcelas_atrasadas.sum(&:last), 'R$') %>, sem os acréscimos contratuais e legais cabíveis. Solicitamos seu comparecimento a <%=hl @unidade.nome %>, neste município.} \\
+
+	    {\hspace{30pt} Caso já tenha efetuado o pagamento, favor desconsiderar esta notificação e nos enviar o comprovante de pagamento pelo fax <%=hl @unidade.dr_fax %>, para que possamos efetuar a baixa do título.} \\
+
+	    {\hspace{30pt} Para maiores esclarecimentos, sugerimos consultar a <%=hl @unidade.dr_nome %> na área de arrecadação/cobrança, através do(s) telefone(s) <%=hl @unidade.dr_telefone.join(", ") %> ou via e-mail: <%=hl @unidade.dr_email.gsub("@", "@ ") %>.} \\
+	    \\
+	    \\
+	    \\
+	    Respeitosamente, \\
+	    \\
+	    \\
+	    \\
+	    \line(1,0){200pt}
+	    \\
+	    \\
+	    \fontsize{10pt}{10pt}\selectfont
+	    <%=hl current_usuario.funcionario.nome.upcase %>
+	    \\
+	    \\
+	    <%=hl current_usuario.funcionario.cargo.upcase if current_usuario.funcionario.cargo %>
+
+
+            \newpage
+            \begin{table}
+                {\vspace{70pt}}
+            \end{table}
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO DESTINATÁRIO/CLIENTE}
+            {\vspace{35pt}}
+            \\
+            Cliente: <%=hl recebimento.pessoa.fisica? ? recebimento.pessoa.nome : recebimento.pessoa.razao_social %>\\
+            Endereço: <%=hl recebimento.pessoa.endereco %>\\
+            Número: <%=hl recebimento.pessoa.numero %>\\
+            Complemento: <%=hl recebimento.pessoa.complemento %>\\
+            Bairro: <%=hl recebimento.pessoa.bairro %>\\
+            CEP: <%=hl recebimento.pessoa.cep %>\\
+            Cidade/UF: <%=hl recebimento.pessoa.localidade.nome rescue nil %>-<%=hl recebimento.pessoa.localidade.uf rescue nil %>}\\
+
+            {\vspace{200pt}}
+
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO REMETENTE/DR}}
+            {\vspace{35pt}}
+            \\
+            Remetente: <%=hl @unidade.dr_nome %>\\
+            Endereço: <%=hl @unidade.dr_endereco %>\\
+            Número: <%=hl @unidade.dr_complemento %>\\
+            Bairro: <%=hl @unidade.dr_bairro %>\\
+            CEP: <%=hl @unidade.dr_cep %>\\
+            Cidade/UF: <%=hl @unidade.dr_localidade %>-<%=hl @unidade.dr_uf %>}\\
+	<% elsif params[:recebimentos][:tipo_de_carta] == "2" %>
+	    \hspace{7pt}
+	    Ao(A) Sr(a). \textbf{<%=hl recebimento.pessoa.nome rescue 'Pessoa Excluída' %>}\\
+	    \\
+	    \\
+	    Referente a: <%=hl recebimento.servico.descricao %> (<%=hl recebimento.numero_de_controle %>) \\
+	    \\
+	    \\
+	    Prezado(a),\\
+	    \\
+
+	    {\hspace{30pt} Verificando nossos controles, detectamos a falta de pagamento da(s) parcela(s) com vencimento(s) <%=hl recebimento.resumo_de_parcelas_atrasadas.collect(&:first).join(", ") %>, totalizando o valor de <%=hl preco_formatado(recebimento.resumo_de_parcelas_atrasadas.sum(&:last), 'R$') %>, sem os acréscimos contratuais e legais cabíveis. Solicitamos seu comparecimento a <%=hl @unidade.nome %>, neste município.} \\
+
+	    {\hspace{30pt} Ressaltamos que o não pronunciamento de Vossa Senhoria no prazo de 10 dias, contado da data de recebimento desta, implicará a adoção das providências legais correspondentes, tais como inclusão SERASA, SPC - Serviço de Proteção ao Crédito e protesto.} \\
+
+	    {\hspace{30pt} Caso já tenha efetuado o pagamento, favor desconsiderar esta notificação e nos enviar o comprovante de pagamento pelo fax <%=hl @unidade.dr_fax %>, para que possamos efetuar a baixa do título.} \\
+
+	    {\hspace{30pt} Para maiores esclarecimentos, sugerimos consultar a <%=hl @unidade.dr_nome %> na área de arrecadação/cobrança, através do(s) telefone(s) <%=hl @unidade.dr_telefone.join(", ") %> ou via e-mail: <%=hl @unidade.dr_email.gsub("@", "@ ") %>.} \\
+            \\
+	    \\
+	    \\
+	    Respeitosamente, \\
+	    \\
+	    \\
+	    \line(1,0){200pt}
+	    \\
+	    \\
+	    \fontsize{10pt}{10pt}\selectfont
+	    <%=hl current_usuario.funcionario.nome.upcase %>
+	    \\
+	    \\
+	    <%=hl current_usuario.funcionario.cargo.upcase if current_usuario.funcionario.cargo %>
+
+
+            \newpage
+            \begin{table}
+                {\vspace{70pt}}
+            \end{table}
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO DESTINATÁRIO/CLIENTE}
+            {\vspace{35pt}}
+            \\
+            Cliente: <%=hl recebimento.pessoa.fisica? ? recebimento.pessoa.nome : recebimento.pessoa.razao_social %>\\
+            Endereço: <%=hl recebimento.pessoa.endereco %>\\
+            Número: <%=hl recebimento.pessoa.numero %>\\
+            Complemento: <%=hl recebimento.pessoa.complemento %>\\
+            Bairro: <%=hl recebimento.pessoa.bairro %>\\
+            CEP: <%=hl recebimento.pessoa.cep %>\\
+            Cidade/UF: <%=hl recebimento.pessoa.localidade.nome rescue nil %>-<%=hl recebimento.pessoa.localidade.uf rescue nil %>}\\
+
+            {\vspace{200pt}}
+
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO REMETENTE/DR}}
+            {\vspace{35pt}}
+            \\
+            Remetente: <%=hl @unidade.dr_nome %>\\
+            Endereço: <%=hl @unidade.dr_endereco %>\\
+            Número: <%=hl @unidade.dr_complemento %>\\
+            Bairro: <%=hl @unidade.dr_bairro %>\\
+            CEP: <%=hl @unidade.dr_cep %>\\
+            Cidade/UF: <%=hl @unidade.dr_localidade %>-<%=hl @unidade.dr_uf %>}\\
+	<% else %>
+	    \hspace{7pt}
+	    Ao(A) Sr(a). \textbf{<%=hl recebimento.pessoa.nome rescue 'Pessoa Excluída' %>} \\
+	    \\
+            \\
+	    Atividade: <%=hl recebimento.servico.descricao %> (<%=hl recebimento.numero_de_controle %>) \\
+	    \\
+	    \\
+	    \textbf{Prezado(a) Senhor(a),}
+	    \\
+	    \\
+	    <% data = Date.today + 15 %>
+
+	    {\hspace{30pt} Tendo em vista a constatação em nossos registros da falta de pagamento da(s) parcela(s) com vencimento(s), <%=hl recebimento.resumo_de_parcelas_atrasadas.collect(&:first).join(", ") %>, totalizando até a presente data o valor de <%=hl preco_formatado(recebimento.resumo_de_parcelas_atrasadas.sum(&:last), 'R$') %>, sem os respectivos acréscimos legais. Solicitamos a V. Sa. entrar em contato com o nosso Departamento de Cobrança até <%= data.to_s_br %>, a fim de efetuar o adimplemento do referido débito, sob pena de sanções judiciais, nos termos do Código de Processo Civil Pátrio.} \\
+
+	    {\hspace{30pt} Caso já tenha efetuado o pagamento, favor desconsiderar esta notificação e nos enviar o comprovante de pagamento pelo fax <%=hl @unidade.dr_fax %>, para que possamos efetuar a baixa do título.} \\
+
+	    {\hspace{30pt} Para maiores esclarecimentos, sugerimos consultar o <%=hl @unidade.dr_nome %>, através do(s) telefone(s) <%=hl @unidade.dr_telefone.join(", ") %>, ou via e-mail: <%=hl @unidade.dr_email.gsub("@", "@ ") %>.} \\
+	    \\
+	    \\
+	    \\
+	    Atenciosamente, \\
+	    \\
+	    \\
+	    \\
+	    \line(1,0){200pt}
+	    \\
+	    \\
+	    \fontsize{10pt}{10pt}\selectfont
+	    <%=hl current_usuario.funcionario.nome.upcase %>
+	    \\
+	    \\
+	    <%=hl current_usuario.funcionario.cargo.upcase if current_usuario.funcionario.cargo %>
+
+
+            \newpage
+            \begin{table}
+                {\vspace{70pt}}
+            \end{table}
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO DESTINATÁRIO/CLIENTE}
+            {\vspace{35pt}}
+            \\
+            Cliente: <%=hl recebimento.pessoa.fisica? ? recebimento.pessoa.nome : recebimento.pessoa.razao_social %>\\
+            Endereço: <%=hl recebimento.pessoa.endereco %>\\
+            Número: <%=hl recebimento.pessoa.numero %>\\
+            Complemento: <%=hl recebimento.pessoa.complemento %>\\
+            Bairro: <%=hl recebimento.pessoa.bairro %>\\
+            CEP: <%=hl recebimento.pessoa.cep %>\\
+            Cidade/UF: <%=hl recebimento.pessoa.localidade.nome rescue nil %>-<%=hl recebimento.pessoa.localidade.uf rescue nil %>}\\
+
+            {\vspace{200pt}}
+
+            \line(1,0){450pt}
+            \\
+            {\textbf{DADOS DO REMETENTE/DR}}
+            {\vspace{35pt}}
+            \\
+            Remetente: <%=hl @unidade.dr_nome %>\\
+            Endereço: <%=hl @unidade.dr_endereco %>\\
+            Número: <%=hl @unidade.dr_complemento %>\\
+            Bairro: <%=hl @unidade.dr_bairro %>\\
+            CEP: <%=hl @unidade.dr_cep %>\\
+            Cidade/UF: <%=hl @unidade.dr_localidade %>-<%=hl @unidade.dr_uf %>}\\
+	<% end %>
+    <% end %>
+
+\newpage
+<% end %>

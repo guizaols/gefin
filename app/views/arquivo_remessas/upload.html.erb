@@ -1,0 +1,38 @@
+<% content_for :titulo, "Arquivos de Remessas - Upload" %>
+
+<% form_tag upload_arquivo_remessas_path, :multipart => true do %>
+  <table>
+    <%= campo_de_cadastro 'Arquivo', (file_field_tag 'file') %>
+    <tr><td></td><td><%= submit_tag 'Enviar'%></td></tr>
+  </table>
+<% end %>
+
+<% unless @file.new_record? %>
+  <% form_for @file, :url => baixar_arquivo_remessa_path(@file) do |f|%>
+    <% listagem_table :headers => ['','Número da Parcela', 'Data de Vencimento', 'Valor', 'Responsa do Banco'], :ocultar_ultima_th => true, :style => "width:90%;" do %>
+      <tbody id="resultado_pesquisa_remessa">
+        <% unless @file.blank? %>
+          <% @file.parcelas.group_by(&:conta).each_pair do |conta, parcelas| %>
+            <tr class="<%= cycle('impar', 'par')%>">
+              <td style="text-transform:uppercase; text-align:right" colspan="6"><b>Número de Controle</b> - <%= link_to h(conta.numero_de_controle), conta %></td>
+            </tr>
+            <% parcelas.each do |parcela| %>
+              <tr class="<%= cycle('impar', 'par') %>">
+                <td>
+                  <% if @file.pode_baixar_parcela?(parcela.id) %>
+                    <%= check_box_tag 'arquivo_remessa[parcelas_ids][]', parcela.id %>
+                  <% end  %>
+                </td>
+                <td style="text-align: center"><%=h parcela.numero %></td>
+                <td><%=h parcela.data_vencimento %></td>
+                <td><%=h preco_formatado(parcela.valor, 'R$') %></td>
+                <td><%= @file.mostra_resultado(parcela.id) %></td>
+              </tr>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
+    <%  end %>
+    <%= f.submit("Baixar Parcelas")   %>
+  <%  end %>
+<%  end %>

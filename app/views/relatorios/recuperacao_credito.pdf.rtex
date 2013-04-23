@@ -1,0 +1,174 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+\begin{center}
+\fontsize{7pt}{12pt}\selectfont
+
+
+<% meses = []; Parcela::MES.sort.each {|elemento| meses << elemento.last}; %>
+<% array_auxiliar = [] %>
+<% 0.upto(12) do |i| %>
+    <% array_auxiliar[i]= 0 %>
+<% end %>
+
+<% if params[:busca][:tipo_do_relatorio] == "0" %>
+
+    <% array_a_receber = []; array_clone_a_receber = []; %>
+    <% 1.upto(12) do |i|%>
+        <% array_a_receber <<  0 %>
+        <% array_clone_a_receber << "#{preco_formatado(0)}" %>
+    <% end %>
+
+    <% array_geral = []; array_clone_geral = [] %>
+    <% 1.upto(12) do %>
+        <% array_geral << 0 %>
+        <% array_clone_geral << "#{preco_formatado(0)}" %>
+    <% end %>
+
+
+    <% array_recebido = []; array_clone_recebido = []; %>
+    <% 1.upto(12) do %>
+        <% array_recebido << 0 %>
+        <% array_clone_recebido << "#{preco_formatado(0)}" %>
+    <% end %>
+
+
+    <% inadimplentes = []; inadimplentes_clone=[] %>
+    <% 1.upto(12) do %>
+        <% inadimplentes << 0 %>
+        <% inadimplentes_clone << "0 \\%"%>
+    <% end %>
+
+
+    <% rodape = [] %>
+    <% 1.upto(12) do %>
+        <% rodape << "" %>
+    <% end %>
+
+    <% @contas.each do |chave, elemento| %>
+        <% if chave!= "anos_anteriores" %>
+            <% array_a_receber[chave - 1] =  elemento["a_receber"] %>
+            <% array_recebido[chave - 1] =  elemento["recebido"] %>
+            <% array_geral[chave - 1] =  elemento["geral"] %>
+            <% inadimplentes[chave - 1] =   elemento["inadimplencia"] %>
+            <% inadimplentes_clone[chave-1] = "#{elemento["inadimplencia"]} \\%" %>
+            <% array_clone_a_receber[chave - 1] = "#{preco_formatado(elemento["a_receber"])}" %>
+            <% array_clone_geral[chave - 1] = "#{preco_formatado(elemento["geral"])}" %>
+            <% array_clone_recebido[chave - 1] = "#{preco_formatado(elemento["recebido"])}" %>
+        <% end %>
+    <% end %>
+
+    \begin{document}
+    \begin{longtable}{|p{2.0cm}|p{2.4cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|}
+    \hline
+
+     & & \multicolumn{12}{|c|}{\textbf {Exercício de <%= hl params[:busca][:ano] %>}} & & \\
+    \cline{3-14}
+    \raisebox{0.2cm}{\textbf{TOTAIS}} & \raisebox{0.2cm}{\textbf {ANOS ANTERIORES}} & {<%=meses.join("&")%>} &
+    \raisebox{0.2cm}{\textbf{TOTAL ANO}} & \raisebox{0.2cm}{\textbf {TOTAL GERAL}}  \\
+    \hline
+    \textbf {A RECEBER}
+        & <%=hl preco_formatado(@contas["anos_anteriores"]["a_receber"]) %>
+        & <%= strip_tags array_clone_a_receber.join(" & ") %>
+        & <%=hl preco_formatado(array_a_receber.sum) %>
+        & <%=hl preco_formatado(@contas["anos_anteriores"]["a_receber"] + array_a_receber.sum) %> \\
+    \hline
+    \textbf {RECEBIDO}
+        & <%=hl preco_formatado(@contas["anos_anteriores"]["recebido"]) %>
+        & <%=strip_tags array_clone_recebido.join("&") %>
+        & <%=hl preco_formatado(array_recebido.sum) %>
+        & <%=hl preco_formatado(@contas["anos_anteriores"]["recebido"] + array_recebido.sum) %>  \\
+    \hline
+    \textbf {GERAL}
+        & <%=hl preco_formatado(@contas["anos_anteriores"]["geral"]) %>
+        & <%= strip_tags array_clone_geral.join("&") %>
+        & <%=hl preco_formatado(array_a_receber.sum + array_recebido.sum) %>
+        & <%=hl preco_formatado(array_geral.sum + @contas["anos_anteriores"]["geral"]) %> \\
+    \hline
+    \textbf {INADIMPLENTES}
+        & <%= @contas["anos_anteriores"]["inadimplencia"] %> \%
+        & <%= strip_tags  inadimplentes_clone.join("&") %>
+        & <%=hl (array_a_receber.sum.to_f / (array_recebido.sum+array_a_receber.sum) * 100).round(2) %>\%
+        & <%= (((@contas["anos_anteriores"]["a_receber"] + array_a_receber.sum).to_f / (array_geral.sum + @contas["anos_anteriores"]["geral"])) * 100).round(2)  %>\% \\
+    \hline
+
+<% else %>
+
+    \begin{document}
+    \begin{longtable}{|p{2.4cm}|p{2.4cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|}
+    \hline
+     & & \multicolumn{12}{|c|}{\fontsize{8pt}{12pt}\textbf {Exercício de <%= hl params[:busca][:ano] %>}} & &\\
+    \cline{3-14}
+    \raisebox{0.2cm}{\textbf{ATIVIDADES}} & \raisebox{0.2cm}{\textbf {ANOS ANTERIORES}} & {<%=meses.join("&")%>} &
+    \raisebox{0.2cm}{\textbf{TOTAL ANO}} & \raisebox{0.2cm}{\textbf {TOTAL GERAL}}  \\
+    \hline
+    %\multicolumn{16}{|<{\rowcolor[gray]{0.9}}c|}{\textbf {A RECEBER}}
+    \multicolumn{16}{|c|}{\fontsize{8pt}{12pt}\textbf {A RECEBER}}
+    \hline
+    <% valor_total_a_receber = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] %>
+    <% @contas['receber'].each do |elemento| %>
+        <%=hl elemento.first %>
+        & <% elemento.last.each{|mes,valor|  if mes != "anos_anteriores";array_auxiliar[mes] = valor;valor_total_a_receber[mes]+=valor;else;array_auxiliar[0]=valor;valor_total_a_receber[0]+=valor;end}; %>
+        <%= strip_tags array_auxiliar.collect{|x| "#{preco_formatado(x)}" unless x.blank?}.join("&") %>
+        & <%=hl preco_formatado(array_auxiliar.compact.sum) %> & <%= strip_tags preco_formatado(array_auxiliar.compact.sum+array_auxiliar[0]) %>  \\
+
+        <% valor_total_a_receber[13] += array_auxiliar.compact.sum %>
+        <% valor_total_a_receber[14] += array_auxiliar.compact.sum + array_auxiliar[0] %>
+
+        <% 1.upto(12) do |i| %>
+            <% array_auxiliar[i] = 0 %>
+        <% end %>
+
+        \hline
+    <% end %>
+
+    %{\rowcolor[gray]{0.8}}\textbf {A RECEBER}
+    \fontsize{8pt}{12pt}\textbf {A RECEBER}
+    <% valor_total_a_receber.each do |val_total| %>
+        & \fontsize{8pt}{12pt}\textbf {<%= preco_formatado(val_total).untaint %>}
+    <% end %>
+    \\
+    \hline
+    \multicolumn{16}{c}{}
+    \hline
+
+    %\multicolumn{16}{|<{\rowcolor[gray]{0.9}}c|}{\textbf {RECEBIDO}}
+    \multicolumn{16}{|c|}{\fontsize{8pt}{12pt}\textbf {RECEBIDO}}
+    \hline
+    <% valortotal_recebido = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] %>
+    <% @contas['recebido'].each do |elemento| %>
+        <%= hl elemento.first %>
+        & <% elemento.last.each{|mes,valor| if mes != "anos_anteriores";array_auxiliar[mes] = valor;valortotal_recebido[mes]+=valor;else;array_auxiliar[0]=valor;valortotal_recebido[0]+=valor;end};%>
+        <%=strip_tags  array_auxiliar.collect{|x| "#{preco_formatado(x)}" unless x.blank?}.join("&")  %>
+        & <%=hl preco_formatado(array_auxiliar.compact.sum) %> & <%= strip_tags preco_formatado(array_auxiliar.compact.sum+array_auxiliar[0])  %>   \\
+
+        <% valortotal_recebido[13] += array_auxiliar.compact.sum %>
+        <% valortotal_recebido[14] += array_auxiliar.compact.sum+array_auxiliar[0] %>
+
+        <% 1.upto(12) do |i| %>
+            <% array_auxiliar[i]= 0 %>
+        <% end %>
+
+        \hline
+    <% end %>
+
+    %{\rowcolor[gray]{0.8}}\textbf {RECEBIDO}
+    \fontsize{8pt}{12pt}\textbf{RECEBIDO}
+    <% valortotal_recebido.each do |val_total| %>
+        & \fontsize{8pt}{12pt}\textbf {<%= preco_formatado(val_total).untaint %>}
+    <% end %>
+    \\
+    \hline
+    \multicolumn{16}{c}{}
+    \hline
+    %{\rowcolor[gray]{0.8}}\textbf {TOTAL GERAL}
+    \fontsize{8pt}{12pt}\textbf{TOTAL GERAL}
+    <% valortotal_recebido.each_with_index do |val_total, key| %>
+        & \fontsize{8pt}{12pt}\textbf{<%= preco_formatado(val_total + valor_total_a_receber[key]).untaint %>}
+    <% end %>
+    \\
+    \hline
+<% end %>
+
+\end{longtable}
+\end{document}

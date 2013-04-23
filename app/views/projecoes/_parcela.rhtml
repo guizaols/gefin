@@ -1,0 +1,46 @@
+<% if inicial %>
+  <% parcela.calcular_juros_e_multas!(Date.today, parcela.data_vencimento) %>
+  <% parcela.valor_apos_ser_calculado = parcela.calcula_valor_total_da_parcela + parcela.retorna_valor_de_correcao_pelo_indice %>
+<% end  %>
+<tr id="parcela_<%= parcela.id %>" class="<%= cycle 'par', 'impar' if inicial %>">
+  <td class="print">
+    <%= check_box_tag "recebimento_de_conta[parcelas][#{parcela.id}][selecionada]", '1', parcela.selecionada == '1', :class => 'selecionados', :id => "parcela_#{parcela.id}_checkbox", :onclick => "liberaTravaCampos(#{parcela.id})" %>
+  </td>
+  <td>
+    <%=h parcela.numero %>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][numero]", parcela.numero, :size => 1, :readonly => true, :style => 'display: none;' %>
+  </td>
+  <td><%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][data_vencimento]", parcela.data_vencimento, :size => 10, :readonly => true, :id => "parcela_#{parcela.id}_data_vencimento", :onblur => "verificaDatasProjecao(this, this.value, '#{Date.today.to_s_br}', '#{parcela.data_vencimento}'); return false;" %></td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][preco_em_reais]", preco_formatado(parcela.valor).gsub(' ', ''), :size => 6, :readonly => true %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_preco_em_reais" %>
+  </td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][valor_da_multa_em_reais_original]", preco_formatado(parcela.multa_original).gsub(' ', ''), :size => 6, :readonly => true %>
+    <%= hidden_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][valor_da_multa_em_reais]", preco_formatado(parcela.valor_da_multa).gsub(' ', ''), :size => 6, :readonly => true %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_valor_da_multa_em_reais" %>
+  </td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][valor_dos_juros_em_reais_original]", preco_formatado(parcela.juros_original).gsub(' ', ''), :size => 6, :readonly => true %>
+    <%= hidden_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][valor_dos_juros_em_reais]", preco_formatado(parcela.valor_dos_juros).gsub(' ', ''), :size => 6, :readonly => true %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_valor_dos_juros_em_reais" %>
+  </td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][desconto_em_porcentagem]", parcela.percentual_de_desconto ? preco_formatado(parcela.percentual_de_desconto).gsub(' ', '') : '0,00' , :readonly => true, :size => 6 %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_desconto_em_porcentagem" %>
+  </td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][indice]", parcela.indice.real.to_s, :size => 6, :onkeypress => "return(MascaraMoeda(recebimento_de_conta_parcelas_#{parcela.id}_indice, \".\",\",\", event))" %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_indice" %>
+  </td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][retorna_valor_de_correcao_pelo_indice_em_reais]", parcela.retorna_valor_de_correcao_pelo_indice_em_reais, :size => 6, :onkeypress => "return(MascaraMoeda(recebimento_de_conta_parcelas_#{parcela.id}_retorna_valor_de_correcao_pelo_indice_em_reais, \".\",\",\", event))", :readonly => true %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_retorna_valor_de_correcao_pelo_indice_em_reais" %>
+  </td>
+  <td>
+    <%= text_field_tag "recebimento_de_conta[parcelas][#{parcela.id}][valor_liquido_em_reais]", preco_formatado(parcela.calcula_valor_total_da_parcela(inicial) + parcela.retorna_valor_de_correcao_pelo_indice).gsub(' ', ''), :size => 6, :readonly => true %>
+<%#= mascara_para_valor "recebimento_de_conta_parcelas_#{parcela.id}_valor_liquido_em_reais" %>
+
+  </td>
+</tr>
+<%= javascript_tag "liberaTravaCampos(#{parcela.id})" %>

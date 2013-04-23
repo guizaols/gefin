@@ -1,0 +1,21 @@
+<div id="resultados_pesquisa_ordem">
+  <% listagem_table :headers => ['Tipo', 'Data de Lançamento', 'Número da Parcela', 'Cliente/Fornecedor', 'Histórico', 'Valor'], :ocultar_ultima_th => true do %>
+    <% @movimentos_contabilizados.each_pair do |controle, movimentos| %>
+      <tr class="<%= cycle('impar', 'par')%>" style="cursor:pointer;" onclick="$('movimento_ordem').value = '<%=h controle %>'; document.getElementById('movimento_tipo').focus(); Element.highlight('movimento_ordem');">
+        <th style="text-transform:uppercase;" colspan="2">Número de Controle</th><td colspan="4"><%=h controle %></td>
+      </tr>
+      <% movimentos.each do |movimento| %>
+        <tr class="<%= cycle('impar', 'par') %>">
+          <td><%=h movimento.provisao_verbose %></td>
+          <td><%=h movimento.data_lancamento %></td>
+          <td><%=h movimento.numero_da_parcela %></td>
+          <td><%=h movimento.pessoa.nome %></td>
+          <td><%=h movimento.historico %></td>
+          <td><%=h preco_formatado(movimento.valor_total, 'R$') %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+

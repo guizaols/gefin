@@ -1,0 +1,47 @@
+one:
+  conta_contabil: plano_de_contas_ativo_contribuicoes
+  unidade: senaivarzeagrande
+  tipo: 1
+  ano: 2008
+
+two:
+  conta_contabil: plano_de_contas_ativo_contribuicoes
+  unidade: sesivarzeagrande
+  tipo: 2
+  ano: 2009
+
+conta_desconto_pessoa_fisica:
+  conta_contabil: plano_de_contas_passivo_a_pagar
+  unidade: senaivarzeagrande
+  tipo: 2
+  ano: 2009
+
+conta_desconto_pessoa_juridica:
+  conta_contabil: plano_de_contas_ativo_despesas_senai
+  unidade: senaivarzeagrande
+  tipo: 3
+  ano: 2009
+
+conta_fornecedor:
+  conta_contabil: plano_de_contas_ativo_contribuicoes
+  unidade: senaivarzeagrande
+  tipo: 6
+  ano: 2009
+
+conta_cliente:
+  conta_contabil: plano_de_contas_ativo_contribuicoes
+  unidade: senaivarzeagrande
+  tipo: 8
+  ano: 2009
+
+conta_faturamento:
+  conta_contabil: plano_de_contas_passivo_impostos_pagar
+  unidade: senaivarzeagrande
+  tipo: 9
+  ano: 2009
+
+conta_juros_multas_renegociados:
+  conta_contabil: plano_de_contas_ativo_conta_bancaria
+  unidade: senaivarzeagrande
+  tipo: 10
+  ano: 2009

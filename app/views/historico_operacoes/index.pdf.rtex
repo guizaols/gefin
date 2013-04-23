@@ -1,0 +1,32 @@
+\begin{table}
+\end{table}
+
+\begin{table}{\vspace{60pt}}
+Unidade: <%= @conta.unidade.nome.untaint %>
+\\
+<% if @conta.is_a?(RecebimentoDeConta) || @conta.is_a?(PagamentoDeConta)%>
+    Unidade Organizacional: <%= @conta.unidade_organizacional.nome.untaint %>
+<% end %>
+<% if @conta.is_a?(RecebimentoDeConta) %>
+    Serviço: <%= @conta.servico.descricao.untaint %>
+<% else %>
+    Controle: <%= @conta.numero_de_controle.untaint %>
+<% end %>
+Cliente: <%= @conta.pessoa.nome.untaint %>
+\end{table}
+
+
+\begin{longtable}{|p{3cm}|p{7cm}|p{5cm}|p{3cm}|p{3cm}|p{3cm}|}
+\hline
+\textbf{Data / Hora} & \textbf{Descrição} & \textbf{Justificativa} & \textbf{Valor Operação} & \textbf{Tipo de Carta} & \textbf{Responsavel}\\
+\hline
+<% @historico_operacoes.each do |historico_operacao| %>
+<%=hl historico_operacao.created_at.to_s_br %> &
+<%=hl historico_operacao.numero_carta_cobranca_verbose %> &
+<%=hl historico_operacao.descricao %>&
+<%=hl historico_operacao.justificativa %>&
+<%=hl preco_formatado(historico_operacao.valor, "R$") %>&
+<%=hl historico_operacao.usuario.login %>\\
+\hline
+<% end %>
+\end{longtable}

@@ -1,0 +1,67 @@
+\begin{table}{\vspace{60pt}}
+Unidade:
+<%=h @conta.unidade.nome.untaint %>
+\\
+Unidade Organizacional:
+<%=h @conta.unidade_organizacional.nome.untaint %>
+\\
+Controle:
+<%=h @conta.numero_de_controle.untaint %>
+\\
+Data Base:
+<%=h Date.today.to_s_br %>
+\\
+Cliente:
+<%=h @conta.pessoa.nome.untaint %>
+\end{table}
+
+\begin{center}
+\begin{longtable}{|p{1.2cm}|p{3.0cm}|p{3.0cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{3.0cm}|p{3.0cm}|p{3.0cm}|}
+\hline
+\textbf{PARC} &
+\textbf{VENCIMENTO} &
+\textbf{VALOR} &
+\textbf{MULTA} &
+\textbf{JUROS} &
+\textbf{MULTA + \newline JUROS} &
+\textbf{PERCENTUAL \newline DESCONTO} &
+\textbf{VALOR \newline DESCONTO} &
+\textbf{VALOR \newline A RECEBER} \\
+\hline
+
+<% $parcelas.each do |id, parcela| %>
+    <%=hl parcela[:numero] %> &
+    <%=hl parcela[:data_vencimento] %> &
+    <%=hl "R$ #{parcela[:preco_em_reais]}" %> &
+    <%=hl "R$ #{parcela[:valor_da_multa_em_reais_original]}" %> &
+    <%=hl "R$ #{parcela[:valor_dos_juros_em_reais_original]}" %> &
+    <%=hl "R$ #{parcela[:valor_da_multa_em_reais_original].real.to_f + parcela[:valor_dos_juros_em_reais_original].real.to_f}" %> &
+    <%=hl "#{parcela[:desconto_em_porcentagem]}%" %> &
+    <%=hl "R$ #{parcela[:desconto_em_real]}" %> &
+    <%=hl "R$ #{parcela[:valor_liquido_em_reais]}" %> \\
+    \hline
+<% end %>
+
+\multicolumn{2}{|c|}{\textbf{Totais}} &
+<%=hl preco_formatado(@totais[0], 'R$') %> &
+<%=hl preco_formatado(@totais[1], 'R$') %> &
+<%=hl preco_formatado(@totais[2], 'R$') %> &
+<%=hl preco_formatado(@totais[1] + @totais[2], 'R$') %> &
+<%=hl "#{@totais[3].to_f / $parcelas.length}%" %> &
+<%=hl preco_formatado(@totais[4], 'R$') %> &
+
+<%# if $checadas_quando_calculada_proporcao %>
+    <%=hl preco_formatado(@totais[5], 'R$') %> \\
+<%# else %>
+    %<%#=hl preco_formatado(@totais[5] - ((@totais[1] + @totais[2]) - @totais[4]), 'R$') %> \\
+<%# end %>
+
+%<%#=hl "R$ #{(@totais[0].real.to_f / 100.0).real.to_s}" %> &
+%<%#=hl "R$ #{(@totais[1].real.to_f / 100.0).real.to_s}" %> &
+%<%#=hl "R$ #{(@totais[2].real.to_f / 100.0).real.to_s}" %> &
+%<%#=hl "R$ #{((@totais[1] + @totais[2]).real.to_f / 100.0).real.to_s}" %> &
+%<%#=hl "R$ #{(@totais[5].real.to_f / 100.0).real.to_s}" %> \\
+\hline
+
+\end{longtable}
+\end{center}

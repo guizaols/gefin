@@ -1,0 +1,64 @@
+debito_primeiro_movimento:
+   movimento: primeiro_lancamento_entrada
+   tipo: D
+   valor: 1000
+   centro: centro_forum_economico
+   unidade_organizacional: senai_unidade_organizacional
+   plano_de_conta: plano_de_contas_ativo_contribuicoes
+
+credito_primeiro_movimento:
+    movimento: primeiro_lancamento_entrada
+    tipo: C
+    valor: 1000
+    centro: centro_forum_economico
+    unidade_organizacional: senai_unidade_organizacional
+    plano_de_conta: plano_de_contas_ativo_conta_bancaria
+
+credito_segundo_movimento:
+    movimento: segundo_lancamento_saida
+    tipo: C
+    valor: 5000
+    centro: centro_forum_economico
+    unidade_organizacional: senai_unidade_organizacional
+    plano_de_conta: plano_de_contas_ativo_despesas_senai
+
+debito_segundo_movimento:
+    movimento: segundo_lancamento_saida
+    tipo: D
+    valor: 5000
+    centro: centro_forum_economico
+    unidade_organizacional: senai_unidade_organizacional
+    plano_de_conta: plano_de_contas_passivo_impostos_pagar
+
+credito_segundo_movimento_outra_unidade:
+    movimento: primeiro_lancamento_entrada_outra_unidade
+    tipo: C
+    valor: 1000
+    centro: centro_forum_social
+    unidade_organizacional: sesi_colider_unidade_organizacional
+    plano_de_conta: plano_de_contas_ativo_contribuicoes_sesi
+
+debito_segundo_movimento_outra_unidade:
+    movimento: primeiro_lancamento_entrada_outra_unidade
+    tipo: D
+    valor: 1000
+    centro: centro_forum_social
+    unidade_organizacional: sesi_colider_unidade_organizacional
+    plano_de_conta: plano_de_contas_ativo_despesas
+
+credito_lancamento_contabil_de_cheque:
+    movimento: lancamento_com_a_conta_pagamento_cheque
+    tipo: C
+    valor: 10001
+    centro: centro_forum_economico
+    unidade_organizacional: senai_unidade_organizacional
+    plano_de_conta: plano_de_contas_ativo_contribuicoes
+
+debito_lancamento_contabil_de_cheque:
+    movimento: lancamento_com_a_conta_pagamento_cheque
+    tipo: D
+    valor: 10001
+    centro: centro_forum_economico
+    unidade_organizacional: senai_unidade_organizacional
+    plano_de_conta: plano_de_contas_ativo_contribuicoes
+

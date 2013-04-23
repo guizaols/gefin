@@ -1,0 +1,106 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+    \textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo]) %>}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|c|c|c|c|c|c|c|c|c|c|}
+
+<% @contas.each do |cobrador,contas_cobrador| %>
+\hline
+\multicolumn{10}{|l|}{\textbf{Funcionário:} <%=hl cobrador %>}\\
+\hline
+
+
+<% contas_cobrador.group_by{|conta| conta.servico.descricao}.each do |servico,contas_servico| %>
+
+\multicolumn{4}{|l}{\textbf{Entidade:} <%=hl contas_servico.first.unidade.entidade.nome %>} &
+\multicolumn{4}{c}{\textbf{Unidade:} <%=hl contas_servico.first.unidade.nome %>} &
+\multicolumn{2}{c|}{\textbf{Serviço:} <%=hl servico %>} \\
+\hline
+
+<% contas_servico.each do |conta| %>
+
+\multicolumn{2}{|l}{\textbf{Contrato:} <%=hl conta.numero_de_controle %>} &
+\multicolumn{2}{c}{\textbf{Cliente:} <%=hl conta.pessoa.nome %>} &
+\multicolumn{1}{c}{\textbf{Parcs:} <%=hl conta.numero_de_parcelas %>} &
+\multicolumn{1}{c}{\textbf{Dt.Ini:} <%=hl conta.data_inicio %>} &
+\multicolumn{1}{c}{\textbf{Dt.Fim:} <%=hl conta.data_final %>} &
+\multicolumn{1}{c}{\textbf{Dia Vcto:} <%=hl conta.dia_do_vencimento %>} &
+\multicolumn{2}{c|}{\textbf{Valor:} <%=hl preco_formatado_com_ponto(conta.valor_do_documento) %>} \\
+\hline
+
+\multicolumn{1}{|l}{\textbf{N.Ren} <%=hl conta.numero_de_renegociacoes %>} &
+\multicolumn{1}{c}{\textbf{Valor} <%=hl preco_formatado_com_ponto(conta.valor_do_documento) %>} &
+\multicolumn{1}{c}{\textbf{Parcs} <%=hl conta.numero_de_parcelas %>} &
+\multicolumn{1}{c}{\textbf{Data} <%=hl conta.created_at.to_date.to_s_br %>} &
+\multicolumn{1}{c}{\textbf{Dt.Reg} <%=hl conta.data_venda  %>} &
+\multicolumn{1}{c}{\textbf{Dt.Ini} <%=hl conta.data_inicio %>} &
+\multicolumn{1}{c}{\textbf{Dt.Fim} <%=hl conta.data_final %>} &
+\multicolumn{1}{c}{\textbf{Vigência} <%=hl conta.vigencia %>} &
+\multicolumn{1}{c}{\textbf{Dt.Abertura} <%=hl conta.data_venda %>} &
+\multicolumn{1}{c|}{\textbf{Atraso} <%=hl 0 %>}\\
+\hline
+
+\multicolumn{1}{|l}{\textbf{N.Renego}} &
+\multicolumn{1}{c}{\textbf{Juros}} &
+\multicolumn{1}{c}{\textbf{Multa}} &
+\multicolumn{1}{c}{\textbf{Outros}} &
+\multicolumn{1}{c}{\textbf{Desconto}} &
+\multicolumn{1}{c}{\textbf{Vcto}} &
+\multicolumn{1}{c}{\textbf{Valor Parcela}} &
+\multicolumn{1}{c}{\textbf{Data Rec}} &
+\multicolumn{1}{c}{\textbf{Val.Recebido}} &
+\multicolumn{1}{c|}{\textbf{Status}} \\
+\hline
+
+<% total_juros = 0 %>
+<% total_multa = 0 %>
+<% total_acrescimos = 0 %>
+<% total_desconto = 0 %>
+<% total_valor = 0 %>
+<% total_liquido = 0 %>
+
+<% conta.parcelas.each do |parcela| %>
+
+ <%=hl parcela.conta.numero_de_renegociacoes %> &
+ <%=hl preco_formatado_com_ponto(parcela.valor_dos_juros) %> &
+ <%=hl preco_formatado_com_ponto(parcela.valor_da_multa) %> &
+ <%=hl preco_formatado_com_ponto(parcela.outros_acrescimos) %> &
+ <%=hl preco_formatado_com_ponto(parcela.valor_do_desconto)  %> &
+ <%=hl parcela.data_vencimento %> &
+ <%=hl preco_formatado_com_ponto(parcela.valor) %> &
+ <%=hl parcela.data_da_baixa %> &
+ <%=hl preco_formatado_com_ponto(parcela.valor_liquido) %> &
+ <%=hl parcela.situacao_verbose %> \\
+ 
+ <% total_juros += parcela.valor_dos_juros  %>
+ <% total_multa += parcela.valor_da_multa %>
+ <% total_acrescimos += parcela.outros_acrescimos  %>
+ <% total_desconto += parcela.valor_do_desconto %>
+ <% total_valor += parcela.valor %>
+ <% total_liquido += parcela.valor_liquido %>
+
+<% end %>
+\hline
+
+\multicolumn{1}{|c}{\textbf{Totais >>>}} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado_com_ponto(total_juros) %>}} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado_com_ponto(total_multa) %>}} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado_com_ponto(total_acrescimos) %>}} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado_com_ponto(total_desconto) %>}} &
+\multicolumn{1}{c}{} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado_com_ponto(total_valor) %>}} &
+\multicolumn{1}{c}{} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado_com_ponto(total_liquido) %>}} &
+\multicolumn{1}{c|}{} \\
+\hline
+ 
+<% end %>
+<% end %>
+<% end %>
+\end{longtable}
+\end{center}

@@ -1,0 +1,25 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage{a4wide}
+\usepackage{setspace}
+\usepackage{multirow}
+
+\usepackage[top=3.0cm, bottom=1.5cm, left=3.0cm, right=3.0cm]{geometry}
+\pagestyle{fancy}
+\fancyfoot{}
+\textheight = 600pt
+%\footskip = 100pt
+\renewcommand{\familydefault}{\sfdefault}
+
+\rhead{\includegraphics[scale=0.5]{<%=h RAILS_ROOT + "/public/images/logo_print.png" %>}}
+
+\begin{document}
+    \setlength{\parindent}{-10pt}
+    <%= yield %>
+\end{document}

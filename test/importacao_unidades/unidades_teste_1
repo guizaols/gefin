@@ -1,0 +1,62 @@
+2009	213	1303010403	SESICLUBE RONDONOPOLIS	00045     	9419	\N
+2008	213	1303010415	PROJETOS DO LAZER	00010     	1245	\N
+2009	213	1303010404	SESICLUBE CACERES	00046     	9420	\N
+2009	213	1303010405	SESICLUBE BARRA DO GARCAS	00019     	9421	\N
+2008	213	13010104	GESTAO COMPARTILHADA	00028     	1215	\N
+2008	213	13030103	SAUDE E SEGURANCA DO TRABALHO	00037     	1230	\N
+\.
+
+
+--
+-- TOC entry 2606 (class 0 OID 38087)
+-- Dependencies: 1657
+-- Data for Name: unidade; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY unidade (codund, codent, dscund, siglaund, telund, emailund, codcid, limbaixa, limmf, limcp, limcr, sigla, endereco, bairro, cep, telfax, complemento, databasename, hostname, username, "password", ativa, ultexp, cnpj, cxzeus, numcr, codintegrator, dtref) FROM stdin;
+33	2	SENAI-PRIMAVERA DO LESTE	SENAI-PRIMAVERA	(65) 498-8882   	senai.primavera@terra.com.br	5107040	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+24	3	SUPERINTENDENCIA	ASTEC	(65)0611-1618   	astec@fiemt.com.br	5103403	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+16	3	SESIVIDA	SESIVIDA	(65)0611-1573   	marlova@sesimt.com.br	5103403	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+14	2	SENAI-SINOP	SENAI-SINOP	(66) 3531-2062  	senaisip@terra.com.br	5107602	999	999	999	999	SNP	\N	\N	\N	\N	\N	senaisinop	192.168.40.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+26	3	SESI - CLUBE - BARRA DO GARÇAS	SESICLUBE-BARRA DO GARÇAS	(66)0405-6941   	sesibarra@vsp.com.br	5101803	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+23	3	SESICLUBE SINOP	SESICLUBE-SINOP	(66)0531-6487   	sesisnp@terra.com.br	5107909	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+42	3	SESISAUDE-SORRISO	SESISAUDE-SORRISO	65 3611-1500    	sesi@sesimt.com.br	5102504	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+28	2	SENAI - TANGARA DA SERRA	SENAI-TANGARA	(65) 326-3297   	senaits@terra.com.br	5107958	999	999	999	999	\N	\N	\N	\N	\N	\N	senaitga	190.168.10.1	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+8	2	SENAI - VARZEA GRANDE	SENAI-VG	(65) 3688-1200  	nsac1.senaivg@terra.com.br	5107909	500	500	500	500	SVG	\N	\N	\N	\N	\N	senaivg	192.168.30.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+32	3	SESI CLUBE CUIABA	SESIPARK	(65)0648-7888   	ccc	5103403	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+41	3	ACADEMIA	ACADEMIA	65 3611-1500    	academia@fiemt.com.br	5103403	0	0	0	0	ACA	  EDCEP.TEXT := CDSUNIDADECEP.VALUE;	1111	00000000	65 3611-1500	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	.   .   /    -    	                              	0	15	\N
+30	3	SESI-DR	SESI-DR	(65) 611-1542   	cobranca@fiemt.com.br	5103403	0	0	0	0	SES	\N	\N	\N	(65) 611-1542   	\N	bdgefin	190.168.10.1	admin	2008_ctinf	t	\N	.   .   /    -    	                              	0	\N	\N
+13	3	SESI ESCOLA NOBRES	SESIESCOLA-NOBRES	(65) 376-1316   	sesinob@terra.com.br	5105903	0	0	0	0	\N	\N	\N	\N	\N	\N	bdgefin	190.168.10.1	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+27	3	SESISAUDE CUIABA	SESISAUDE-CUIABA	(65) 624-0121   	sesiclinicacba@sesimt.com.br	5103403	0	0	0	0	SSC	.	.	78000000	.	\N	sesisaudecba	192.168.5.6	admin	2008_ctinf	t	\N	.   .   /    -    	                              	0	0	1899-12-30
+21	3	SESISAUDE RONDONOPOLIS	SESISAUDE-ROO	(66) 423-3432   	sesiclinica@micnet.com.br	5107602	0	0	0	0	SSTRO	.	..	78000000	.	\N	sesisauderoo	192.168.4.2	admin	2008_ctinf	t	\N	.   .   /    -    	CX. - SSTRO                   	0	0	1899-12-30
+17	3	SESICLUBE CACERES	SESICLUBE-CACERES	(65) 222-1216   	sesicac@terra.com.br	5102504	0	0	0	0	\N	\N	\N	\N	\N	\N	sesiclubecac	192.168.7.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+6	3	SESIESCOLA - CUIABÁ	SESIESCOLA-CUIABA	(65) 3644-1055  	tesouraria.escolacba@sesimt.com.br	5103403	0	0	0	0	SCA	.	.	78000000	.	\N	sesiescolacba	192.168.3.3	admin	2008_ctinf	t	\N	.   .   /    -    	                              	0	0	1899-12-30
+20	3	SESICLUBE RONDONOPOLIS	SESICLUBE-ROO	(66) 421-0440   	sesicluberoo@micnet.com.br	5107602	0	0	0	0	\N	\N	\N	\N	\N	\N	sesicluberoo	192.168.8.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+39	5	CONDOMINIO	CONDOMINIO	65 3611-1500    	condominio@fiemt.com.br	5103403	10	10	10	10	CON	\N	\N	\N	65 3611-1500    	\N	bdgefin	190.168.10.1	admin	2008_ctinf	t	\N	.   .   /    -    	                              	0	\N	\N
+40	2	A-TESTE-DR	ATESTE-DR	65 3611-1500    	senai.fiemtec@senaimt.com.br	5103403	900	900	900	900	FTG	AV HISTORIADOR RUBENS DE MENDONCA, 4193	BOSQUE DA SAUDE	78050500	65 3611-1523	\N	gefindr	190.168.10.1	admin	2008_ctinf	t	2007-01-23 15:08:25.295504	03.819.150/0002-09	CX - TESTE                    	1	1	1899-12-30
+9	1	FIEMT	FIEMT	(65) 3611-1500  	fiemt@fiemt.com.br	5103403	90	90	90	90	FIE	\N	\N	\N	\N	\N	bdgefin	190.168.10.1	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+2	4	IEL	IEL	65 3611-1601    	cobranca@fiemt.com.br	5103403	999	999	999	999	IEL	\N	\N	\N	65 3611-1542	\N	bdgefin	190.168.10.1	admin	2008_ctinf	t	\N	.   .   /    -    	                              	1	\N	\N
+37	2	SENAI	SENAI	(65) 611-1601   	cobranca@fiemt.com.br	5103403	0	0	0	0	SCD	\N	\N	\N	\N	\N	bdgefin	190.168.10.1	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+25	2	SENAI-BARRA DO GARÇAS	SENAI-BARRA DO GARÇAS	(66)0401-1808   	senaibg@uol.com.br	5101803	999	999	999	999	SBG	\N	\N	\N	\N	\N	senaibg	192.168.70.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+18	2	SENAI CACERES	SENAI-CACERES	(06)5223-4033   	senaicac@terra.com.br	5102504	0	0	0	0	\N	\N	\N	\N	\N	\N	senaicac	192.168.60.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+43	2	SENAI COLÍDER	SENAI-COLIDER	(66) 3541-4652  	senai.colider@senaimt.com.br	5103205	0	0	0	0	COL	\N	\N	\N	(66)	\N	senaicol	10.0.0.42	admin	2008_ctinf	t	\N	.   .   /    -    	CX - SENAI COL                	0	\N	\N
+22	3	SESICLINICA SINOP	SESI-SINOP	(66)0531-3611   	sesisnp@terra.com.br	5107909	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	192.168.6.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+44	2	SENAI DISTRITO INDUSTRIAL	SENAI-DISTRITO	65 3667-1586    	admin.econstrucao@senaimt.com.br	5103403	0	0	0	0	SDI	\N	\N	\N	65 3667-1586 	\N	senaidi	192.168.80.2	admin	2008_ctinf	t	\N	03.819.157/0002-12	CX - SENAI-DI                 	0	\N	\N
+11	2	SENAI-DR	SENAI-DR	(65) 611-1601   	cobranca@fiemt.com.br	5103403	0	0	0	0	SMT	\N	\N	\N	(65) 611-1601   	\N	bdgefin	190.168.20.1	admin	2008_ctinf	t	\N	.   .   /    -    	                              	0	\N	\N
+38	2	SENAI - JUINA	SENAI-JUINA	(66)3266-1263   	senaict@juina-fox.com.br	5105150	0	0	0	0	SJU	\N	\N	\N	\N	\N	senaijuina	192.168.90.2	admin	2008_ctinf	t	\N	\N	\N	1	\N	\N
+19	2	SENAI CFP MELVIN JONES	SENAI-ROO	(66) 421-1888   	senairoo@terra.com.br	5107602	11	11	11	11	MJ	\N	\N	\N	\N	\N	senairoo	192.168.50.2	admin	2008_ctinf	t	\N	\N	\N	0	\N	\N
+31	3	SESI CLUBE VARZEA GRANDE	SESICLUBE-VG	(65) 3681-5555  	sesiclubevg@sesimt.com.br	5108402	5	5	5	5	CVG	AV. DOM ORLANDO CHAVES, 1086	CRISTO REI	78115500	(65) 6385-4040 	\N	sesiclubevg	192.168.2.2	admin	2008_ctinf	t	\N	03.819.157/0005-65	CX - SESICLU-VG               	1	0	1899-12-30
+15	2	SENAI - CENTRO DE EDUCACCO E TECNOLOGIA	SENAI-CUIABA	(65) 612-1708   	apoio.fiemtec@senaimt.com.br.	5103403	800	800	800	800	CET	\N	\N	\N	\N	\N	fiemtec	192.168.20.5	admin	2008_ctinf	t	2006-08-10 11:04:08.054623	\N	\N	0	\N	\N
+7	3	SESIESCOLA  VARZEA GRANDE	SESIESCOLA-VG	(65) 685-2311   	sesiescolavg@sesimt.com.br	5108402	5	5	5	5	EVG	AV. DOM ORLANDO CHAVES 1086	CRISTO REI	78115530	65	\N	sesiclubevg	192.168.2.2	admin	2008_ctinf	t	\N	03.819.157/0005-65	CX-ESCVG                      	1	1	1899-12-30
+\.
+
+
+--
+-- TOC entry 2607 (class 0 OID 38095)
+-- Dependencies: 1658
+-- Data for Name: uniundorg; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY uniundorg (codund, undorg, ano) FROM stdin;
+40	767	2007
+40	1146	2008

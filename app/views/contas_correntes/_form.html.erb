@@ -1,0 +1,50 @@
+<% form_for @contas_corrente, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <tr>
+      <td class="field_descriptor">Identificador</td>
+      <td><%=f.select :identificador, [["Banco", ContasCorrente::BANCO], ["Caixa", ContasCorrente::CAIXA]], { :include_blank => true }, :onchange => diferenciar_identificador %></td>
+    </tr>
+    <tr id="tr_numero_conta" style="display:none;">
+      <td class="field_descriptor">Número da Conta/DV</td>
+      <td><%= f.text_field :numero_conta, :simple_tag => true, :size => 10 %>-<%= f.text_field :digito_verificador, :simple_tag => true, :size => 1, :maxlength => 1 %></td>
+    </tr>
+    <tr id="tr_agencia" style="display:none;">
+      <td class="field_descriptor">Agência</td>
+      <td><%= auto_complete_para_qualquer_campo(f, :agencia, auto_complete_for_agencia_agencias_path) %></td>
+    </tr>
+    <tr id="tr_tipo" style="display:none;">
+      <td class="field_descriptor">Tipo</td>
+      <td><%= f.text_field :tipo, :simple_tag => true %></td>
+    </tr>
+    <%= f.text_field :descricao, :label => 'Descrição' %>
+    <tr>
+      <td class="field_descriptor">Data de Abertura</td>
+      <td>
+        <%=calendar_date_select_com_mascara(f,"data_abertura") %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Data de Encerramento</td>
+      <td>
+        <%= calendar_date_select_com_mascara(f,"data_encerramento") %>
+      </td>
+    </tr>
+    <% if false %>
+      <%= f.text_field :saldo_inicial_em_reais, :label => 'Saldo Inicial' %>
+      <%= f.text_field :saldo_atual_em_reais, :label => 'Saldo Atual' %>
+    <% end %>
+    <tr>
+      <td class="field_descriptor">Conta Contábil</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f,"conta_contabil",auto_complete_for_conta_contabil_plano_de_contas_path, {:analisar_conta => true}) %>
+      </td>
+    </tr>
+    <%= f.check_box :ativo %>
+    <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+  <%= mascara_para_valor('contas_corrente_saldo_inicial_em_reais') %>
+  <%= mascara_para_valor('contas_corrente_saldo_atual_em_reais') %>
+  <%= javascript_tag diferenciar_identificador  %>
+<% end %>

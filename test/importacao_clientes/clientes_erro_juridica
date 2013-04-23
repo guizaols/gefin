@@ -1,0 +1,24 @@
+5222203	VILA BOA	GO
+5222302	VILA PROPICIO	GO
+5300108	BRASILIA	DF
+1111111	SANTO ANTONIO DO LESTE	MT
+0000000	SÃO PAULO	SP
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY cliente (codcli, idcli, identcli, emailpes, endres, bairrores, compres, codcidres, cepres, telres, telcel, endcom, bairrocom, compcom, codcidcom, cepcom, telcom, emailcom, nomcont, telcont, emailcont, tipocli, atraso, spc, fantasia) FROM stdin;
+44447	07.605.738/0001	F. J. FERNANDES - ME	\N	\N	\N	\N	\N	\N	\N	\N	RUA 01, QD. 13,  N.07-B - SETOR 2	CPAIII		5103403	7800000 	3646-4044       		FABIANA	3646-4044       		J	0	N	CANTINA
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--

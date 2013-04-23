@@ -1,0 +1,13 @@
+<% content_for :titulo, 'Perfil de Acesso' %>
+<p>
+  <b>Descrição: </b><%=h @perfil.descricao %>
+</p>
+<p>
+<ul style="list-style: none">
+  <%= lista_permicoes(@permissoes, true) %>
+</ul>
+</p>
+<br />
+<%= link_to 'Alterar', edit_perfil_path(@perfil.id) if current_usuario.possui_permissao_para(Perfil::ManipularPerfisDeAcesso) %>
+| <%= link_to 'Voltar', perfis_path %>
+

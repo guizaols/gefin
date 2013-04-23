@@ -1,0 +1,14 @@
+<form onsubmit="new Ajax.Request('/parcelas/cancelar/<%= @parcela.id %>?recebimento_de_conta_id=<%= @conta.id %>', {asynchronous:true, evalScripts:true, method:'get', parameters:Form.serialize(this)}); return false;" method="get" action="/parcelas/cancelar/<%= @parcela.id %>?recebimento_de_conta_id=<%= @conta.id %>">
+  <table>
+    <tr>
+      <td class="field_descriptor">Justificativa</td>
+      <td><textarea name='justificativa' id='justificativa' class="MB_focusable" cols='30' rows='5'></textarea></td>
+    </tr>
+    <tr><td></td>
+      <td>
+        <input type='submit' value='Salvar' class='MB_focusable'/>
+      | <%= link_to_function 'Cancelar', 'Modalbox.hide();' %>
+      </td>
+    </tr>
+  </table>
+</form>

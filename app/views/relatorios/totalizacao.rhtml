@@ -1,0 +1,38 @@
+<%  content_for :titulo,"Contas a Receber  - Totalizações"%>
+
+<% form_remote_tag :url => totalizacao_relatorios_path do %>
+  <table>
+    <%= campo_de_cadastro 'Serviço', auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+    <tr>
+      <td class="field_descriptor">Período </td>
+      <td>
+        <label for="busca_periodo_recebimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'recebimento'), true %><b>Recebimento</b></label>
+        <label for="busca_periodo_vencimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'vencimento'), false %><b>Vencimento</b></label>
+      </td>
+    </tr>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Opções de Relatório', (select_tag "busca[opcao_relatorio]", options_for_select([['Recebimentos',1], ['Contas a Receber', 2],['Recebimentos com Atraso',3],['Inadimplência',4]]),
+      :onchange => "seleciona_situacoes()") %>
+
+    <tr id="tr_situacao" style="display:none">
+      <td class="field_descriptor">Situações</td>
+      <td><%= (select_tag "busca[situacao]", options_for_select(['Todas', 'Todas - Exceto Permutas', 'Todas - Exceto Baixa no Conselho', 'Todas - Exceto Inativas', 'Todas - Exceto Jurídico',
+              'Permuta', 'Baixa no Conselho', 'Inativas', 'Jurídico', 'Vincendas', 'Em Atraso', 'Pendentes', 'Desconto em Folha'])) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Tipo</td>
+      <td>
+        <label for="busca_arquivo_pdf"><%= radio_button_tag 'busca[tipo]', (params[:busca][:tipo] = 'pdf'), true %><b>PDF</b></label>
+        <label for="busca_arquivo_xls"><%= radio_button_tag 'busca[tipo]', (params[:busca][:tipo] = 'xls'), false %><b>XLS</b></label>
+      </td>
+    </tr>
+
+    <tr><td></td><td><%= submit_tag "Pesquisar" %></td></tr>
+  </table>
+<% end %>

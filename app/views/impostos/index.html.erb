@@ -1,0 +1,14 @@
+<% content_for :titulo, "Listando impostos" %>
+
+<% listagem_table :new => new_imposto_path,:permissoes=>Perfil::ManipularDadosDosImpostos, :headers => ['Descrição', 'Alíquota %', 'Tipo', 'Classificação'] do %>
+
+<% for imposto in @impostos %>
+  <% listagem_tr :edit => edit_imposto_path(imposto), :destroy => imposto,:permissoes=>Perfil::ManipularDadosDosImpostos do %>
+    <td><%= link_to h(imposto.descricao), imposto %></td>
+    <td><%=h imposto.aliquota %></td>
+    <td><%=h imposto.tipo_de_aliquota_verbose %></td>
+    <td><%=h imposto.classificacoes_das_aliquotas_verbose %></td>
+  <% end %>
+<% end %>
+<% end %>
+

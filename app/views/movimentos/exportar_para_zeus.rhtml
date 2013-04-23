@@ -1,0 +1,10 @@
+<% content_for :titulo, "Exportação para a Contabilidade" %>
+
+<% form_remote_tag :url => exportar_para_zeus_movimentos_path do %>
+  
+  <table>
+    <%= campo_de_cadastro "Dia", (calendar_date_select_tag_com_mascara "busca[data]", Date.today.to_s_br) %>
+    <tr><td></td><td><%= submit_tag "Exportar" %></td></tr>
+  </table>
+
+<% end %>

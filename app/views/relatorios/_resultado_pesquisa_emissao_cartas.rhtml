@@ -1,0 +1,50 @@
+<div id="resultado_da_busca">
+  <h1>Resultado da Pesquisa</h1>
+  <% form_remote_tag :loading => "Element.show('loading_form_pesq_emissao');", :success => "Element.hide('loading_form_pesq_emissao');", :url => emissao_cartas_relatorios_path do %>
+    <% listagem_table :headers => [ 'Selecionar', 'Número de Controle', 'Cliente', 'Dias em Atraso Por Mês', 'Data de Emissão da Primeira Carta', 'Data de Emissão da Segunda Carta', 'Data de Emissão da Terceira Carta'], :ocultar_ultima_th => true do %>
+      <% @recebimento_de_contas.each do |recebimento_de_conta, parcela| %>
+        <% listagem_tr do %>
+          <td><%= check_box_tag 'recebimentos[ids][]', recebimento_de_conta.id, false, :class => 'selecionaveis' %></td>
+          <td><%=h recebimento_de_conta.numero_de_controle %></td>
+          <td><%=h recebimento_de_conta.pessoa.nome %></td>
+          <td>
+            <% recebimento_de_conta.resumo_de_parcelas_atrasadas.each do |resumo| %>
+              <%=h "#{resumo[0]} - #{resumo[1]}" %><br />
+            <%  end %>
+          </td>
+          <td><%=h recebimento_de_conta.data_primeira_carta %></td>
+          <td><%=h recebimento_de_conta.data_segunda_carta %></td>
+          <td><%=h recebimento_de_conta.data_terceira_carta %></td>
+        <% end %>
+      <% end %>
+      <tr>
+        <td>
+          <%= link_to_function 'Todos' do |page| page << "selecionaTodasAsContas(true);" end %>
+          <br />
+          <%= link_to_function 'Nenhum' do |page| page << "selecionaTodasAsContas(false);" end %>
+        </td>
+      </tr>
+    <% end %>
+
+    <p><%= link_to_function 'Clique neste link' do |page| page.toggle :texto_para_emissao_de_carta end %> para selecionar o tipo de Carta de Cobrança ou a Geração de Etiquetas.</p>
+
+    <table id="texto_para_emissao_de_carta" style="display:none;">
+      <tr><td class="field_descriptor">Opção de Impressão:</td><td><label for="recebimentos_tipo_cartas"><%= check_box_tag('recebimentos[tipo][cartas]', 'cartas', false, {:onclick => 'marcarCartas();'}) %> Cartas de cobrança </label><label for="recebimentos_tipo_etiquetas"><%= check_box_tag('recebimentos[tipo][etiquetas]', 'etiquetas', false, :onclick => 'marcarEtiquetas();') %> Etiquetas </label></td></tr>
+      <tr id="tipo_de_carta" style="display:none"><td class="field_descriptor">Tipo de Carta:</td><td><%= select_tag('recebimentos[tipo_de_carta]', options_for_select([['Carta 1', RecebimentoDeConta::CARTA_1], ['Carta 2', RecebimentoDeConta::CARTA_2], ['Carta 3', RecebimentoDeConta::CARTA_3]])) %></td></tr>
+      <tr id="carta_municipio" style="display:none"><td class="field_descriptor">Considerar Município:</td><td><%= select_tag('recebimentos[municipio]', options_for_select([['Do DR', 'dr'], ['Da Unidade', 'unidade']])) %></td></tr>
+      
+      
+      <tr id="tipo_de_etiqueta" style="display:none"><td class="field_descriptor">Tipo de Etiqueta:</td><td><%= select_tag('recebimentos[etiqueta]', options_for_select([['A4263', 'A4263'], ['6080', '6080'], ['6081', '6081'], ['6082', '6082'], ['6083', '6083']]), :onchange => 'carregarLinhaColuna();') %></td></tr>
+      
+      <tr id="etiqueta_linha" style="display:none"><td class="field_descriptor">Linha:</td><td><%= select_tag('recebimentos[linha]', options_for_select([['1'],['2'],['3'],['4'],['5'],['6'],['7']])) %></td></tr>
+      <tr id="etiqueta_coluna" style="display:none"><td class="field_descriptor">Coluna:</td><td><%= select_tag('recebimentos[coluna]', options_for_select([['1'],['2']])) %></td></tr>
+
+      <tr>
+	<td></td>
+	<td>
+	  <%= submit_tag 'Imprimir' %> | <%= link_to_function 'Cancelar' do |page| page.hide :texto_para_emissao_de_carta end %>
+	  <%= image_tag('loading.gif', :id => "loading_form_pesq_emissao", :style => "display:none") %>
+	</td></tr>
+    </table>
+  <% end %>
+</div>

@@ -1,0 +1,30 @@
+<% content_for :titulo, 'Composiçao de Pagamentos' %>
+<br />
+<% form_tag arquivo_remessas_path, :method => :get do %>
+  <table>
+    <tr>
+      <td><b>Pesquisa: </b></td>
+      <td><%= text_field_tag "busca", params[:busca] %></td>
+      <td><%= submit_tag "Pesquisar" %></td>
+      <td style="width: 600px; text-align: right;"><%= link_to "Upload de Arquivo", upload_arquivo_remessas_path %></td>
+    </tr>
+  </table>
+<% end %>
+
+<% listagem_table :new => new_arquivo_remessa_path,:permissoes => Perfil::ManipularArquivoRemessa, :headers => ['Nome do Arquivo', 'Conta Corrente', 'Nº de Registros', 'Data da Geração','Data da Baixa', ''] do %>
+  <% @arquivo_remessas.each do |arquivo_remessa| %>
+    <% listagem_tr :edit => edit_arquivo_remessa_path(arquivo_remessa), :destroy => arquivo_remessa_path(arquivo_remessa), :permissoes => Perfil::ManipularArquivoRemessa do %>
+      <td><%= link_to h(arquivo_remessa.nome), (arquivo_remessa) %></td>
+      <td><%=h arquivo_remessa.convenio.contas_corrente.descricao %></td>
+      <td><%=h arquivo_remessa.numero_de_registros %></td>
+      <td><%= data_formatada(arquivo_remessa.data_geracao) %></td>
+      <td><%= data_formatada(arquivo_remessa.data_leitura_banco) %></td>
+      <td>
+        <% if arquivo_remessa.pode_baixar? %>
+          <%= link_to "Baixar Arquivo",upload_arquivo_remessas_path(:id => arquivo_remessa.id) %>
+        <% end  %>
+      </td>
+    <% end %>
+  <% end %>
+<% end %>
+

@@ -1,0 +1,17 @@
+<div id="resultados_pesquisa_ordem">
+  <% listagem_table :headers => ['Número de Controle', 'Nome do Cliente', 'Serviço', 'Data de Início', 'Valor do Documento', 'Parcelas', 'Situação'], :ocultar_ultima_th => true do %>
+    <% @recebimentos.each do |recebimento| %>
+      <tr class="<%= cycle('impar', 'par')%>" style="cursor:pointer;" onclick="$('busca_numero_de_controle').value = '<%=h recebimento.numero_de_controle %>';
+        document.getElementById('busca_numero_de_controle').focus(); Element.highlight('busca_numero_de_controle');">
+        <td><%=h recebimento.numero_de_controle %></td>
+        <td><%=h recebimento.pessoa.nome %></td>
+        <td><%=h recebimento.data_inicio %></td>
+        <td><%=h recebimento.servico.descricao %></td>
+        <td><%=h preco_formatado(recebimento.valor_do_documento, 'R$') %></td>
+        <td><%=h recebimento.numero_de_parcelas %></td>
+        <td><%=h recebimento.situacao_verbose %></td>
+      </tr>
+    <% end %>
+  <% end %>
+</div>
+

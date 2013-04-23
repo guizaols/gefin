@@ -1,0 +1,64 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|p{5.5cm}|p{6.5cm}|p{2.2cm}|p{2.5cm}|p{2.0cm}|p{2.2cm}|p{3.0cm}|p{2.5cm}|p{2.0cm}|p{2.7cm}|p{3.3cm}|}
+    \hline
+    \textbf{Cliente} & \textbf{Serviços} & \textbf{Vigencia - Início} &
+    \textbf{Vigencia - Término} & \textbf{Início Serviço} & \textbf{Término Serviço} &
+    \textbf{Valor - Contrato} & \textbf{Saldo Anterior} & \textbf{Executado (\%)} &
+    \textbf{Valor Executado} & \textbf{Saldo Final} \\
+    \hline
+
+    <% total_geral_contratos = 0 %>
+    <% total_saldo_final = 0 %>
+    <% total_geral_executado = 0 %>
+    <% total_executado_porcentagem = 0 %>
+    <% total_saldo_anterior = 0 %>
+
+    <% @recebimentos.each do |grupo_servico, contas| %>
+        <% valor_movimento = 0 %>
+
+        <% contas.each do |conta| %>
+            <% contrato = RecebimentoDeConta.find(conta) %>
+            <% array_valor_movimento = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month == params["busca"]["mes"].to_i && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} %>
+            <% valor_movimento = array_valor_movimento.max == 0 ? 0 : array_valor_movimento.max %>
+            <% array_auxiliar = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month <= params["busca"]["mes"].to_i && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} %>
+            <% porcentagem = valor_movimento == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params["busca"]["mes"].to_i) %>
+            <% saldo = conta.valor_do_documento - array_auxiliar.sum %>
+            <% saldo_anterior = saldo + valor_movimento  %>
+            
+            <%=hl conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social %> &
+            <%=hl conta.servico.descricao %> &
+            <%=hl conta.data_inicio %> &
+            <%=hl conta.data_final %> &
+            <%=hl conta.data_inicio_servico %> &
+            <%=hl conta.data_final_servico %> &
+            <%=hl preco_formatado(conta.valor_do_documento) %> &
+            <%=hl preco_formatado(saldo_anterior) %> &
+            <%=hl porcentagem == 0 ? '--' : porcentagem %> &
+            <%=hl valor_movimento == 0 ? '--' : preco_formatado(valor_movimento) %> &
+            <%=hl saldo == 0 ? '--' : preco_formatado(saldo) %> &
+            \hline
+
+            <% total_saldo_anterior += saldo_anterior %>
+            <% total_geral_executado += valor_movimento %>
+            <% total_geral_contratos += conta.valor_do_documento %>
+            <% total_saldo_final += saldo %>
+        <% end %>
+    <% end %>
+
+    <% total_executado_porcentagem = (total_geral_executado * 100.0) / total_geral_contratos %>
+
+    & \textbf{Totalização} & & & & &
+    \textbf{<%=hl preco_formatado(total_geral_contratos) %>} &
+    \textbf{<%=hl preco_formatado(total_saldo_anterior) %>} &
+    \textbf{<%=hl format("%.2f", total_executado_porcentagem) %>} &
+    \textbf{<%=hl preco_formatado(total_geral_executado) %>} &
+    \textbf{<%=hl preco_formatado(total_saldo_final) %>}
+    \hline
+
+\end{longtable}
+\end{center}

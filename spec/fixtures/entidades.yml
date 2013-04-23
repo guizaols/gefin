@@ -1,0 +1,9 @@
+senai:
+  nome: Servico Nacional de Aprendizagem Industrial no MT
+  sigla: SENAI-DR-MT
+  codigo_zeus: 313
+
+sesi:
+  nome: Serviço Social da Indústria no Estado de MT
+  sigla: SESI-DR-MT
+  codigo_zeus: 213

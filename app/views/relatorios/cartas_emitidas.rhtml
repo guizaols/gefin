@@ -1,0 +1,15 @@
+<h1>Relatório de Cartas Emitidas</h1>
+
+<% form_remote_tag :url => cartas_emitidas_relatorios_path, :loading => "Element.show('loading_cartas_emit');", :success => "Element.hide('loading_cartas_emit');" do %>
+  <table>
+    <%= campo_de_cadastro 'Unidade', auto_complete_tag_para_qualquer_campo(:unidade, auto_complete_for_unidade_unidades_path) %>
+    <%= campo_de_cadastro 'Funcionário', auto_complete_tag_para_qualquer_campo(:funcionario, auto_complete_for_funcionario_pessoas_path) %>
+    <%= campo_de_cadastro 'Agrupar por', select_tag('busca[agrupar]', options_for_select([['Entidade', 'Entidade'], ['Unidade', 'Unidade'], ['Funcionário', 'Funcionário']])) %>
+    <%= campo_de_cadastro 'Tipo de Carta', select_tag('busca[tipo_de_carta]', options_for_select([['', ''], ['Carta 1', HistoricoOperacao::CARTA_COBRANCA_30_DIAS], ['Carta 2', HistoricoOperacao::CARTA_COBRANCA_60_DIAS],
+          ['Carta 3', HistoricoOperacao::CARTA_COBRANCA_90_DIAS]])) %>
+    <%= campo_de_cadastro 'Período', campo_para_busca_por_faixa_de_data(:emissao) %>
+    <%= campo_de_cadastro 'Ordenar por', select_tag('busca[ordenacao]', options_for_select([['Alfabética','pessoas.nome ASC, pessoas.razao_social ASC'], ['Contrato', 'recebimento_de_contas.numero_de_controle'], ['Data de Emissão', 'historico_operacoes.created_at']])) %>
+    <tr><td class="field_descriptor">Opção de Impressão:</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %><%= loading_image('cartas_emit') %></td></tr>
+  </table>
+<% end %>

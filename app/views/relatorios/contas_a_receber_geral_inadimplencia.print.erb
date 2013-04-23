@@ -1,0 +1,82 @@
+<% total_bruto = 0 %>
+<% total_corrigido = 0 %>
+
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:periodo_min].blank? ? '' : params[:busca][:periodo_min] %> a <%=h params[:busca][:periodo_max].blank? ? '' : params[:busca][:periodo_max] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="100%">
+  <tr align="center" style="font-size: 12px;">
+    <th style="width: 220px">Cliente</th>
+    <th style="width: 100px">Valor a Receber</th>
+    <th style="width: 100px">Valor Corrigido</th>
+    <th style="width: 70px">Vencimento</th>
+    <th style="width: 100px">Situação</th>
+    <th style="width: 80px">Dias em Atraso</th>
+    <th style="width: 120px">Telefone Cliente</th>
+  </tr>
+
+  <% @parcelas.each do |grupo, parcelas| %>
+      <tr align="left" style="font-size: 12px;">
+      <td colspan="7">
+        <b>Entidade:</b>
+        <%=h parcelas.first.unidade.entidade.nome %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b>Unidade:</b>
+        <%=h parcelas.first.unidade.nome %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b>Serviço:</b>
+        <%=h grupo %>
+      </td>
+    </tr>
+
+    <% total_grupo = 0 %>
+    <% total_parcelas = 0 %>
+    <% valor_liquido_da_parcela_com_juros_e_multa = [] %>
+
+    <% parcelas.each do |parcela| %>
+        <% dias_em_atraso = ((Date.today.to_datetime) - ((parcela.data_vencimento).to_date).to_datetime) %>
+        <% dias_em_atraso = dias_em_atraso.to_i < 0 ? 0 : dias_em_atraso.to_i %>
+        <% valor_liquido_da_parcela_com_juros_e_multa = Gefin.calcular_juros_e_multas(:vencimento => parcela.data_vencimento, :data_base => Date.today, :valor => parcela.valor, :juros => parcela.conta.juros_por_atraso, :multa => parcela.conta.multa_por_atraso)%>
+      <tr>
+        <td style="text-align: left"><%=h parcela.conta.pessoa.nome %></td>
+        <td style="text-align: left"><%=h preco_formatado(parcela.valor, 'R$') %></td>
+        <% if parcela.situacao == Parcela::QUITADA %>
+          <td style="text-align: left"><%=h preco_formatado(parcela.valor_liquido, 'R$') %></td>
+        <% else %>
+          <td style="text-align: left"><%=h preco_formatado(valor_liquido_da_parcela_com_juros_e_multa[2], 'R$') %></td>
+        <% end %>
+        <td style="text-align: center"><%=h parcela.data_vencimento %></td>
+        <td style="text-align: center"><%=h parcela.situacao_verbose %><%=' (baixa DR)' if parcela.baixa_pela_dr%></td>
+        <td style="text-align: center"><%=h dias_em_atraso %></td>
+        <td style="text-align: left"><%=h parcela.conta.pessoa.telefone.join(" / ") unless parcela.conta.pessoa.telefone.blank? %></td>
+      </tr>
+	<% total_parcelas += parcela.valor %>
+        <% if parcela.situacao == Parcela::QUITADA %>
+          <% total_grupo += parcela.valor_liquido %>
+        <% else %>
+          <% total_grupo += valor_liquido_da_parcela_com_juros_e_multa[2] %>
+        <% end %>
+    <% end %>
+
+    <% total_bruto += total_parcelas %>
+    <% total_corrigido += total_grupo %>
+
+    <tr>
+      <td style="text-align: center; font-weight: bold; font-size: 12px;">Total Atividade ==></td>
+      <td style="text-align: left; font-weight: bold; font-size: 12px;"><%=h preco_formatado(total_parcelas, 'R$') %></td>
+      <td style="text-align: left; font-weight: bold; font-size: 12px;"><%=h preco_formatado(total_grupo, 'R$') %></td>
+      <td colspan="4"></td>
+    </tr>
+  <% end %>
+
+  <tr>
+    <td style="text-align: center; font-weight: bold; font-size: 12px;">Totais ==></td>
+    <td style="text-align: left; font-weight: bold; font-size: 12px;"><%=h preco_formatado(total_bruto, 'R$') %></td>
+    <td style="text-align: left; font-weight: bold; font-size: 12px;"><%=h preco_formatado(total_corrigido, 'R$') %></td>
+    <td colspan="4"></td>
+  </tr>
+</table>
+
+<br />

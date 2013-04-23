@@ -1,0 +1,162 @@
+<% content_for :titulo, 'Controle de Cheques à Vista e Pré Datados' %>
+<% javascript_tag do %> var operacao = "OPERACAO"; <% end %>
+
+<% form_tag cheques_path, :method => :get do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Busca Ordenada</td>
+      <td>
+        <div class="div_explicativa">
+          <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+            <div id="explicacao_texto"></div>
+            <%= image_tag 'seta_tooltip.gif' %>
+          </div>
+          <%= text_field_tag 'busca[texto]', params[:busca][:texto], :onfocus => "exibir_explicacao_para_busca('exibir','Você pode fazer uma busca digitando campos como TITULAR DA CONTA, NOME DO CLIENTE ou NÚMERO DO CHEQUE. A digitação dos mesmos pode ser parcial, pois a busca retornará os resultados de acordo com os dados digitados.')", :onblur => "exibir_explicacao_para_busca('ocultar','')" %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">
+        Tipo do Cheque
+      </td>
+      <td >
+        <label for="busca_vista"><%= check_box_tag 'busca[vista]', (params[:busca][:vista] rescue nil), false, {:onclick => "desmarcar_cheque_pre();"} %>À Vista</label>
+        <label for="busca_pre_datado"><%= check_box_tag 'busca[pre_datado]', (params[:busca][:pre_datado] rescue nil), false, {:onclick => "desmarcar_cheque_a_vista();"} %>Pré Datados</label>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Situação', (select_tag 'busca[situacao]', options_for_select([['Pendente', Cheque::GERADO], ['Baixado', Cheque::BAIXADO],['Devolvido',Cheque::DEVOLVIDO]],
+        :selected => (params[:busca][:situacao].to_i rescue Cheque::GERADO)),
+      :onchange => "mostraOuEscondeElementosEmCheques();") %>
+    <tr id="tr_datas" style="<%= (params[:busca][:situacao].to_i rescue Cheque::GERADO) != Cheque::BAIXADO ? 'display:none' : '' %>">
+      <td class="field_descriptor">Data de Depósito</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'data_do_deposito' %>
+      </td>
+    </tr>
+    <tr><td></td><td><%= submit_tag 'Pesquisar' %></td></tr>
+  </table>
+<% end %>
+<% form_remote_tag :url => baixar_abandonar_devolver_estornar_cheques_path, :loading => "Element.show('loading_form_cheque');", :success => "Element.hide('loading_form_cheque');" do %>
+  <% if @cheques.length > 0 %>
+    <% listagem_table :headers => ['Sel', 'Número', 'Controle', 'Cliente', 'Titular', 'Recebimento', 'Depósito', 'Situação', 'Valor'] do %>
+      <% @cheques.each_with_index do |cheque, index| %>
+        <tr class="<%= cycle 'impar', 'par' %>" title="<%= h cheque.data_do_deposito ? "Este cheque foi depositado em #{data_formatada(cheque.data_do_deposito)}." : "Este cheque ainda não foi baixado." %>">
+          <td>
+            <%= hidden_field_tag "historico_#{cheque.id}", "REF. #{cheque.parcela.conta.nome_pessoa} PARC. #{cheque.parcela.numero} CH. NUM. #{cheque.numero}" %>
+            <%= radio_button_tag 'cheques[ids][]', cheque.id, (index == 0 ? true : false), :id => "rb_#{cheque.id}", :class => 'selecionados', :onchange => "alteraHistorico(operacao);" %>
+          </td>
+          <% if cheque.ocorrencia_cheques.blank? %>
+            <td><%= h cheque.numero %></td>
+          <% else %>
+            <td>
+              <%= link_to_function h(cheque.numero), {:title => "#{pluralize(cheque.ocorrencia_cheques.length, "ocorrência pertece a este cheque. Para visualizar clique no aqui.", "ocorrências pertencem a este cheque. Para visualizar clique no aqui.")}"} do |page| page << "Modalbox.show($('lista_ocorrencia_#{cheque.id}'), {title: 'Ocorrências - Cheque Nº #{cheque.numero}',width:900});" end %>
+              <div id="lista_ocorrencia_<%= h cheque.id %>" style="display:none;overflow:auto; max-height:500px;" >
+                <table id="ocorrencia_<%= rand(1000) %>" style="border:1px solid">
+                  <thead align="center">
+                    <tr>
+                      <th>Data do Evento</th>
+                      <th>Histórico</th>
+                      <th>Tipo da Ocorrência</th>
+                      <th>Alínea</th>
+                    </tr>
+                  </thead>
+                  <%= render :partial => "ocorrencias", :object => 'ocorrencias', :collection => cheque.ocorrencia_cheques %>
+                </table>
+              </div>
+            </td>
+          <% end %>
+          <td><%=h cheque.parcela.conta.numero_de_controle %></td>
+          <td><%=h cheque.parcela.conta.nome_pessoa %></td>
+          <td><%=h cheque.nome_do_titular %></td>
+          <td><%=h data_formatada(cheque.data_de_recebimento) %></td>
+          <td><%=h data_formatada(cheque.data_para_deposito) %></td>
+          <td><%=h cheque.situacao_verbose %></td>
+          <td><%=h preco_formatado(cheque.parcela.valor_liquido, 'R$') %></td>
+        </tr>
+      <% end %>
+    <% end %>
+
+    <% if current_usuario.possui_permissao_para(Perfil::ManipularControleDeCheques) %>
+      <% titulo = params[:busca][:situacao] == (Cheque::GERADO.to_s) ? 'Baixar' : 'Reapresentar' %>
+
+      <%= (link_to_function titulo, :id => :link_baixar do |page|
+          page.toggle 'table_baixa';
+          page << "operacao = \"#{(titulo == 'Baixar' ? 'DEPÓSITO ' : 'REAPRESENTAÇÃO ')}\";"
+          page << "$('cheques_historico').value = operacao + retornaSelecionado();"
+          page << "alteraHistorico(operacao);"
+          page[:tipo].value = 'baixar';
+          (page.hide('abandonar_cheques') if params[:busca][:situacao] == Cheque::DEVOLVIDO.to_s)
+        end) if params[:busca][:situacao] == Cheque::GERADO.to_s || params[:busca][:situacao] == Cheque::DEVOLVIDO.to_s %>
+      <%= (link_to_function 'Enviado ao DR', :id => :link_abandonar do |page|
+          page.toggle 'abandonar_cheques';
+          page << "operacao = 'ENVIADO AO DR ';"
+          page << "$('cheques_historico_abandono').value = operacao + retornaSelecionado();"
+          page[:tipo].value = 'abandonar';
+          page.hide('table_baixa');
+        end) if params[:busca][:situacao] == Cheque::DEVOLVIDO.to_s %>
+      <% if params[:busca][:situacao] == Cheque::BAIXADO.to_s %>
+        <%= (link_to_function 'Devolver', :id => :link_devolver do |page|
+            page.toggle 'devolver_cheques';
+            page << "operacao = 'DEVOLVER ';"
+            page << "$('cheques_historico').value = operacao + retornaSelecionado();"
+            page[:tipo].value = 'devolver'
+          end) %>
+      <% end %>
+      <% if params[:busca][:situacao] != Cheque::GERADO.to_s %>
+        <%= (link_to_function 'Estornar', :id => :link_estornar do |page|
+            page.toggle 'estornar_cheques';
+            page << "operacao = 'ESTORNAR ';"
+            page[:tipo].value = 'estornar'
+          end)%>
+      <% end %>
+    <% end %><%= image_tag('loading.gif', :id => "loading_form_cheque", :style => "display:none") %>
+  <% else %>
+    <p><%= mensagem_da_pesquisa(params[:busca]) %></p>
+  <% end %>
+
+  <% if params[:busca][:situacao] == Cheque::GERADO.to_s || params[:busca][:situacao] == Cheque::DEVOLVIDO.to_s %>
+    <%= render :partial => "baixa", :locals => {:data_do_deposito => (params[:cheques][:data_do_deposito] rescue Date.today.to_s_br),
+      :conta_contabil_debito_id => (params[:cheques][:conta_contabil_id] rescue nil),
+      :nome_conta_contabil_debito => (params[:cheques][:nome_conta_contabil] rescue nil) ,
+      :nome_conta_corrente => (params[:cheques][:nome_conta_corrente] rescue nil),
+      :conta_corrente_id => (params[:cheques][:conta_corrente_id] rescue nil),
+      :historico => (params[:cheques][:historico] rescue nil)} %>
+  <% end %>
+
+  <% if params[:busca][:situacao] == Cheque::DEVOLVIDO.to_s %>
+    <%= render :partial => "abandonar", :locals => {:data_abandono => (params[:cheques][:data_abandono] rescue Date.today.to_s_br),
+      :tipo_abandono => (params[:cheques][:tipo_abandono] rescue nil),
+      :conta_contabil_debito_id => (params[:cheques][:conta_contabil_debito_id] rescue nil),
+      :conta_contabil_debito_nome => (params[:cheques][:conta_contabil_debito_nome] rescue nil) ,
+      :conta_contabil_credito_nome => (params[:cheques][:conta_contabil_credito_nome] rescue nil),
+      :conta_contabil_credito_id => (params[:cheques][:conta_contabil_credito_id] rescue nil),
+      :historico => (params[:cheques][:historico] rescue nil)} %>
+  <% end %>
+
+  <% if params[:busca][:situacao] == Cheque::BAIXADO.to_s %>
+    <%= render :partial => "devolver", :locals => {:data_do_evento => (params[:cheques][:data_do_evento] rescue Date.today.to_s_br),
+      :tipo_da_ocorrencia => (params[:cheques][:tipo_da_ocorrencia] rescue nil),
+      :conta_contabil_devolucao_id => (params[:cheques][:conta_contabil_devolucao_id] rescue nil),
+      :conta_contabil_devolucao_nome => (params[:cheques][:conta_contabil_devolucao_nome] rescue nil),
+      :historico => (params[:cheques][:historico] rescue nil)} %>
+  <% end %>
+
+  <div id="estornar_cheques" style="display:none">
+      <table>
+        <tr>
+          <td class="field_descriptor">Data do Estorno</td>
+          <td><%= text_field_tag :data_estorno, Date.today.to_s_br, :size => 10, :maxlength => 10, :onkeyup => "$(AplicaMascara('XX/XX/XXXX', this));" %></td>
+        </tr>
+        <%= campo_de_cadastro 'Justificativa', (text_area_tag 'justificativa', nil, :size => '30x5') %>
+          <tr>
+            <td></td>
+            <td>
+              <%= submit_tag 'Salvar' %>
+              <%= button_to_function 'Cancelar', "$('estornar_cheques').hide(); " %>
+            </td>
+          </tr>
+      </table>
+  </div>
+
+  <p><%= hidden_field_tag 'tipo' %></p>
+<% end %>

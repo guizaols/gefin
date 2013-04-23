@@ -1,0 +1,9 @@
+<% content_for :titulo, "Detalhes" %>
+<table>
+  <%=show_unless_blank 'Dependente', @dependente.nome%>
+  <%=show_unless_blank 'Nome do pai', @dependente.nome_do_pai%>
+  <%=show_unless_blank 'Nome da mãe', @dependente.nome_da_mae%>
+  <%=show_unless_blank 'Data de Nascimento', @dependente.data_de_nascimento %>
+</table>
+<%= link_to 'Alterar', edit_pessoa_dependente_path(@pessoa.id,@dependente.id) %> |
+<%= link_to 'Voltar', pessoa_dependentes_path %>

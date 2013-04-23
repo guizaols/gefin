@@ -1,0 +1,114 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+<% @recebimentos_renegociados.each do |recebimento_renegociado| %>
+\begin{center}
+\fontsize{6pt}{12pt}\selectfont
+\begin{longtable}{|p{0.8cm}|p{1.5cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.9cm}|p{1.6cm}|p{2cm}|p{1.5cm}|}
+\hline
+\multicolumn{6}{|l}{\textbf{Contrato:} <%=hl recebimento_renegociado.numero_de_controle %>} &
+\multicolumn{7}{l|}{\textbf{Unidade:} <%=hl recebimento_renegociado.unidade.nome %>} \\
+\multicolumn{6}{|l}{\textbf{Serviço:} <%=hl recebimento_renegociado.servico.descricao %>} &
+\multicolumn{7}{l|}{\textbf{Cliente:} <%=hl recebimento_renegociado.pessoa.nome rescue 'Pessoa Excluída' %>} \\
+\multicolumn{6}{|l}{\textbf{Aluno:} <%=hl recebimento_renegociado.dependentes.collect(&:nome).join(', ') rescue 'Nenhum aluno vinculado a esta conta.' %>} &
+\multicolumn{7}{l|}{} \\
+
+\hline
+\multicolumn{2}{|l|}{\textbf{Nº Renegociações}} &
+\textbf{Valor} &
+\textbf{Parcelas} &
+\textbf{Data} &
+\textbf{Situação} &
+\textbf{Dt. Registro} &
+\textbf{Dt. Início} &
+\textbf{Dt. Fim} &
+\textbf{Vigência} &
+\textbf{Dt. Abertura} &
+\multicolumn{2}{|l|}{\textbf{<%= "Realizado por" if recebimento_renegociado.usuario_renegociacao %>}} \\
+\hline
+\multicolumn{2}{|l|}{<%=hl recebimento_renegociado.numero_de_renegociacoes %>} &
+<%=hl preco_formatado(recebimento_renegociado.valor_do_documento, 'R$') %>} &
+<%=hl recebimento_renegociado.numero_de_parcelas %> &
+<%=hl recebimento_renegociado.updated_at.to_date.to_s_br %> &
+<%=hl recebimento_renegociado.situacao_verbose %> &
+<%=hl recebimento_renegociado.data_inicio %> &
+<%=hl recebimento_renegociado.data_inicio %> &
+<%=hl recebimento_renegociado.data_final %> &
+<%=hl recebimento_renegociado.vigencia %> &
+<%=hl recebimento_renegociado.data_inicio %> &
+\multicolumn{2}{|l|}{<%=hl recebimento_renegociado.usuario_renegociacao.nome if recebimento_renegociado.usuario_renegociacao %>} \\
+
+
+<% if recebimento_renegociado.parcelas.blank? %>
+\hline
+\multicolumn{13}{|c|}{\textbf{Não foram geradas parcelas para esta conta.}}
+\hline
+<% else %>
+
+\hline
+\textbf{Número} &
+\textbf{Vencimento} &
+\textbf{Valor} &
+\textbf{Juros} &
+\textbf{Multa} &
+\textbf{Honorário} &
+\textbf{Protesto} &
+\textbf{Outros} &
+\textbf{Desconto}  &
+\textbf{Boleto}  &
+\textbf{Pago Em} &
+\textbf{Valor Pago} &
+\textbf{Situação}\\
+\hline
+<%
+hash_com_valores = {:valor => 0, :valor_pago => 0, :valor_multa => 0, :honorarios => 0, :protesto => 0,
+:valor_juros => 0, :outros_acrescimos => 0, :valor_desconto => 0, :boleto => 0}
+%>
+<% recebimento_renegociado.parcelas.each do |parcela| %>
+<%=hl parcela.numero %> &
+<%=hl data_formatada(parcela.data_vencimento) %> &
+<%=hl preco_formatado(parcela.valor, 'R$') %> &
+<%=hl preco_formatado(parcela.valor_dos_juros, 'R$') %> &
+<%=hl preco_formatado(parcela.valor_da_multa, 'R$') %> &
+<%=hl preco_formatado(parcela.honorarios, 'R$') %> &
+<%=hl preco_formatado(parcela.protesto, 'R$') %> &
+<%=hl preco_formatado(parcela.outros_acrescimos, 'R$') %> &
+<%=hl preco_formatado(parcela.valor_do_desconto, 'R$') %> &
+<%=hl preco_formatado(parcela.taxa_boleto, 'R$') %> &
+<%=hl parcela.data_da_baixa %> &
+<%=hl preco_formatado(parcela.valor_liquido, 'R$') %> &
+<%=hl parcela.situacao_verbose %> \\
+
+<%
+[
+    [:valor, parcela.valor],
+    [:outros_acrescimos, parcela.outros_acrescimos],
+    [:valor_multa, parcela.valor_da_multa],
+    [:valor_juros, parcela.valor_dos_juros],
+    [:valor_pago, parcela.valor_liquido],
+    [:boleto, parcela.taxa_boleto],
+    [:honorarios, parcela.honorarios],
+    [:protesto, parcela.protesto],
+    [:valor_desconto, parcela.valor_do_desconto]
+].each {|item| hash_com_valores[item.first] += item.last if !item.last.blank?}
+%>
+
+\hline
+<% end %>
+\multicolumn{2}{|r|}{\textbf{Totais:}} &
+<%=hl preco_formatado(hash_com_valores[:valor], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:valor_juros], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:valor_multa], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:honorarios], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:protesto], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:outros_acrescimos], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:valor_desconto], 'R$') %> &
+<%=hl preco_formatado(hash_com_valores[:boleto], 'R$') %>&
+& <%=hl preco_formatado(hash_com_valores[:valor_pago], 'R$') %> & \\
+\hline
+<% end %>
+\end{longtable}
+<% end %>
+\end{center}

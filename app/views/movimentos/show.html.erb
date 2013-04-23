@@ -1,0 +1,30 @@
+<% content_for :titulo, "Detalhes" %>
+
+<table>
+  <%= show_unless_blank 'Número de Controle', @movimento.numero_de_controle %>
+  <%= show_unless_blank 'Histórico', @movimento.historico %>
+  <%= show_unless_blank 'Data do Lançamento', @movimento.data_lancamento %>
+  <%= show_unless_blank 'Tipo do Lançamento', @movimento.tipo_lancamento_verbose %>
+  <%= show_unless_blank 'Tipo do Documento', @movimento.tipo_documento %>
+  <%= show_unless_blank 'Valor Total', "R$ #{@movimento.valor_do_documento_em_reais}" %>
+</table>
+<p>
+  <% if current_usuario.possui_permissao_para(Perfil::FollowUpMovimento) %>
+    <%= link_to 'Follow-Up', movimento_historico_operacoes_path(@movimento.id) %>
+  <% end %>
+</p>
+
+<br/>
+<% listagem_table :permissoes => Perfil::Movimentos, :headers => ['D/C', 'Conta Contábil', 'Unidade Organizacional', 'Centro de Responsabilidade', 'Valor'] do %>
+  <% @movimento.itens_movimentos.each do |item| %>
+    <% listagem_tr :permissoes => Perfil::Movimentos do %>
+      <td><%=h item.tipo_verbose %></td>
+      <td><%=h "#{item.plano_de_conta.codigo_contabil} - #{item.plano_de_conta.nome}" %></td>
+      <td><%=h "#{item.unidade_organizacional.codigo_da_unidade_organizacional} - #{item.unidade_organizacional.nome}" %></td>
+      <td><%=h "#{item.centro.codigo_centro} - #{item.centro.nome}" %></td>
+      <td><%=h preco_formatado(item.valor,"R$")%></td>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= link_to 'Voltar', movimentos_path %>

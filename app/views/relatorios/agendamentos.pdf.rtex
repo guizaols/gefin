@@ -1,0 +1,42 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\fontsize{6pt}{12pt}\selectfont
+\begin{longtable}{|p{3.2cm}|p{5.6cm}|p{3.8cm}|p{2.2cm}|p{2.5cm}|}
+\hline
+<% @compromissos.each do |nome,compromissos|%>
+\hline
+\multicolumn{5}{|l|}{\textbf{Cliente:} <%=hl nome %>} \\
+\hline
+<% compromissos = compromissos.group_by{|compromisso| compromisso.conta.numero_de_controle }%>
+<% compromissos.each do |contrato,compromissos| %>
+\multicolumn{5}{|l|}{\textbf{Contrato:} <%=hl contrato %>} \\
+\hline
+\textbf{Dias Atrasados} &
+\textbf{Descrição} &
+\textbf{Telefone} &
+\textbf{Responsável} &
+\textbf{Valor em Atraso}\\
+\hline
+<% @parcelas = [] %>
+<% dias_atrasados_por_contrato = 0 %>
+<% valor_atrasado = 0 %>
+<% compromissos.each do |compromisso|%>
+<% compromisso.conta.parcelas.each{|parcela| @parcelas << parcela if (parcela.data_da_baixa.blank?) && (Date.today > parcela.data_vencimento.to_date) }%>
+<% @parcelas.each{|parcela| dias_atrasados_por_contrato = (Date.today - parcela.data_vencimento.to_date).to_i if (Date.today - parcela.data_vencimento.to_date).to_i > dias_atrasados_por_contrato}%>
+<% @parcelas.each{|parcela| valor_atrasado += parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa if parcela.verifica_situacoes }%>
+<%=hl dias_atrasados_por_contrato %> &
+<%=hl compromisso.descricao %> &
+<%=hl compromisso.conta.pessoa.telefone.first %> &
+<%=hl compromisso.conta.cobrador.nil? ? "Sem cobrador" : compromisso.conta.cobrador.nome %> &
+<%=hl preco_formatado_com_ponto(valor_atrasado) %> \\
+\hline
+<% end %>
+<% end %>
+\multicolumn{4}{c}{} \\
+<% end %>
+\end{longtable}
+\end{center}

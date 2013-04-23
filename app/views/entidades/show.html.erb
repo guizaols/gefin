@@ -1,0 +1,18 @@
+<% content_for :titulo, "Detalhes" %>
+
+<p>
+  <b>Nome:</b>
+  <%=h @entidade.nome %>
+</p>
+
+<p>
+  <b>Sigla:</b>
+  <%=h @entidade.sigla %>
+</p>
+
+<p>
+  <b>Codigo ZEUS:</b>
+  <%=h @entidade.codigo_zeus %>
+</p>
+
+<%= link_to 'Voltar', entidades_path %>

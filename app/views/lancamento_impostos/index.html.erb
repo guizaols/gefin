@@ -1,0 +1,12 @@
+<% content_for :titulo, "Listando lançamentos de impostos" %>
+
+<% listagem_table :new => new_pagamento_de_conta_parcela_lancamento_imposto_path(@parcela.conta_id,@parcela.id), :headers => ['Imposto', 'Data de recolhimento', 'Aliquota %', 'Valor'] do %>
+
+<% for lancamento_imposto in @lancamento_impostos %>
+  <% listagem_tr :edit => edit_pagamento_de_conta_parcela_lancamento_imposto_path(lancamento_imposto.parcela.conta_id,lancamento_imposto.parcela_id,lancamento_imposto.id), :destroy => pagamento_de_conta_parcela_lancamento_imposto_path(lancamento_imposto.parcela.conta_id,lancamento_imposto.parcela_id,lancamento_imposto.id)  do %>
+    <td><%=link_to h(lancamento_imposto.imposto.descricao), pagamento_de_conta_parcela_lancamento_imposto_path(lancamento_imposto.parcela.conta_id,lancamento_imposto.parcela_id,lancamento_imposto.id) %></td>
+    <td><%=h lancamento_imposto.data_de_recolhimento %></td>
+      <% end %>
+<% end %>
+<% end %>
+

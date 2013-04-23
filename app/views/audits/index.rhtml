@@ -1,0 +1,38 @@
+<% content_for :titulo, 'Auditoria' %>
+
+<div class="caixa_busca">
+  <% form_tag audits_path, {:method=>:get} do %>
+    <table>
+      <%= campo_de_cadastro 'Funcionário', auto_complete_tag_para_qualquer_campo(:funcionario, auto_complete_for_funcionario_para_audit_pessoas_path) %>
+      <tr id="tr_datas">
+        <td class="field_descriptor">De</td>
+        <td>
+          <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+        </td>
+      </tr>
+      <%= campo_de_cadastro "Tabela", (select_tag "tabela", retorna_classes_para_combo) %>
+      <tr>
+        <td></td>
+        <td><%= submit_tag "Pesquisar" %></td>
+      </tr>
+    </table>
+  <% end %>
+</div>
+
+<% unless @auditorias.empty? %>
+  <% listagem_table :headers => ['Tabela / Relatório', 'Ação', 'Funcionário', 'Alterações / Descrição', 'Data da Ação'], :style => 'width: 97%' do %>
+    <% @auditorias.each do |audit| %>
+      <% listagem_tr do %>
+        <td><%=h audit.auditable_type %></td>
+        <td><%=h traduzir_action(audit.action) %></td>
+        <td><%=h audit.user_as_model.nome if audit.user_as_model %></td>
+        <td><%=h(audit.changes_verbose).gsub "\n", '<br />' %></td>
+        <td><%=h audit.created_at.strftime("%d/%m/%Y %H:%M:%S") %></td>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= mensagem_da_pesquisa(params['busca']) %><br />
+<% end %>
+
+<p><%= will_paginate @auditorias %></p>

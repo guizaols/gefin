@@ -1,0 +1,112 @@
+tabela centro (antigo gefin)
+
+2009;313;"308040103";"Clube";"00391";254229
+2009;313;"3020202036401";"EPNI Proj. 06/09-Aperf. Bas. Aliment. Be";"00741";253754
+2009;313;"30401010112";"DT-Pesquisa Aplicada Metal Mecanica";"00900";253882
+2009;313;"310030101";"Consultoria em Alimentacao";"00520";254358
+2009;313;"308040102";"Eventos Sociais";"00390";254228
+2009;313;"3100102";"Sites Informativos em Cooperacao Social";"00488";254327
+2009;313;"307040303";"Radiologicos";"00271";254114
+2009;313;"310010202";"Sites Informativos em Medicamentos";"00491";254329
+2009;313;"310020104";"Diagnosticos em Acesso ao Credito";"00515";254353
+2009;313;"3020202036412";"EPNI Proj. 06/09-Aperf. Bas. Metal Mec.";"00746";253759
+2009;313;"3020201016240";"PAM/EPNI Proj.13/09 Inc.Bas.Tex.e Vest.";"00995";301825
+2009;313;"302020101";"Iniciacao Profissional";"00046";253641
+2009;313;"3020202036422";"EPNI Proj. 06/09-Aperf. Bas. Seg. Trab.";"00747";253760
+2009;313;"3040101";"Pesquisa, Desenv. e Inovacao Tecnologica";"00088";253879
+2009;313;"306030199";"Consultoria em Educacao - totalizado";"00150";253998
+2009;313;"30202010101";"Iniciacao Bas. - Alimentos e Bebidas";"00306";253642
+2009;313;"30202020365";"EPNI Projetos - Aperf. Basico";"00748";253761
+2009;313;"304010101";"Pesquisa Aplicada";"00089";253880
+2009;313;"30604";"Servicos de Educacao Basica";"00156";253999
+2009;313;"307040307";"Teste Visual";"00275";254118
+2009;313;"30202010179";"CONV.SEJUSP - Inic. Basica";"00998";301873
+2009;313;"3020201017904";"Conv. Sejusp - Inic.Bas. Const. Civil";"00999";301874
+2009;313;"30202010181";"CONV.09/09 PRO IND.INIC.BAS.";"01029";301875
+2009;313;"3020201018112";"Conv.09/09 Sicme Pro.Ind.Inic.Bas.Met.Me";"01034";301876
+2009;313;"3020201018125";"Conv.09/09 Sicme Pro Ind.Inic.Bas.Energ.";"01030";301877
+2009;313;"30202010183";"CONV.11/09 SICME VESTESTIL.INIC.BAS.";"01038";301878
+2009;313;"3020201018319";"Conv.11/09 Sicme Vest.Inc.Bas.Textil.Ves";"01039";301879
+2009;313;"30202010184";"CONV.12/09 IND.P/TODOS INIC.BAS.";"01046";301880
+2009;313;"3020201018408";"Conv.12/09 Ind. P/Todos-Inic.Bas.Gestao";"01047";301881
+2009;313;"3020202036502";"EPNI Proj. 07/09-Aperf. Bas. Automacao";"00749";253762
+2009;313;"30401010101";"DT-Pesquisa Aplicada";"00661";253881
+2009;313;"30202010185";"CONV.06/09 SICME - ALIMENTEC - INIC.BAS.";"01065";301882
+2009;313;"3020201018501";"Conv.06/09Sicme-Aliment-Inic.Bas.Alim.Be";"01066";301883
+2009;313;"30202010186";"CONV.95/09-SINFRA MT - INIC.BAS.";"01059";301884
+2009;313;"3020201018604";"Conv.95/09-Sinfra MT-Inic.Bas.Const.Civi";"01060";301885
+2009;313;"30202010188";"CONV.MISSAO SALESIANA INIC.BAS.";"01075";301886
+2009;313;"3020201018801";"Conv.Missao Salesiana-Inic.Bas.Alim.Bebi";"01079";301887
+2009;313;"3020201018803";"Conv.Missao Salesiana-Inic.Bas.Automotiv";"01088";301888
+2009;313;"3020201018804";"Conv.Missao Salesiana-Inic.Bas.Const.Civ";"01078";301889
+2009;313;"3020201018806";"Conv.Missao Salesiana-Inic.Bas.Eletroele";"01080";301890
+2009;313;"3020201018808";"Conv.Missao Salesiana-Aperf.Bas.Gestao";"01081";301891
+2009;313;"3020201018810";"Conv.Missao Salesiana-Inic.Bas.Mad.Mobil";"01076";301892
+2009;313;"3020201018817";"Conv.Missao Salesiana-Inic.Bas.Tec.d Inf";"01077";301893
+2009;313;"30202020241";"CONV.07/09 SICME NGTM-QUALIF.BAS.";"01015";301921
+2009;313;"3020202024110";"Conv.07/09 Sicme NGTM - Qualif.Bas.Mad.";"01016";301922
+2009;313;"30202010106";"Iniciacao Bas. - Eletroeletronica";"00892";253646
+2009;313;"3020202036603";"EPNI Proj. 15/09-Aperf. Bas. Automotiva";"00777";253765
+2009;313;"30401010119";"DT - Pesquisa Aplicada Textil e Vest.";"00875";253884
+2009;313;"3060402";"Servicos de Ensino Fundamental";"00160";254003
+2009;313;"307040309";"Metodos Graficos";"00277";254120
+2009;313;"30705";"Promocao da Saude";"00278";254122
+2009;313;"30202010108";"Iniciacao Bas. - Gestao Empresarial";"00698";253647
+2009;313;"3020202036608";"EPNI Proj. 15/09-Aperf. Bas. Gestao";"00778";253766
+2009;313;"304010102";"Desenv. Inov. de Produtos e Processos";"00090";253885
+2009;313;"306040201";"Ensino Fundamental - 1º a 5º Ano";"00161";254004
+2009;313;"3070501";"Monitoramento de Saude";"00279";254123
+2009;313;"30805010301";"Gestao dos Eventos";"00668";254242
+2009;313;"30202020281";"CONV.09/09 SICME- PRO IND.QUALIF.BAS.";"01032";301969
+2009;313;"3020202028112";"Conv.09/09Sicme Pro Ind.Qualif.Bas.M.Mec";"01036";301970
+2009;313;"3020202028125";"Conv.09/09Sicme Pro Ind.Qualif.Bas.Energ";"01052";301971
+2009;313;"30202020283";"CONV.11/09 SICME VESTEXTIL QUALIF.BAS.";"01042";301972
+2009;313;"3020202028319";"Conv.11/09Sicme Vest.Qualif.Bas.Tex.Vest";"01043";301973
+2009;313;"30202020286";"CONV.95/09 SINFRA MT - QUALIF.BAS";"01061";301974
+2009;313;"3020202028604";"Conv.95/09Sinfra Mt -Qualif.Bas.Const.Ci";"01062";301975
+2009;313;"30202010109";"Iniciacao Bas. - Grafica e Editorial";"00699";253648
+2009;313;"30202020367";"EPNI Projetos - Aperf. Profissional";"00785";253767
+2009;313;"30202030272";"Conv.17/07 - NT Qualif.Tec.Alimentos";"00982";281317
+2009;313;"30401010201";"DT-Desenvolvimento Experimental";"00662";253886
+2009;313;"306040202";"Ensino Fundamental - 6º a 9º Ano";"00162";254005
+2009;313;"307040399";"Auxilio Diagnostico totalizado";"00268";254121
+2009;313;"307050101";"Monitoramentos em SST";"00281";254124
+2009;313;"308050104";"Teatro-socio Educativo";"00404";254243
+2009;313;"310030105";"Consultoria em Servico Social";"00524";254362
+2009;313;"30202010110";"Iniciacao Bas. - Madeira e Mobiliario";"00700";253649
+2009;313;"3020202036716";"EPNI Proj. 16/09-Aperf. Bas. Refrig.";"00786";253768
+2009;313;"3020203027201";"Conv.17/07 - NT Qualif.Tec.Alimentos";"00983";281318
+2009;313;"30401010212";"DT-Desenvolvimento Exp. Metal Mecanica  ";"00874";253887
+2009;313;"3060403";"Servicos de Ensino Medio";"00163";254006
+2009;313;"307050102";"Monitoramentos em DNT";"00282";254125
+2009;313;"30805";"Promocao do Estilo de Vida Saudavel";"00399";254237
+2009;313;"308050105";"SESI CorporAtivo";"00405";254244
+2009;313;"310030199";"Consultoria em CS totalizado";"00519";254363
+2009;313;"30202020341";"CONV.07/09 SICME NGTM-APERF.BAS.";"01013";302001
+2009;313;"3020202034110";"Conv.07/09 Sicme NGTM-Aperf..Bas.Madeira";"01014";302002
+2009;313;"30202020346";"CONV..04/09 SICME PGI - APERF..BAS.";"01001";302003
+2009;313;"3020202034608";"Conv.04/09 Sicme PGI - Apef.Bas.Gestao";"01002";302004
+2009;313;"3020202036240";"PAM/EPNI Proj.13/09-Aperf.Bas.Tex.eVest";"00994";302007
+2009;313;"30202010112";"Iniciacao Bas. - Metal Mecanica";"00860";253650
+2009;313;"30202020368";"EPNI Projetos - Aperf. Profissional";"00789";253769
+2009;313;"30401010219";"DT-Design Textil e Vestuario";"00873";253888
+2009;313;"306040301";"Ensino Medio";"00164";254007
+2009;313;"307050103";"Monitoramentos em DT";"00283";254126
+2009;313;"3080502";"Promocao Estilo de Vida Saudavel-Esporte";"00406";254245
+2009;313;"31004";"Servicos de Cooperacao Social";"00525";254364
+2009;313;"30202010117";"Iniciacao Bas. - Tec. da Informacao";"00701";253651
+2009;313;"3020202036808";"EPNI Proj. 17/09-Aperf. Bas. Gestao";"00790";253770
+2009;313;"3040102";"Servicos Tecnicos Especializados";"00091";253889
+2009;313;"3060404";"Servicos de Educacao de Jovens e Adultos";"00165";254008
+2009;313;"307050104";"Monitoramentos em Alcool e Drogas";"00284";254127
+2009;313;"308040104";"Atividades Fisicas";"00392";254230
+
+
+----------------------------------------------------
+
+1;"ano";"int4";-5;t
+2;"codemp";"int4";-5;t
+3;"codcentro";"varchar";20;t
+4;"nomecentro";"varchar";50;t
+5;"codreduz";"varchar";10;t
+6;"codidcentro";"int4";-5;t

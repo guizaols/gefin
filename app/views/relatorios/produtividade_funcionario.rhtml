@@ -1,0 +1,35 @@
+<h1>Contas a Receber - Produtividade por Funcionário</h1>
+
+<% form_remote_tag do %>
+
+  <table>
+    <%= campo_de_cadastro 'Serviço Específico', auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+    <%= campo_de_cadastro "Cliente", auto_complete_tag_para_qualquer_campo(:cliente, auto_complete_for_cliente_pessoas_path) %>
+    <%= campo_de_cadastro 'Funcionário', auto_complete_tag_para_qualquer_campo(:funcionario, auto_complete_for_funcionario_pessoas_path) %>
+    <tr  id="opcoes de relatorio" >
+      <td class="field_descriptor">Opçoes de Relatório </td>
+      <td>
+        <label for="busca_opcoes_produtividade_do_funcionário"><%= radio_button_tag 'busca[opcoes]', (params[:busca][:opcoes] = 'Produtividade do Funcionário'), true, :onfocus => "verifica_tipo_de_relatorio_mostra();" %>Produtividade do Funcionário</label>
+        <label for="busca_opcoes_renegociações_efetuadas"><%= radio_button_tag 'busca[opcoes]', (params[:busca][:opcoes] = 'Renegociações Efetuadas'), false, :onfocus => "verifica_tipo_de_relatorio_mostra();" %>Renegociações Efetuadas</label>
+        <label for="busca_opcoes_ações_cobranças_efetuadas"><%= radio_button_tag 'busca[opcoes]', (params[:busca][:opcoes] = 'Ações Cobranças Efetuadas'), false, :onfocus => "verifica_tipo_de_relatorio_esconde();" %>Ações/Cobranças Efetuadas</label>
+      </td>
+    </tr>
+    <tr id="vencimento_recebimento">
+      <td class="field_descriptor">Período </td>
+      <td>
+        <label for="busca_periodo_recebimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'recebimento'), true %>Recebimento</label>
+        <label for="busca_periodo_vencimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'vencimento'), false %>Vencimento</label>
+      </td>
+    </tr>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','pdf',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %></td></tr>
+  </table>
+
+<% end %>
+<%#= javascript_tag "verifica_tipo_de_relatorio();" %>

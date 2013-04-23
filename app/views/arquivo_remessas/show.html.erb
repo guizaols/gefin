@@ -1,0 +1,37 @@
+<% content_for :titulo, "Arquivos de Remessas" %>
+<br />
+<table>
+  <%= show_unless_blank "Nome", @arquivo_remessa.nome %>
+  <%#= show_unless_blank "Nome do Arquivo", @arquivo_remessa.nome_arquivo %>
+  <%= show_unless_blank "Número de Registros", @arquivo_remessa.numero_de_registros %>
+  <%#= show_unless_blank "Conta Corrente", @arquivo_remessa.contas_corrente.descricao %>
+  <%= show_unless_blank "Unidade", @arquivo_remessa.unidade.nome %>
+  <%= show_unless_blank "Data de Geração", data_formatada(@arquivo_remessa.data_geracao) %>
+  <%= show_unless_blank "Data da Leitura do Banco", data_formatada(@arquivo_remessa.data_leitura_banco) %>
+</table>
+<% listagem_table :headers => ['Número da Parcela', 'Data de Vencimento', 'Situação', 'Valor'], :ocultar_ultima_th => true, :style => "width:90%" do %>
+  <% @arquivo_remessa.parcelas.group_by(&:conta).each_pair do |conta, parcelas| %>
+    <tr class="<%= cycle('impar', 'par')%>">
+      <td><b>Número de Controle</b> - <%= link_to h(conta.numero_de_controle), conta %></td>
+      <td style="text-transform: uppercase"><b>Fornecedor</b> - <%= link_to h(conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social), conta.pessoa %></td>
+    </tr>
+    <% parcelas.each do |parcela| %>
+      <tr class="<%= cycle('impar', 'par') %>">
+        <td style="text-align: center"><%=h parcela.numero %></td>
+        <td><%=h parcela.data_vencimento %></td>
+        <td><%=h parcela.situacao_verbose %></td>
+        <td><%=h preco_formatado(parcela.valor, 'R$') %></td>
+      </tr>
+    <% end %>
+  <% end %>
+<%  end %>
+
+<table>
+  <tr>
+    <td>
+      <%= "#{link_to "Alterar", edit_arquivo_remessa_path(@arquivo_remessa)} | " if current_usuario.possui_permissao_para(Perfil::ManipularArquivoRemessa)%>
+      <%= link_to 'Voltar', arquivo_remessas_path %>
+      <%= gerar_arquivo(@arquivo_remessa) if current_usuario.possui_permissao_para(Perfil::GerarArquivoRemessa) %>
+    </td>
+  </tr>
+</table>

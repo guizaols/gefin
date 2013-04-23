@@ -1,0 +1,35 @@
+<% @usuario.password = @usuario.password_confirmation = nil %>
+
+<% form_for @usuario do |f| %>
+  <%= error_messages_for :usuario, :object_name => 'este usuário' %>
+
+  <table>
+    <tr>
+     <td class="field_descriptor">Funcionário</td><td><%= h @usuario.funcionario.nome rescue nil %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Perfil</td><td><%= f.select :perfil_id, Perfil.all.collect {|c| [c.descricao, c.id.to_i]}, { :include_blank => true } %></td>
+      <td><%= f.hidden_field :funcionario_id %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Login</td> <td><%= f.text_field :login %></td>
+    </tr>
+
+    <tr>
+      <th class="field_descriptor">Entidade</th>
+      <td>
+        <%= f.select :entidade_id, Entidade.all.collect{|c| [c.sigla, c.id]}, {:include_blank => true} %>
+      </td>
+    </tr>
+    
+    <tr>
+      <td class="field_descriptor">Senha</td> <td><%= f.password_field :password %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Confirmação de senha</td> <td><%= f.password_field :password_confirmation %></td>
+    </tr>
+    <tr><td></td><td><%= submit_tag 'Salvar' %></td></tr>
+  </table>
+<% end %>
+
+<%= link_to 'Voltar', usuarios_path %>

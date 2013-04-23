@@ -1,0 +1,146 @@
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:recolhimento_min].blank? ? '' : params[:busca][:recolhimento_min] %> a <%=h params[:busca][:recolhimento_max].blank? ? '' : params[:busca][:recolhimento_max] %></b>
+  <br /><br />
+  <% if params[:busca][:pessoa].to_i == Pessoa::FISICA %>
+    <b>Pessoa Física</b>
+  <% else %>
+    <b>Pessoa Jurídica</b>
+  <% end %>
+</div>
+<br /><br />
+
+<% if params[:busca][:pessoa].to_i == Pessoa::FISICA %>
+  <% total_inss_11 = 0; total_inss_20 = 0; total_irrf_75 = 0; total_irrf_275 = 0; total_bruto = 0; total_liquido = 0 %>
+  <table border="1px" style="font-size: 12px;" width="1150px" cellpadding="2">
+    <tr align="center" style="font-size: 12px;">
+      <th style="width: 300px">Nome</th>
+      <th style="width: 150px">Doc/Nº</th>
+      <th style="width: 100px">Valor Bruto</th>
+      <th style="width: 100px">INSS 11%</th>
+      <th style="width: 100px">INSS 20%</th>
+      <th style="width: 100px">IRRF 7.5%</th>
+      <th style="width: 100px">IRRF 27.5%</th>
+      <th style="width: 100px">Líquido a Pagar</th>
+    </tr>
+
+    <% @lancamentos.each do |conta, lancamentos| %>
+      <% inss_11 = 0; inss_20 = 0; irrf_75 = 0; irrf_275 = 0; valor_liquido = 0; valor_bruto = 0 %>
+      <% lancamentos.each do |lancamento| %>
+        <% inss_11 += lancamento.valor if lancamento.imposto.descricao.include?('INSS 11% - PF') %>
+        <% inss_20 += lancamento.valor if lancamento.imposto.descricao.include?('INSS 20% - PF') %>
+        <% irrf_75 += lancamento.valor if lancamento.imposto.descricao.include?('I. R. 7,5% - PF') %>
+        <% irrf_275 += lancamento.valor if lancamento.imposto.descricao.include?('I. R. 27,5% - PF') %>
+        <% valor_bruto = lancamento.parcela.valor %>
+        <% valor_liquido = valor_bruto - (inss_11 + irrf_75 + irrf_275) %>
+      <% end %>
+      <tr style="text-align: right">
+        <td style="width: 300px; text-align: left; padding-left: 4px"><%=h conta.pessoa.nome %></td>
+        <td style="width: 150px; text-align: left; padding-left: 4px"><%=h conta.numero_nota_fiscal_string %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(valor_bruto) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(inss_11) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(inss_20) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(irrf_75) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(irrf_275) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(valor_liquido) %></td>
+      </tr>
+      <% total_inss_11 += inss_11 %>
+      <% total_inss_20 += inss_20 %>
+      <% total_irrf_75 += irrf_75 %>
+      <% total_irrf_275 += irrf_275 %>
+      <% total_bruto += valor_bruto %>
+      <% total_liquido += valor_liquido %>
+    <% end %>
+    <tr style="text-align: right; font-weight: bold">
+      <td colspan="2"></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_bruto) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_inss_11) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_inss_20) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_irrf_75) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_irrf_275) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_liquido) %></td>
+    </tr>
+  </table>
+
+<% else %>
+
+  <% total_irrf_1 = 0; total_irrf_15 = 0; total_issqn_2 = 0; total_issqn_3 = 0; total_issqn_387 = 0; total_issqn_4 = 0; total_issqn_5 = 0; total_inss_pj_11 = 0; total_pis_cofins_465 = 0; total_bruto_pj = 0; total_liquido_pj = 0 %>
+  <table border="1px" style="font-size: 12px;" width="1300px" cellpadding="2">
+    <tr align="center" style="font-size: 11px;">
+      <th style="width: 300px">Nome</th>
+      <th style="width: 150px">Doc/Nº</th>
+      <th style="width: 100px">Valor Bruto</th>
+      <th style="width: 100px">INSS 11%</th>
+      <th style="width: 100px">IRRF 1%</th>
+      <th style="width: 100px">IRRF 1.5%</th>
+      <th style="width: 100px">ISSQN 2%</th>
+      <th style="width: 100px">ISSQN 3%</th>
+      <th style="width: 100px">ISSQN 3.87%</th>
+      <th style="width: 100px">ISSQN 4%</th>
+      <th style="width: 100px">ISSQN 5%</th>
+      <th style="width: 100px">PIS/COFINS</th>
+      <th style="width: 100px">Líquido a Pagar</th>
+    </tr>
+
+    <% @lancamentos.each do |conta, lancamentos| %>
+      <% irrf_1 = 0; irrf_15 = 0; issqn_2 = 0; issqn_3 = 0; issqn_387 = 0; issqn_4 = 0; issqn_5 = 0; inss_pj_11 = 0; pis_cofins_465 = 0; valor_bruto_pj = 0; valor_liquido_pj = 0 %>
+      <% lancamentos.each do |lancamento| %>
+        <% inss_pj_11 += lancamento.valor if lancamento.imposto.descricao.include?('INSS 11% - PJ') %>
+        <% irrf_1 += lancamento.valor if lancamento.imposto.descricao.include?('I.R R.F. 1% - PJ') %>
+        <% irrf_1 += lancamento.valor if lancamento.imposto.descricao.include?('I.R.R.F. 1% - PJ') %>
+        <% irrf_15 += lancamento.valor if lancamento.imposto.descricao.include?('I.R R.F. 1,5% - PJ') %>
+        <% irrf_15 += lancamento.valor if lancamento.imposto.descricao.include?('I.R.R.F. 1,5% - PJ') %>
+        <% issqn_2 += lancamento.valor if lancamento.imposto.descricao.include?('ISS 2%') %>
+        <% issqn_3 += lancamento.valor if lancamento.imposto.descricao.include?('ISS 3%') %>
+        <% issqn_387 += lancamento.valor if lancamento.imposto.descricao.include?('ISSQN 3,87%') %>
+        <% issqn_4 += lancamento.valor if lancamento.imposto.descricao.include?('ISSQN 4%') %>
+        <% issqn_5 += lancamento.valor if lancamento.imposto.descricao.include?('ISS 5%') %>
+        <% pis_cofins_465 += lancamento.valor if lancamento.imposto.descricao.include?('PIS / COFINS / CSLL 4,65%') %>
+        <% valor_bruto_pj = lancamento.parcela.valor %>
+        <% valor_liquido_pj = valor_bruto_pj - (inss_pj_11 + irrf_1 + irrf_15 + issqn_2 + issqn_3 + issqn_387 + issqn_4 + issqn_5 + pis_cofins_465) %>
+      <% end %>
+      <tr style="text-align: right">
+        <td style="width: 300px; text-align: left; padding-left: 4px"><%=h conta.pessoa.nome %></td>
+        <td style="width: 150px; text-align: left; padding-left: 4px"><%=h conta.numero_nota_fiscal_string %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(valor_bruto_pj) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(inss_pj_11) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(irrf_1) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(irrf_15) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(issqn_2) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(issqn_3) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(issqn_387) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(issqn_4) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(issqn_5) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(pis_cofins_465) %></td>
+        <td style="width: 100px; text-align: right; padding-right: 4px"><%=h preco_formatado(valor_liquido_pj) %></td>
+      </tr>
+
+      <% total_inss_pj_11 += inss_pj_11 %>
+      <% total_irrf_1 += irrf_1 %>
+      <% total_irrf_15 += irrf_15 %>
+      <% total_issqn_2 += issqn_2 %>
+      <% total_issqn_3 += issqn_3 %>
+      <% total_issqn_387 += issqn_387 %>
+      <% total_issqn_4 += issqn_4 %>
+      <% total_issqn_5 += issqn_5 %>
+      <% total_pis_cofins_465 += pis_cofins_465 %>
+      <% total_bruto_pj += valor_bruto_pj %>
+      <% total_liquido_pj += valor_liquido_pj %>
+    <% end %>
+    <tr style="text-align: right; font-weight: bold">
+      <td colspan="2"></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_bruto_pj) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_inss_pj_11) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_irrf_1) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_irrf_15) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_issqn_2) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_issqn_3) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_issqn_387) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_issqn_4) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_issqn_5) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_pis_cofins_465) %></td>
+      <td style="padding-right: 4px"><%=h preco_formatado(total_liquido_pj) %></td>
+    </tr>
+  </table>
+<% end %>
+
+<br />

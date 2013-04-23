@@ -1,0 +1,126 @@
+<h1>Projeções de Recebimentos de Parcelas</h1>
+
+<p class="projecoes_details">
+  Unidade:
+  <%= @conta.unidade.nome.untaint %>
+  <br />
+  Unidade Organizacional:
+  <%= @conta.unidade_organizacional.nome.untaint %>
+  <br />
+  Controle:
+  <%= @conta.numero_de_controle.untaint %>
+  <br />
+  Data Base:
+  <span id="data_base_texto">
+    <%= Date.today.to_s_br %>
+  </span>
+  <br />
+  Cliente:
+  <%= @conta.pessoa.nome.untaint %>
+</p>
+<% remote_form_for @conta, :url => {:controller => "projecoes", :action => "update", :recebimento_de_conta_id => @conta.id}  do |f| %>
+  <% listagem_table :headers => ['Sel', 'Parc', 'Vencimento', 'Valor', 'Multa', 'Juros','Desconto em %', 'Índice', 'Valor Ind.', 'Valor a Receber'], :ocultar_ultima_th => true do %>
+    <% calculo_valor_juros_e_valor_corrigido = @conta.calcula_valor_a_ser_pago %>
+    <% calculo_total_desconto_percentual = @conta.calculo_total_desconto_percentual %>
+    <tbody>
+      <%= render :partial => 'parcela', :collection => @conta.parcelas_em_aberto_ordenadas_por_vencimento, :locals => {:inicial => true} %>
+      <% total = 0 %>
+      <% @conta.parcelas_em_aberto_ordenadas.each{|parcela| total += parcela.valor} %>
+      <tr>
+        <td colspan="4">TOTAL SELECIONADAS</td>
+        <td>
+          <%= text_field_tag "total_multas_selecionadas", '0.0', :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_multas_selecionadas" %>
+        </td>
+        <td>
+          <%= text_field_tag "total_juros_selecionadas", '0.0', :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_juros_selecionadas" %>
+        </td>
+        <td>
+    <%# = text_field_tag "total_desconto_percentual_selecionadas", '0.0', :size => 7, :readonly => true %>
+    <%# = mascara_para_valor "total_desconto_percentual_selecionadas" %>
+    <%#*<br />%>
+          <%= text_field_tag "total_desconto_real_selecionadas", '0.0', :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_desconto_real_selecionadas" %>
+        </td>
+        <td></td>
+        <td>
+          <%= text_field_tag "total_indices", '0.0', :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_indices" %>
+        </td>
+        <td>
+    <%#= text_field_tag "total_parcelas", @conta.parcelas_em_aberto.collect(&:preco_em_reais).sum, :size => 7, :readonly => true %>
+          <%= text_field_tag "total_parcelas", '0.0', :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_parcelas" %>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">TOTAL</td>
+        <td>
+          <%= text_field_tag "total_parcelas", preco_formatado(total).gsub(' ', ''), :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_parcelas" %>
+        </td>
+        <td>
+          <%= text_field_tag "total_multas", (calculo_valor_juros_e_valor_corrigido[1] / 100.0), :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_multas" %>
+        </td>
+        <td>
+          <%= text_field_tag "total_juros", (calculo_valor_juros_e_valor_corrigido[0] / 100.0), :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_juros" %>
+        </td>
+        <td>
+    <%# = text_field_tag "total_desconto_percentual", calculo_total_desconto_percentual, :size => 7, :readonly => true %>
+    <%# = mascara_para_valor "total_desconto_percentual" %>
+    <%#*<br />%>
+          <%= text_field_tag "total_desconto_real", calculo_total_desconto_percentual, :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_desconto_real" %>
+        </td>
+        <td></td>
+        <td></td>
+        <% calculo_valor_juros_e_valor_corrigido = @conta.calcula_valor_a_ser_pago %>
+        <td>
+          <%= text_field_tag "total_geral", (calculo_valor_juros_e_valor_corrigido[2] / 100.0), :size => 7, :readonly => true %>
+          <%= mascara_para_valor "total_geral" %>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5">
+          <%#= link_to_function 'Todos', :class => 'print' do |page| page.select('.selecionados').each {|item| item.checked = true}; end %><br />
+          <%= link_to_function 'Todos', :class => 'print' do |page| @conta.parcelas_em_aberto_ordenadas.each {|item| page << "liberaCamposTodos(#{item.id})"}; end %><br />
+          <%= link_to_function 'Nenhum', :class => 'print' do |page| @conta.parcelas_em_aberto_ordenadas.each {|item| page << "travaCamposNenhum(#{item.id})"}; end %>
+        </td>
+        <td style="width: 90px;">
+          <b>Desconto Percentual Universal</b>
+        </td>
+        <td>
+          <%= text_field_tag "desconto_percentual_universal", '0,00', :size => 7 %>
+        </td>
+        <td><b>Data Base</b></td>
+        <td colspan="2">
+          <%= calendar_date_select_tag 'data_base', Date.today.to_s_br, :onchange => "$('data_base_texto').innerHTML = this.value;" %>
+        </td>
+      </tr>
+      <tr>
+      </tr>
+      <tr>
+        <td colspan="5">
+          <%= hidden_field_tag 'acao' %>
+        </td>
+        <td colspan="5">
+          <%= button_to_remote 'Renegociação', :url => {:action => 'renegociar', :format => 'js', :recebimento_de_conta_id => @conta.id}, :with => "Form.serialize('edit_recebimento_de_conta_#{@conta.id}')", :loading => "Element.show('loading_renegociacao')", :success => "Element.hide('loading_renegociacao')" %>
+          <%= button_to_remote 'Termo de Divida', :url => {:action => 'termo_de_divida', :format => 'js', :recebimento_de_conta_id => @conta.id}, :with => "Form.serialize('edit_recebimento_de_conta_#{@conta.id}')", :loading => "Element.show('loading_renegociacao')", :success => "Element.hide('loading_renegociacao')" %>
+          <%= button_to_remote 'Imprimir', :url => {:action => 'gerar_relatorio', :format => 'js', :recebimento_de_conta_id => @conta.id}, :with => "Form.serialize('edit_recebimento_de_conta_#{@conta.id}')", :loading => "Element.show('loading_renegociacao')", :success => "Element.hide('loading_renegociacao')" %>
+          <%= submit_tag 'Calcular', :onclick => "$('acao').value = 'Calcular'; Element.show('loading_renegociacao')" %>
+          <%= submit_tag 'Aplicar', :confirm => "Você realmente deseja aplicar esta projeção para as parcelas selecionadas?", :onclick => "$('acao').value = 'Aplicar'; Element.show('loading_renegociacao')" %><%= loading_image 'renegociacao' %>
+        </td>
+      </tr>
+    </tfoot>
+  <% end %>
+<% end %>
+
+<%= link_to 'Voltar', recebimento_de_conta_path(@conta), :class => 'print' %>
+
+<div id="formulario_de_renegociacao" style="display:none">
+</div>

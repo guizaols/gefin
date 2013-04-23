@@ -1,0 +1,84 @@
+--
+-- TOC entry 2564 (class 0 OID 37708)
+-- Dependencies: 1593
+-- Data for Name: entidade; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY entidade (codent, dscent, siglaent, codzeus) FROM stdin;
+2	SERVIÇO NACIONAL DE APRENDIZAGEM INDUSTRIA NO MT	SENAI-DR-MT	313
+16	IEL - INSTITUTO EUVALDO LODI	01	
+89	TESTE	01	
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY cliente (codcli, idcli, identcli, emailpes, endres, bairrores, compres, codcidres, cepres, telres, telcel, endcom, bairrocom, compcom, codcidcom, cepcom, telcom, emailcom, nomcont, telcont, emailcont, tipocli, atraso, spc, fantasia) FROM stdin;
+19264	389.711.359    	ELIZABETH ANHOLETO		AV. PRES. ARTHUR BERNARDES, QD-15	AP-A02JD. AEROPORTO		\N	        	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19265	453.114.041    	LUIZ RODRIGUES SOUZA		AV. HI, Q. 6, C. 3	LOTEAM. HELIO P. ARRUDA		\N	78155530	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+\.
+
+
+--
+-- TOC entry 2606 (class 0 OID 38087)
+-- Dependencies: 1657
+-- Data for Name: unidade; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY unidade (codund, codent, dscund, siglaund, telund, emailund, codcid, limbaixa, limmf, limcp, limcr, sigla, endereco, bairro, cep, telfax, complemento, databasename, hostname, username, "password", ativa, ultexp, cnpj, cxzeus, numcr, codintegrator, dtref) FROM stdin;
+33	2	SENAI-PRIMAVERA DO LESTE	SENAI-PRIMAVERA	(65) 498-8882   	senai.primavera@terra.com.br	5107040	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+24	3	SUPERINTENDENCIA	ASTEC	(65)0611-1618   	astec@fiemt.com.br	5103403	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+16	3	SESIVIDA	SESIVIDA	(65)0611-1573   	marlova@sesimt.com.br	5103403	0	0	0	0	\N	\N	\N	\N	\N	\N	sesisinop	190.168.10.1	admin	Dojugusi2007	f	\N	\N	\N	0	\N	\N
+\.
+
+
+--
+-- TOC entry 2596 (class 0 OID 38043)
+-- Dependencies: 1643
+-- Data for Name: servico; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY servico (codser, codund, dscser, ativo, codmod, codsigat, moda_id) FROM stdin;
+1	31	SERVIÇOS DE LAZER	t	9	001	\N
+2	31	SESI GINÁSTICA NA EMPRESA	t	9	001	\N
+3	31	ARRENDAMENTO CANTINA SESICLUBE VG	t	9	1	\N
+\.
+
+
+--
+-- TOC entry 2597 (class 0 OID 38047)
+-- Dependencies: 1644
+-- Data for Name: servsol; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY undorg (ano, codemp, codundorg, nomeundorg, codreduz, idundorg, codundccr) FROM stdin;
+2005	613	1301	Condomínio Casa da Indústria	00002     	2	\N
+2005	613	9999999999	UNIDADE EMPRESA	00003     	3	\N
+2005	413	1301	SUPERINTENDENCIA	00002     	5	\N
+\.
+
+
+--
+-- TOC entry 2597 (class 0 OID 38047)
+-- Dependencies: 1644
+-- Data for Name: servsol; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY centro (ano, codemp, codcentro, nomecentro, codreduz, codidcentro) FROM stdin;
+2005	613	1	POLÍTICAS INSTITUCIONAIS	00001	1
+2005	613	101	Orgãos Colegiados	00002	2
+2005	613	10105	Conselho Nacional - SENAI	00003	3
+\.
+
+
+--
+-- TOC entry 2597 (class 0 OID 38047)
+-- Dependencies: 1644
+-- Data for Name: servsol; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+

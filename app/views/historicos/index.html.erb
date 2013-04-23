@@ -1,0 +1,11 @@
+<% content_for :titulo, 'Históricos Padrão' %>
+
+<% listagem_table :new => new_historico_path, :permissoes => Perfil::ManipularDadosDosHistoricos, :headers => ['Descrição'], :style => 'width: 70%' do %>
+
+  <% for historico in @historicos %>
+    <% listagem_tr :edit => edit_historico_path(historico), :destroy => historico,:permissoes => Perfil::ManipularDadosDosHistoricos do %>
+      <td><%=h historico.descricao %></td>
+    <% end %>
+  <% end %>
+
+<% end %>

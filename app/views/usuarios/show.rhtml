@@ -1,0 +1,12 @@
+<% content_for :titulo, 'Usuário' %>
+<table>
+  <%= show_unless_blank 'Nome', @usuario.nome %>
+  <%= show_unless_blank 'Login', @usuario.login %>
+  <%= show_unless_blank 'Entidade', @usuario.entidade.sigla %>
+</table>
+
+<p><%= link_to 'Dados do Funcionário', pessoa_path(@usuario.funcionario) %> |
+  <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDosUsuarios) %>
+    <%= link_to 'Alterar', edit_usuario_path(@usuario) %> |
+  <% end %>
+<%= link_to 'Voltar', usuarios_path %></p>

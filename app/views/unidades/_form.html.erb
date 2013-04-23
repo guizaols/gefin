@@ -1,0 +1,56 @@
+<% form_for @unidade, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <tr><th class="field_descriptor">Entidade</th><td><%= f.select :entidade_id, Entidade.all(:order => 'nome ASC').collect {|c| [c.nome, c.id.to_i]}, { :include_blank => true } %></td></tr>
+    <%= f.text_field :nome, :size => '59px' %>
+    <%= f.text_field :nome_cedente, :size => '59px' %>
+    <%= f.text_field :sigla %>
+    <%= f.text_field :nome_caixa_zeus,  :label=>'Nome do caixa - ZEUS'  %>
+    <tr><th class="field_descriptor">Data de referência</th><td><%= calendar_date_select_com_mascara(f, 'data_de_referencia') %></td></tr>
+    <tr>
+      <td  class="field_descriptor">Telefones/Fax <%= link_to_function "+" do |page|
+          page.insert_html :bottom, "telefones_secundarios", :partial => 'telefone'
+        end %>
+      </td>
+      <td>
+        <ul id="telefones_secundarios" style="list-style-type: none;">
+          <%= render :partial => 'telefone' if @unidade.new_record? %>
+          <%= render :partial => 'telefone', :object => 'telefone', :collection => @unidade.telefone   if @unidade.telefone%>
+        </ul>
+      </td>
+    </tr>
+    <%= f.text_field :fax %>
+    <%= f.text_field :cnpj,  :label=>'CNPJ', :size => '20px' %>
+    <tr><td colspan="2"><h3>Geração de Boleto</h3></td></tr>
+    <%= f.text_field :agencia, :label => "Agência" %>
+    <%= f.text_field :conta_corrente, :label => "Conta corrente" %>
+    <%#= f.text_field :convenio, :label => "Convênio" %>
+    <tr><td colspan="2"><h3>Endereço Comercial</h3></td></tr>
+    <%= f.text_field :endereco, :label => 'Logradouro', :size => '50px' %>
+    <%= f.text_field :complemento %>
+    <%= f.text_field :bairro, :size => '50px' %>
+    <%= f.text_field :cep, :label=>'CEP', :size => '10px' %>
+    <tr>
+      <th class="field_descriptor">Localidade</th>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f, :localidade, auto_complete_for_localidade_localidades_path, :opcoes_para_text_field => {:size => '50px'}) %>
+        <%= image_tag 'loading.gif', :id => "loading_localidade", :style => "display:none" %>
+      </td>
+    </tr>
+    <%= f.check_box :ativa %>
+    <% if @unidade.new_record? %>
+      <%= f.check_box :unidade_mae_check, :label => 'Criar unidade espelho' %>
+    <% end %>
+    <%= f.text_field :email, :label => 'E-mail', :size => '50px' %>
+    <tr><td colspan="2"><h3>Gerente da Unidade</h3></td></tr>
+    <%= f.text_field :responsavel, :label => 'Nome', :size => '50px' %>
+    <%= f.text_field :responsavel_cpf, :label => 'CPF', :maxlength => '14' %>
+    <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+
+<% end %>
+
+<%= link_to 'Voltar', unidades_path %>
+
+<%= mascara_para_cpf('unidade_responsavel_cpf') %>

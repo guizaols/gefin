@@ -1,0 +1,62 @@
+<div id="parcelas">
+  <h1>Parcelas</h1>
+  <span>
+    <% if @conta.is_a?(RecebimentoDeConta) && @conta.numero_de_renegociacoes > 0 && !@conta.parcelas.blank? %>
+      <% if @mostrar_todas %>
+        <%= link_to 'Ocultar Renegociadas', recebimento_de_conta_path(@conta) %>
+      <% else %>
+        <%= link_to 'Mostrar Renegociadas', recebimento_de_conta_path(@conta, :todas => true) %>
+      <% end %> | 
+    <% end %>
+
+    <% @mostra = 0 if @conta.is_a?(PagamentoDeConta) %>
+
+    <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDePagamentoDeContas) && @conta.parcelas.any?{|parc| parc.situacao != Parcela::ESTORNADA} %>
+      <% if @conta.is_a?(PagamentoDeConta) && !@conta.alguma_parcela_baixada? %>
+        <% @mostra = 1 %>
+        <%= link_to 'Gerar', gerar_parcelas_pagamento_de_conta_path(@conta.id),:confirm => "O NOVO valor do documento do fornecedor #{@conta.pessoa.nome} é de R$ #{@conta.valor_do_documento_em_reais} e a NOVA quantidade de parcelas é #{@conta.numero_de_parcelas}. Confirma estes dados?" %>
+      <% end %>
+      <% if @conta.is_a?(PagamentoDeConta) && @conta.parcelas.length != 0 %>
+        <%= "|" if @mostra == 1 %> <%= link_to 'Alterar', carrega_parcelas_pagamento_de_conta_path(@conta.id) %>
+      <% end %>
+    <% end %>
+  </span>
+
+  <% if @conta.is_a?(RecebimentoDeConta) && @conta.pode_ser_modificado? && !@conta.parcelas.blank? %>
+    <span>
+      <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas) %>
+        <%# if @conta.situacao_fiemt != RecebimentoDeConta::Cancelado && @conta.data_evasao.blank? %>
+          <%#= link_to('Gerar', (gerar_parcelas_recebimento_de_conta_path(@conta.id)),:confirm => "O NOVO valor do documento do fornecedor #{@conta.pessoa.nome} é de R$ #{@conta.valor_do_documento_em_reais} e a NOVA quantidade de parcelas é #{@conta.numero_de_parcelas}. Confirma estes dados?") + ' |' if !@conta.alguma_parcela_baixada? %>
+          <%#= link_to_remote 'Nova Parcela', :url => { :action => "carregar_modal_parcela", :controller=>"recebimento_de_contas" } %>
+          <% unless @conta.parcelas_em_aberto.blank? %>
+            <%= link_to 'Alterar', carrega_parcelas_recebimento_de_conta_path(@conta.id) %>
+          <% end %>
+        <%# end %>
+      <% end %>
+    </span>
+  <% end %>
+
+  <% if @conta.pode_gerar_parcelas %>
+    <p><b>Este contrato está cancelado. Não existem parcelas para ele.</b></p>
+  <%# elsif @conta.parcelas.length == 0 %>
+  <%#<p><b>Não existem parcelas cadastradas para esta conta. Clique em</b> <%= link_to 'Gerar Parcelas', (@conta.is_a?(PagamentoDeConta) ? gerar_parcelas_pagamento_de_conta_path(@conta.id) : gerar_parcelas_recebimento_de_conta_path(@conta.id)),
+  :confirm => "O valor do documento do fornecedor #{@conta.pessoa.nome} é de R$ #{@conta.valor_do_documento_em_reais} e a quantidade de parcelas é #{@conta.numero_de_parcelas}. Confirma estes dados?"  <b>para gerá-las.</b></p> %>
+  <% else %>
+    <% listagem_table :headers => headers(@conta), :ocultar_ultima_th => true, :style => "text-align:center" do %>
+      <tbody id="tabela_parcela">
+        <% if @conta.is_a?(RecebimentoDeConta) %>
+          <%= render :partial => 'parcelas/tabela_index', :locals => {:parcelas => @conta.parcelas_ordenadas_vencimento, :conta => @conta} %>
+        <% else %>
+          <%= render :partial => 'parcelas/tabela_index', :locals => {:parcelas => parcelas_ordenadas(@conta.parcelas), :conta => @conta} %>
+        <% end %>
+      </tbody>
+    <% end %>
+  <% end %>
+
+  <div id="form_para_baixa_parcial"></div>
+  <div id="form_para_baixa_parcial_pagamentos"></div>
+  <div id="form_para_geracao_boleto"></div>
+  <div id="form_para_justificativa_ctr_canc" style="display:none"></div>
+  <div id="form_para_inserir_justificativa" style="display:none"></div>
+  <div id="form_para_baixa_parcial_dr"></div>
+</div>

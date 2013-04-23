@@ -1,0 +1,16 @@
+<% content_for :titulo, 'Localidades' %>
+<% form_tag localidades_path, :method => :get do %>
+  <p><b>Busca</b> <%= text_field_tag 'busca' %> <%= submit_tag 'Buscar' %></p>  
+<% end %>
+
+<% listagem_table :new => new_localidade_path,:permissoes => Perfil::ManipularDadosDasLocalidades, :headers => ['Nome', 'UF'], :style => 'width: 70%' do %>
+  <% for localidade in @localidades %>
+    <% listagem_tr :edit => edit_localidade_path(localidade), :destroy => localidade,:permissoes => Perfil::ManipularDadosDasLocalidades do %>
+      <td><%=h localidade.nome %></td>
+      <td><%=h localidade.uf %></td>
+    <% end %>
+  <% end %>
+<% end %>  
+<p><%= will_paginate @localidades %></p>
+
+

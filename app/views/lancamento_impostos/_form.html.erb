@@ -1,0 +1,8 @@
+<% form_for [@parcela.conta, @parcela, @lancamento_imposto], :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <table>
+    <tr><th class="field_descriptor">Imposto</th><td><%= f.select :imposto_id,Imposto.find(:all).collect{|c| [c.descricao, c.id.to_i]}, { :include_blank => true }%></td></tr>
+    <tr><th class="field_descriptor">Data de Recolhimento</th><td><%= calendar_date_select_tag :data_de_recolhimento %></td></tr>
+  <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+<% end %>

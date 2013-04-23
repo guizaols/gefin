@@ -1,0 +1,61 @@
+senaivarzeagrande:
+  entidade: senai
+  nome: SENAI - Varzea Grande
+  sigla: SENAI-VG
+  endereco: Av Dom Orlando Chaves, 1.536
+  bairro: Cristo Rei
+  cep: 78115300
+  localidade: primeira
+  ativa: false
+  data_de_referencia: <%= Date.today %>
+  telefone: 
+            - (65) 3688-1200
+  nome_caixa_zeus: CX.00 SENAIVG
+  cnpj: 03819150000462
+  complemento: gfin
+  lancamentoscheques: 5000
+  lancamentoscartoes: 5000
+  lancamentoscontaspagar: 5000
+  lancamentoscontasreceber: 5000
+  lancamentosmovimentofinanceiro: 5000
+  email: senaivg@senaivg.com
+  fax: (65) 3688-1299
+  senha_baixa_dr: teste
+  dr_telefone:
+            - 33425712
+            - 88499627
+  dr_nome: Preencher
+  dr_email: Preencher
+  dr_fax: Preencher
+  limitediasparaestornodeparcelas: 5000
+
+sesivarzeagrande:
+  entidade: sesi
+  nome: Sesi Clube Varzea Grande
+  sigla: SESICLUBE-VG
+  endereco: Av Dom Orlando Chaves, 1.536
+  bairro: Cristo rei
+  cep: 78115300
+  localidade: segunda
+  ativa: false
+  data_de_referencia: 2009-03-18
+  telefone: 
+            - (65)0685-2077
+  nome_caixa_zeus: CX - CAC
+  cnpj: 03819150000462
+  complemento: gfin
+  lancamentoscheques: 5000
+  lancamentoscartoes: 5000
+  lancamentoscontaspagar: 5000
+  lancamentoscontasreceber: 5000
+  lancamentosmovimentofinanceiro: 5000
+  email: sesivg@sesivg.com
+  fax: (65) 3688-1277
+  senha_baixa_dr: teste
+  dr_telefone:
+            - 88888888
+            - 99999999
+  dr_nome: Preencher
+  dr_email: Preencher
+  dr_fax: Preencher
+  limitediasparaestornodeparcelas: 5000

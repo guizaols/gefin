@@ -1,0 +1,18 @@
+<h1>Contas a Pagar - Fornecedores</h1>
+
+<% form_remote_tag :url => contas_a_pagar_visao_contabil_relatorios_path, :loading => "Element.show('loading_visao_contabil');", :success => "Element.hide('loading_visao_contabil');" do %>
+  <table>
+    <%= campo_de_cadastro 'Provisão', select_tag('busca[provisao]', options_for_select([['', ''], ['SIM', PagamentoDeConta::SIM], ['NÃO', PagamentoDeConta::NAO]])) %>
+    <tr>
+      <td class="field_descriptor">Período</td>
+      <td>
+        <%= calendar_date_select_tag_com_mascara('busca[data]', Date.new(session[:ano], Date.today.month, -1).to_s_br, :maxlength => '10') %>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo', 'xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo', 'print', true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag 'Gerar Relatório' %><%= loading_image('visao_contabil')  %> </td>
+    </tr>
+  </table>
+<% end %>

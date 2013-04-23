@@ -1,0 +1,36 @@
+5222203	VILA BOA	GO
+5222302	VILA PROPICIO	GO
+5300108	BRASILIA	DF
+1111111	SANTO ANTONIO DO LESTE	MT
+0000000	SÃO PAULO	SP
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY cliente (codcli, idcli, identcli, emailpes, endres, bairrores, compres, codcidres, cepres, telres, telcel, endcom, bairrocom, compcom, codcidcom, cepcom, telcom, emailcom, nomcont, telcont, emailcont, tipocli, atraso, spc, fantasia) FROM stdin;
+19264	389.711.359-72    	ELIZABETH ANHOLETO		AV. PRES. ARTHUR BERNARDES, QD-15	AP-A02JD. AEROPORTO		\N	        	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19265	453.114.041-91    	LUIZ RODRIGUES SOUZA		AV. HI, Q. 6, C. 3	LOTEAM. HELIO P. ARRUDA		\N	78155530	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19266	240.817.011-72    	BENEDITO GONCALVES DE SOUZA		R. MOURITE, 120	PEDREGAL		\N	78000000	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19267	469.185.401-06    	VANILDO DE MELLO FILHO		R. DR. JONAS DA COSTA, 387	VERDAO		\N	78030510	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19268	346.389.701-68    	ORCINO XAVIER DA COSTA		R. MARAJO, 179	PEDREGAL		\N	        	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+44447	07.605.738/0001-21	F. J. FERNANDES - ME	\N	\N	\N	\N	\N	\N	\N	\N	RUA 01, QD. 13,  N.07-B - SETOR 2	CPAIII		5103403	7800000 	3646-4044       		FABIANA	3646-4044       		J	0	N	CANTINA
+27339	33.641.358/0109.72	SESI - SINOP	\N	\N	\N	\N	\N	\N	\N	\N	AV. JACARANDAS, 3100			\N	        	                			                		J	1	N	\N
+39205	43.217.850/0002-30	IOB INFORMAÇÕES OBJETIVAS PUBLICAÇÕES JURIDICAS		 			\N	        	                	                	RUA CORREIA DIAS, 2º ANDAR 184	PARAISO	SAO PAULO	120    	79050010	67 342-3300     		SUMAIA KERSROUANI BORGES	08007837777     		J	0	N	\N
+42850	00.831.964/0001-81	H PRINT REPROGRAFIA E AUTOMAÇÃO DE ESCRITORIO		 			\N	        	                	                	AV. 31 DE MARÇO 1826	DUQUE DE CAXIAS		5      	78040000	3616-7435       	x	X	X               	x	J	0	N	\N
+36562	06.053.377/0001-95	RABISCOS COMERCIO E SERVIÇOS DE PAPELARIA LTDA		 			\N	        	                	                	AV. CORONEL ESCOLASTICO 592	BANDEIRANTES		5      	78010200	3025-5255       		F	3025-5255       		J	0	N	\N
+42898	00.482.913/0001-91	SISAN CONST E INCORPORAÇÃO LTDA		 			\N	        	                	                	RUA BARAO DE MELGAÇO 3080	CENTRO		5      	78000000	                		.......	..........      		J	0	N	\N
+38307	40.281.347/0012-27	AUTOTRAC COMERCIO E TELECOMUNICAÇÕES S/A		 			\N	        	                	                	AV FERNANDO CORREA DA COSTA 7141	COXIPO DA PONTE		5103403	78080300	665-5188        		XX	661-7100        		J	0	N	\N
+28318	14.952.766/0001.80	ESC. DE 1§ GRAU"O PEQUENO PRINCIPE"	\N	\N	\N	\N	\N	\N	\N	\N	RUA LIBERDADE 457	CENTRO		\N	78600000	0658611269      		NEUZA M¦ GUIMARAES	0658611269      		J	0	N	\N
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--

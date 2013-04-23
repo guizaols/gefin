@@ -1,0 +1,208 @@
+<br />
+<div style="text-align: center; width: auto; font-size: 12px;">
+  <b><%=h Date::MONTHNAMES[params[:busca][:periodo_min].to_date.month.to_i].upcase %>/<%= session[:ano] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="1400px" cellpadding="2">
+  <tr algin="center">
+     <td style="text-align: center; padding-right: 4px" colspan="8"></td>
+     <td style="text-align: center; padding-right: 4px" colspan="2"><b>Faturamento</b></td>
+     <td style="text-align: center; padding-right: 4px" colspan="2"><b>Clientes</b></td>
+     <td style="text-align: center; padding-right: 4px" colspan="2"><b>Receita</b></td>
+  </tr>
+  <tr align="center">
+    <th style="width: 150px">Número de Controle</th>
+    <th style="width: 150px">Data de Provisão</th>
+    <th style="width: 270px">Cliente</th>
+    <th style="width: 250px">Serviços</th>
+    <th style="width: 110px">Data Cancelamento</th>
+    <th style="width: 115px">Data Evasão</th>
+    <th style="width: 90px">Situação</th>
+    <th style="width: 100px">Valor - Contrato</th>
+    <th style="width: 100px">Débito</th>
+    <th style="width: 100px">Crédito</th>
+    <th style="width: 100px">Débito</th>
+    <th style="width: 100px">Crédito</th>
+    <th style="width: 100px">Débito</th>
+    <th style="width: 100px">Crédito</th>
+  </tr>
+ <%total_geral_contratos = 0 %>
+ <%total_faturamento_debito = 0 %>
+ <%total_faturamento_credito = 0 %>
+ <%total_clientes_debito = 0 %>
+ <%total_clientes_credito = 0 %>
+ <%total_receitas_debito = 0 %>
+  <%total_receitas_credito = 0 %>
+
+
+  <% @recebimentos.each do |grupo_servico, contas| %>
+    <% valor_movimento_do_mes = 0 %>
+    <% contas.each do |conta| %>
+      <% contrato = RecebimentoDeConta.find(conta) %>
+      <%ids_contas_rejeitadas = [] %>
+      <tr style="text-align: left; font-size: 10px" colspan="3">
+        <td style="padding-left: 4px"><%=h conta.numero_de_controle %></td>
+         <td style="padding-left: 4px"><%=h conta.data_inicio %></td>
+        <td style="padding-left: 4px"><%=h conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social %></td>
+        <td style="padding-left: 4px"><%=h conta.servico.descricao %></td>
+        <td style="text-align: center"><%=h conta.data_cancelamento %></td>
+        <td style="text-align: center"><%=h conta.data_evasao %></td>
+        <td style="text-align: center"><%=h conta.situacao_fiemt_verbose %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(conta.valor_do_documento) %></td>
+        <%movimentos = Movimento.find(:all,:conditions=>["conta_id = ? AND conta_type= ? AND (tipo_lancamento = ? OR tipo_lancamento = ? OR tipo_lancamento = ? OR tipo_lancamento = ?) AND data_lancamento between ? AND ? ",conta.id,"RecebimentoDeConta","D","T", "V","O",@data,@data_final]) %>
+     <%p "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" %>
+             <%p movimentos %>
+         <%######Faturamento%>
+      
+         <%faturamento_credito = 0 %>
+         <%faturamento_debito = 0 %>
+
+          <%array_dados = [] %>
+         <%movimentos.each do |movimento| %>
+           <%itens_movimentos = movimento.itens_movimentos %>
+          <%movimento.itens_movimentos.each do |item| %>
+            <% array_dados << ParametroContaValor.find_by_conta_contabil_id_and_unidade_id_and_tipo(item.plano_de_conta.id,conta.unidade.id,ParametroContaValor::FATURAMENTO) %>
+          <%end%>
+
+            <%p "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" %>
+             <%p array_dados %>
+
+        <%array_final_dados = []%>
+        <% array_dados.each do |a| %>
+          <%unless a.blank? %>
+           <%array_final_dados << a %>
+           <%ids_contas_rejeitadas << a.conta_contabil_id %>
+          <%end%>
+        <%end%>
+         
+          <%if array_final_dados.length > 0 %>
+          <%p array_final_dados%>
+            <%array_final_dados.each do |a| %>
+              <%movimento.itens_movimentos.each do |item|%>
+               <%if (item.tipo == "D" && item.plano_de_conta_id.to_i == a.conta_contabil_id.to_i) %>
+               <% p "FATURAMENTO" %>
+                 <%p item.id %>
+                 <%p item.valor %>
+               <% p "********"%>
+
+               <% total_faturamento_debito+= item.valor %>
+
+
+                 <% faturamento_debito += (item.valor rescue 0) %>
+               <%elsif (item.tipo=="C" && item.plano_de_conta_id == a.conta_contabil_id) %>
+                 <% faturamento_credito += (item.valor rescue 0) %>
+
+                 <% total_faturamento_credito+= item.valor %>
+                <%end%>
+              <%end%>
+
+
+            <%end%> 
+           <%end%>
+
+           <% array_dados = [] %>
+          
+         <%end%> 
+
+            <td style="text-align: center"><%=h preco_formatado(faturamento_debito)%>
+            <td style="text-align: center"><%=h preco_formatado(faturamento_credito)%>
+
+
+  <%######CLiente%>
+      
+ <%faturamento_credito = 0 %>
+         <%faturamento_debito = 0 %>
+
+          <%array_dados = [] %>
+         <%movimentos.each do |movimento| %>
+           
+          <%movimento.itens_movimentos.each do |item| %>
+            <% array_dados << ParametroContaValor.find_by_conta_contabil_id_and_unidade_id_and_tipo(item.plano_de_conta.id,conta.unidade.id,ParametroContaValor::CLIENTES) %>
+          <%end%>
+
+        <%array_final_dados = []%>
+        <% array_dados.each do |a| %>
+            <%unless a.blank? %>
+           <%array_final_dados << a %>
+           <%ids_contas_rejeitadas << a.conta_contabil_id %>
+          <%end%>
+        <%end%>
+         
+          <%if array_final_dados.length > 0 %>
+            <%array_final_dados.each do |a| %>
+              <%movimento.itens_movimentos.each do |item|%>
+               <%if item.tipo == 'D' && item.plano_de_conta.id == a.conta_contabil.id %>
+                <% faturamento_debito += (item.valor rescue 0) %>
+                <% total_clientes_debito+= item.valor %>
+           
+                <%elsif item.tipo=='C' && item.plano_de_conta.id == a.conta_contabil.id %>
+                 <% faturamento_credito += (item.valor rescue 0) %>
+                 <% total_clientes_credito+= item.valor rescue 0 %>
+                <%end%>
+              <%end%>
+
+
+            <%end%> 
+           <%end%>
+           
+         <%end%> 
+
+            <td style="text-align: center"><%=h preco_formatado(faturamento_debito)%>
+            <td style="text-align: center"><%=h preco_formatado(faturamento_credito)%>
+
+
+
+ <%######Receitas%>
+      
+ <%faturamento_credito = 0 %>
+         <%faturamento_debito = 0 %>
+
+          <%array_dados = [] %>
+         <%movimentos.each do |movimento| %>
+           
+         
+         
+          
+              <%movimento.itens_movimentos.each do |item|%>
+               <%if item.tipo == 'D' && !ids_contas_rejeitadas.include?(item.plano_de_conta.id) %>
+                <% faturamento_debito += (item.valor rescue 0) %>
+                <% total_receitas_debito+= item.valor %>
+           
+                <%elsif item.tipo=='C' && !ids_contas_rejeitadas.include?(item.plano_de_conta.id) %>
+                 <% faturamento_credito += (item.valor rescue 0) %>
+                 <% total_receitas_credito+= item.valor %>
+                <%end%>
+              <%end%>
+
+
+           
+         <%end%> 
+
+            <td style="text-align: center"><%=h preco_formatado(faturamento_debito)%>
+            <td style="text-align: center"><%=h preco_formatado(faturamento_credito)%>
+
+
+
+
+
+
+      </tr>
+       <% total_geral_contratos += conta.valor_do_documento %>
+    <% end %>
+  <% end %>
+
+
+  <tr style="font-weight: bold">
+    <td style="text-align: right; padding-right: 4px" colspan="7">Totalização</td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_contratos) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_faturamento_debito) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_faturamento_credito) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_clientes_debito) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_clientes_credito) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_receitas_debito) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_receitas_credito) %></td>
+   
+  </tr>
+</table>
+<br />

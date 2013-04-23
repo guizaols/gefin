@@ -1,0 +1,48 @@
+iss:
+  entidade: senai
+  descricao: ISS-PF-5%
+  sigla: ISS-PF-5%
+  aliquota: 5
+  tipo: <%= Imposto::ESTADUAL %>
+  classificacao: <%= Imposto::RETEM %>
+  conta_credito: plano_de_contas_passivo_impostos_pagar
+
+inss:
+  entidade: sesi
+  descricao: INSS-PF-3.6%
+  sigla: INSS-PF-3.6%
+  aliquota: 3.6
+  tipo: <%= Imposto::ESTADUAL %>
+  classificacao: <%= Imposto::RETEM %>
+  conta_debito: plano_de_contas_ativo_despesas
+  conta_credito: plano_de_contas_ativo_contribuicoes
+
+fgts:
+  entidade: senai
+  descricao: FGTS-PF-8.0%
+  sigla: FGTS-PF-8.0%
+  aliquota: 8
+  tipo: <%= Imposto::ESTADUAL %>
+  classificacao: <%= Imposto::INCIDE %>
+  conta_debito: plano_de_contas_ativo_despesas
+  conta_credito: plano_de_contas_ativo_contribuicoes
+
+ipi:
+  entidade: sesi
+  descricao: IPI-PF-50%
+  sigla: IPI-PF-50%
+  aliquota: 50
+  tipo: <%= Imposto::ESTADUAL %>
+  classificacao: <%= Imposto::RETEM %>
+  conta_debito: plano_de_contas_ativo_despesas
+  conta_credito: plano_de_contas_ativo_contribuicoes
+
+confins:
+  entidade: senai
+  descricao: COFINS-PF-30%
+  sigla: COFINS-PF-30%
+  aliquota: <%= BigDecimal.new('0.3E2') %>
+  tipo: <%= Imposto::ESTADUAL %>
+  classificacao: <%= Imposto::RETEM %>
+  conta_credito: plano_de_contas_passivo_impostos_pagar
+

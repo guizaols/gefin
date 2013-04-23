@@ -1,0 +1,37 @@
+<% content_for :titulo, "Listando Contas a Pagar" %>
+<% form_tag pagamento_de_contas_path, :method => :get do %>
+  <div class="div_explicativa">
+    <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+      <div id="explicacao_texto"></div>
+      <%= image_tag 'seta_tooltip.gif' %>
+    </div>
+    <br />
+    <b>Busca Ordenada:</b>
+    <%=insere_campos_para_busca_de_contas([['Data de Vencimento', 'primeiro_vencimento'], ['Fornecedor', 'pessoas.nome'], ['Valor', 'valor_do_documento'], ['Situação', 'situacao']],"Você pode fazer uma busca digitando campos como CPF, CNPJ, Nº de controle, razão social, nome ou contato. A digitação dos mesmos pode ser parcial, pois a busca retornará os resultados de acordo com os dados digitados.") %>
+  </div>
+<% end %>
+<% listagem_table :new => new_pagamento_de_conta_path,:delete=> "#", :permissoes => Perfil::ManipularDadosDePagamentoDeContas, :headers => ['Número de Controle','Fornecedor', 'Vencimento', 'Valor', 'Situação','Excluir'] do %>
+  <% if @pagamento_de_contas.length > 0 %>
+    <% for pagamento_de_conta in @pagamento_de_contas %>
+      <% listagem_tr :edit => edit_pagamento_de_conta_path(pagamento_de_conta), :permissoes => Perfil::ManipularDadosDePagamentoDeContas do %>
+        <td><%=link_to h(pagamento_de_conta.numero_de_controle), pagamento_de_conta %></td>
+        <td><%=link_to h(pagamento_de_conta.pessoa.fisica? ? pagamento_de_conta.pessoa.nome : pagamento_de_conta.pessoa.razao_social), pagamento_de_conta.pessoa %></td>
+        <td><%=h data_formatada(pagamento_de_conta.primeiro_vencimento) %></td>
+        <td><%=h preco_formatado(pagamento_de_conta.valor_do_documento,"R$") %></td>
+        <td><%= pagamento_de_conta.situacao_parcelas %></td>
+        <%if pagamento_de_conta.parcelas.length == 0%>
+        <td>
+           <%= link_to image_tag('layout/excluir.png'), pagamento_de_conta_path(pagamento_de_conta), :confirm => 'Deseja excluir este contrato', :method => 'delete' %>
+        </td>
+        <%else%>
+        <td></td>
+        <%end%>
+    <% end %>
+          
+    <% end %>
+  <% else %>
+    <br />
+    <b style="color: #FF0000">Faça uma pesquisa para visualizar os contratos!</b>
+  <% end %>
+<% end %>
+<%= will_paginate @pagamento_de_contas %>

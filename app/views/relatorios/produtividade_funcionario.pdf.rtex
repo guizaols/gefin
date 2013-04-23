@@ -1,0 +1,69 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo]) %>}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|p{4.6cm}|p{6.5cm}|p{4.0cm}|p{4.0cm}|p{4.0cm}|}
+
+\hline
+\multicolumn{1}{|c}{\textbf{Contrato}} &
+\multicolumn{1}{c}{\textbf{Cliente}} &
+\multicolumn{1}{c}{\textbf{Valor Recebido}} &
+\multicolumn{1}{c}{\textbf{Recebido Em}} &
+\multicolumn{1}{c|}{\textbf{Valor Parcelado}} \\
+\hline
+
+<% @parcelas.each do |cobrador, parcelas_cobrador| %>
+
+<% total_relatorio = 0 %>
+<% total_liquido_relatorio = 0 %>
+
+\multicolumn{5}{|l|}{\textbf{Funcionário:} <%=hl cobrador.upcase %>}\\
+\hline
+
+<% parcelas_cobrador.group_by{|conta| conta.conta.servico.descricao}.each do |servico,parcelas_servico| %>
+
+\multicolumn{2}{|l}{\textbf{Entidade:} <%=hl parcelas_servico.first.conta.unidade.entidade.nome %>} &
+\multicolumn{2}{c}{\textbf{Unidade:} <%=hl parcelas_servico.first.conta.unidade.nome %>} &
+\textbf{Serviço:} <%=hl servico %> \\
+\hline
+
+<% total = 0 %>
+<% total_liquido = 0 %>
+
+<% parcelas_servico.each do |parcela| %>
+
+           <%=hl parcela.conta.numero_de_controle %> &
+           <%=hl parcela.conta.pessoa.nome rescue 'Pessoa Excluída' %> &
+           <%=hl preco_formatado(parcela.valor, 'R$') %> &
+           <%=hl parcela.data_da_baixa %> &
+           <%=hl preco_formatado(parcela.valor_liquido, 'R$') %> \\
+           \hline
+           <% total += parcela.valor %>
+           <% total_liquido += parcela.valor_liquido %>
+           <% total_relatorio += parcela.valor %>
+           <% total_liquido_relatorio += parcela.valor_liquido %>
+
+<% end %>
+
+\hline
+\multicolumn{1}{|c}{} &
+\multicolumn{1}{c}{\textbf{Total:}} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado(total, 'R$') %>}} &
+\multicolumn{1}{c}{} &
+\multicolumn{1}{c|}{\textbf{<%=hl preco_formatado(total_liquido, 'R$') %>}} \\
+\hline
+<% end %>
+\multicolumn{1}{|c}{} &
+\multicolumn{1}{c}{\textbf{Total:}} &
+\multicolumn{1}{c}{\textbf{<%=hl preco_formatado(total_relatorio, 'R$') %>}} &
+\multicolumn{1}{c}{} &
+\multicolumn{1}{c|}{\textbf{<%=hl preco_formatado(total_liquido_relatorio, 'R$') %>}} \\
+\hline
+<% end %>
+\end{longtable}
+\end{center}

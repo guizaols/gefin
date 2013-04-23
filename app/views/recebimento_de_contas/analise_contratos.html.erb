@@ -1,0 +1,19 @@
+<% content_for :titulo, "Contabilização das Receitas" %>
+<% form_tag analise_contratos_recebimento_de_contas_path do %>
+  <table>
+    <tr>
+      <td> 
+        <%= campo_de_cadastro 'Mês', (select_tag "busca[mes]", meses_para_selecao(params[:busca][:mes].to_i)) %>
+        <%= campo_de_cadastro 'Ano', (text_field_tag "busca[ano]", params[:busca][:ano].blank? ? session[:ano] : params[:busca][:ano], :size => 3, :maxlength => 4, :onkeyup => "this.value = this.value.replace(/[a-z]/g,'');") %>
+      </td> 
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag 'Pesquisar' %></td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="links_analise">
+  <%= render :partial => "analise_contratos" %>
+</div>

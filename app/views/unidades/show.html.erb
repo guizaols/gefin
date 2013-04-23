@@ -1,0 +1,41 @@
+<% content_for :titulo, "Detalhes da Unidade" %>
+
+<table>
+  
+
+<%=show_unless_blank "Entidade", @unidade.entidade.nome %>
+
+<%=show_unless_blank "Nome", @unidade.nome %>
+
+<%=show_unless_blank "Nome", @unidade.nome_cedente %>
+
+<%=show_unless_blank "Sigla", @unidade.sigla %>
+
+<%=show_unless_blank "Gerente da Unidade", @unidade.responsavel %>
+
+<%=show_unless_blank "Endereco", @unidade.endereco %>
+
+<%=show_unless_blank "Complemento" , @unidade.complemento %>
+
+<%=show_unless_blank "Bairro" , @unidade.bairro %>
+
+<%=show_unless_blank "Localidade", @unidade.nome_localidade %>
+
+<%=show_unless_blank "CEP" , @unidade.cep %>
+
+<%=show_unless_blank "Data referência" , @unidade.data_de_referencia %>
+
+<%=show_unless_blank "Telefone", @unidade.telefone.join(",") %>
+
+<%=show_unless_blank "Fax", @unidade.fax %>
+
+<%=show_unless_blank "E-mail", @unidade.email %>
+
+<%=show_unless_blank "Nome da caixa ZEUS", @unidade.nome_caixa_zeus %>
+
+<%=show_unless_blank "CNPJ", @unidade.cnpj %>
+
+</table>
+
+<%= link_to 'Alterar', edit_unidade_path(@unidade) %> |
+<%= link_to 'Voltar', unidades_path %>

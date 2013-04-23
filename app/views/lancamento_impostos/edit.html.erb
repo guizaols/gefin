@@ -1,0 +1,3 @@
+<% content_for :titulo, "Alterando lançamento do imposto" %>
+<%= render :partial => 'form' %>
+<%= link_to 'Voltar', pagamento_de_conta_parcela_lancamento_impostos_path(@parcela.conta_id, @parcela.id) %>

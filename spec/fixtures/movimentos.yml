@@ -1,0 +1,47 @@
+primeiro_lancamento_entrada:
+  valor_total: 1000
+  tipo_documento: CTREV
+  tipo_lancamento: E
+  historico: Primeiro lançamento de entrada
+  data_lancamento: 2009-03-01
+  provisao: 3
+  unidade: senaivarzeagrande
+  pessoa: paulo
+  numero_de_controle: SENAI-VG-CTREV03/0992343243
+
+segundo_lancamento_saida:
+  valor_total: 5000
+  tipo_documento: CTREV
+  tipo_lancamento: S
+  historico: Segundo lançamento de saída
+  data_lancamento: <%= Date.today %>
+  provisao: 3
+  unidade: senaivarzeagrande
+  pessoa: juan
+  numero_de_controle: SENAI-VG-CTREV05/09243554565
+
+primeiro_lancamento_entrada_outra_unidade:
+  valor_total: 1000
+  tipo_documento: CTREV
+  tipo_lancamento: E
+  historico: Primeiro lançamento de entrada outra unidade
+  data_lancamento: 2009-03-31
+  provisao: 3
+  unidade: sesivarzeagrande
+  pessoa: paulo
+  numero_de_controle: SESICLUBE-VG-CTREV04/09312334543
+
+lancamento_com_a_conta_pagamento_cheque:
+  valor_total: 10001
+  tipo_documento: DP
+  tipo_lancamento: S
+  historico: Pagamento Cheque
+  data_lancamento: 2009-03-31
+  provisao: 1
+  unidade: senaivarzeagrande
+  pessoa: felipe
+  numero_de_controle: SENAI-VG - DP4/20053200
+  conta: pagamento_cheque
+  conta_type: PagamentoDeConta
+  numero_da_parcela: 1
+  parcela: parcela_pagamento_cheque_para_movimento

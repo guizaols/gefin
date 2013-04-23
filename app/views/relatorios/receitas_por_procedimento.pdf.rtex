@@ -1,0 +1,49 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\fontsize{9pt}{12pt}\selectfont
+\begin{longtable}{|p{1.5cm}|p{12.0cm}|p{2.0cm}|p{6.0cm}|p{4.0cm}|}
+<% @lancamentos.each do |unidade,lancamentos|%>
+\hline
+\multicolumn{5}{|l|}{\textbf{Unidade Organizacional: <%=hl unidade %>}} \\
+\hline
+<% lancamentos = lancamentos.group_by{|lancamento| lancamento.centro.nome} %>
+<% lancamentos.each do |centro,lancamentos|%>
+\hline
+\multicolumn{5}{|l|}{\textbf{Centro de Responsabilidade: <%=hl centro %>}} \\
+\hline
+\textbf{Data} & \textbf{Histórico} & \textbf{Lançamento} &
+\textbf{Número Documento} & \textbf{Crédito} \\
+\hline
+<% total_geral = 0 %>
+<% total_conta = 0 %>
+<% lancamentos = lancamentos.group_by{|lancamento| "#{lancamento.plano_de_conta.codigo_contabil} - #{lancamento.plano_de_conta.nome}" }%>
+<% lancamentos.each do |nome,lancamentos|%>
+     <% total_conta = 0 %>
+     \multicolumn{5}{|l|}{\textbf{<%=hl nome %>}} \\
+     \hline
+     <% lancamentos.each do |lancamento| %>
+         <%=hl lancamento.movimento.data_lancamento %> &
+         <%=hl lancamento.movimento.historico %> &
+         <%=hl lancamento.tipo%> &
+         <%=hl lancamento.movimento.numero_de_controle%> &
+         <%=hl preco_formatado_com_ponto(lancamento.valor)%> \\
+         <% total_conta += lancamento.valor %>
+     <% end %>
+     <% total_geral += total_conta %>
+     \hline
+     \multicolumn{4}{|r|}{\textbf{Total Conta:}} &
+     \multicolumn{1}{|l|}{\textbf{<%=hl preco_formatado(total_conta, 'R$') %>}} \\
+     \hline
+<% end %>
+\hline
+\multicolumn{4}{|r|}{\textbf{Total Geral:}} &
+\multicolumn{1}{|l|}{\textbf{<%=hl preco_formatado(total_geral, 'R$') %>}} \\
+\hline
+<% end %>
+\multicolumn{6}{l}{} \\
+<% end %>
+\end{longtable}
+

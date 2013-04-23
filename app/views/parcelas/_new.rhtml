@@ -1,0 +1,42 @@
+<%form_remote_tag :url=>{:action=>"inserindo_nova_parcela",:controller=>"recebimento_de_contas"} do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">
+        Data Vencimento
+      </td>
+      <td>
+        <%= text_field_tag 'parcela[data_vencimento]' %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">
+        Valor
+      </td>
+      <td>
+        <%= text_field_tag 'parcela[valor]', '', :onkeypress => "return(MascaraMoeda(parcela_valor, \".\",\",\", event))"%>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">
+        Multa
+      </td>
+      <td>
+        <%= text_field_tag 'parcela[porcentagem_multa]'%>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">
+        Juros
+      </td>
+      <td>
+        <%= text_field_tag 'parcela[porcentagem_juros]'%>
+      </td>
+    </tr>
+  </table>
+  <p>
+    <%= submit_tag "Salvar" %>
+    <%= button_to_function 'Cancelar', 'Modalbox.hide()' %>
+  </p>
+  <%= mascara_para_data('parcela_data_vencimento') %>
+  <%#= mascara_para_valor('parcela_valor') %>
+<%end%>

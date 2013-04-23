@@ -1,0 +1,443 @@
+body {
+  background-image: url(/images/layout/fundo_body.gif);
+  background-repeat: repeat-x;
+  background-color: #d5d5d5;
+  font-family: sans-serif;
+}
+
+td {
+  padding: 0px;
+}
+
+a {
+  color: black;
+}
+
+div#secao_interna {
+  width: 1024px;
+  margin: 0px auto;
+  border: 1px black solid;
+  position: relative;
+}
+
+#cabecalho_fiemt {
+  background-image: url(/images/layout/fiemt.gif);
+  width: 944px;
+  height: 75px;
+  text-indent: -5000px;
+}
+
+#dados_login, #rodape {
+  margin: 0px;
+  font-size: 10px;
+  text-align: right;
+  padding: 5px 10px 5px 5px;
+  background-color: white;
+}
+
+#dados_login span {
+  color: #888;
+  margin: 0px 10px;
+}
+
+#dados_login a {
+  text-decoration: none;
+}
+
+#dados_login a:hover {
+  text-decoration: underline;
+}
+
+#rodape {
+  background-image: url(/images/layout/rodape_gefin.gif);
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 23px;
+  position: absolute;
+  bottom: 5px;
+  right: 20px;
+  border-top: 1px blue solid;
+  width: 955px;
+}
+
+#conteudo {
+  background-color: white;
+  padding: 10px;
+  padding-bottom: 50px;
+  margin-bottom: 0px;
+  min-height: 400px;
+}
+
+.errorExplanation {
+  width: 453px;
+  padding: 0px 10px 50px 10px;
+  background-image: url(/images/layout/fundo_mensagem_de_erro.gif);
+  background-position: bottom;
+  font-size: 10pt;
+  position: relative;
+}
+
+.errorExplanation h2 {
+  font-size: 16px;
+  position: relative;
+  background-color: inherit;
+  border-top: 3px #f2f2f2 solid;
+  padding: 10px;
+  padding-left: 35px;
+  color: #9e0b11;
+  background-image: url(/images/layout/barra_mensagem_de_erro.gif);
+  background-repeat: no-repeat;
+}
+
+.errorExplanation a {
+  position: absolute;
+  top: 8px;
+  right: 25px;
+}
+.errorExplanation p {
+  margin: 0px 35px;
+}
+
+.errorExplanation ul {
+  margin: 10px 50px;
+}
+
+table#tabela_de_relatorio tr.agrupamento td {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.listagem {
+  border: 1px #b3b3b3 solid;
+  background-color: white;
+  border-spacing: 0px;
+  width: 965px;
+  margin: 20px 15px;
+  padding: 5px;
+  -moz-border-radius: 10px;
+  font-size: 11px;
+}
+
+.listagem thead td {
+  background-image: url(/images/layout/listagem_topo.jpg);
+  background-repeat: no-repeat;
+  height: 100px;
+}
+
+.listagem thead th {
+  background-color: #006009;
+  border-top: 5px white solid;
+  padding: 8px 10px 7px 10px;
+  color: white;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.listagem thead th.ultima_coluna {
+  border-top: 5px white solid;
+}
+
+.listagem td, .listagem th {
+  padding: 5px 10px;
+}
+.listagem tr.parcela td, .listagem tr.parcela th {
+  padding: 5px 0px;
+}
+
+.listagem tr.par {
+  background-color: #d6d6d6;
+}
+
+.listagem th.ultima_coluna,
+.listagem td.ultima_coluna {
+  text-align: right;
+  padding-right: 35px;
+}
+
+.listagem .ultima_coluna img {
+  margin-right: 15px;
+}
+
+.field_descriptor {
+  text-align: right;
+  font-weight: bold;
+  padding: 5px 20px;
+}
+
+.separador {
+  border-top: 1px dotted black;
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+h1 {
+  font-weight: normal;
+  color: #117b43;
+  border-bottom: 1px black solid;
+  font-size: 22px;
+  margin: 10px 20px;
+}
+
+h2 {
+  background-color: white;
+  padding: 30px 50px;
+  margin: 0px;
+}
+
+a img {
+  border:none;
+}
+
+.relatorio {
+  font-size: 10px;
+  width: 100%;
+}
+
+.relatorio td {
+  text-align: center;
+}
+
+.link_ajuda {
+  margin-left: 5px;
+}
+
+table.listagem tr .link_ajuda {
+  position: relative;
+  left: -5000px;
+}
+
+table.listagem tr:hover .link_ajuda {
+  left: 0px;
+}
+
+.senha_ou_transf {
+  font-size: 0.9em;
+  color: green;
+}
+
+table#legenda {
+  display:none;
+}
+.auto_complete {
+  width: 350px;
+  background: #fff;
+  margin: 0px;
+}
+
+.auto_complete ul {
+  border:1px solid #888;
+  margin:0;
+  padding:0;
+  width:130%;
+  list-style-type:none;
+}
+
+.auto_complete ul li {
+  margin:0;
+  padding:3px;
+}
+.auto_complete ul li.selected {
+  background-color: #ffb;
+
+}
+
+.auto_complete ul strong.highlight {
+  color: #800;
+  margin:0;
+  padding:0;
+}
+
+.auto_complete_para_conta {
+  width: 450px;
+  margin: 0px;
+}
+
+.auto_complete_para_conta ul {
+  border:1px solid #888;
+  margin:0;
+  padding:0;
+  width:175%;
+  list-style-type:none;
+  max-height: 150px;
+  overflow-y:scroll;
+}
+
+.auto_complete_para_conta ul li {
+  margin:0;
+  padding:3px;
+}
+.auto_complete_para_conta ul li.selected {
+  background-color: #ffb;
+
+}
+
+.auto_complete_para_conta ul strong.highlight {
+  color: #800;
+  margin:0;
+  padding:0;
+}
+
+
+.retidovermelho{
+  color:red;
+}
+.valor_rateio_invalido
+{
+  color: #FF0000;
+
+}
+
+
+.fundo_vermelho {
+  background-color: #FFA07A;
+
+}
+
+.valor_rateio_valido
+{
+  color: #FF0000;
+}
+
+.fundo_rosa {
+  background-color: #FA8072;
+
+}
+
+.legenda {
+  background-color: #FA8072;
+  border: 1px red solid;
+}
+
+.legenda_spc {
+  background-color: #FFA07A;
+  border: 1px red solid;
+}
+
+.legenda_parcela_paga {
+  background-color: #CDB79E;
+  border: 1px gray solid;
+}
+
+li.sem_pontos {
+  list-style-type: none;
+  padding: 5px;
+}
+
+.div_explicativa{
+  position: relative;
+}
+
+.explicacao_busca, .explicacao_busca_auto_complete {
+  border: 1px black solid;
+  width: 300px;
+  position: absolute;
+  left: 100px;
+  bottom: 35px;
+  background-color: white;
+  -moz-border-radius: 5px;
+  padding: 5px;
+  text-align: justify;
+  font-size: 10pt;
+}
+
+.explicacao_busca_auto_complete {
+  bottom: 10px;
+}
+
+.explicacao_busca img, .explicacao_busca_auto_complete img {
+  position: absolute;
+  bottom: -10px;
+  left: 50px;
+
+}
+
+.retidopreto{
+  color:black;
+}
+
+table#imposto_da_parcela td.incluir_imposto{
+  float:right;
+  padding-right:270px;
+}
+
+.fieldWithErrors{
+  display:inline-block;
+}
+
+.auto_complete_para_conta {
+  z-index: 1000;
+}
+
+.auto_complete_para_conta ul {
+  background-color: #fff;
+}
+
+.imprimir{
+  float:right;
+  padding-right:30px;
+}
+
+tr.atraso{
+  color: red;
+}
+
+tr.Enviada{
+  color: red;
+}
+
+tr.Quitada {
+  color: #696969;
+}
+
+tr.Cancelada {
+  color: #696969;
+}
+
+tr.Evadida {
+  color: #696969;
+}
+
+tr.Renegociada {
+  color: #696969;
+}
+
+.check_boxes_alinhadas {
+  margin-right: 15px;
+}
+
+.print_logo {
+    display: none;
+}
+
+.projecoes_details {
+    margin-left: 25px;
+}
+
+a.ordenacao{
+    background-image:url(/images/tr_icons_white.png);
+    height:16px;
+    width:16px;
+    display:block;
+    margin: 0px;
+    float:right;
+}
+
+a.ordenacao.ativado{
+    background-position: -64px -16px;
+}
+
+a.ordenacao.desativado{
+    background-position: -32px -16px;
+}
+
+
+.campo_erro{
+    border:red 1px solid;
+}
+

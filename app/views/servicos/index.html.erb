@@ -1,0 +1,14 @@
+<% content_for :titulo, "Serviços" %>
+<%if @servicos.length > 0%>
+  <% listagem_table :new => new_servico_path,:permissoes=>Perfil::ManipularDadosDeServicos, :headers => ['Descrição','Modalidade'], :style => 'width: 70%' do %>
+    <% for servico in @servicos %>
+      <% listagem_tr :edit => edit_servico_path(servico.id), :destroy => servico,:permissoes=>Perfil::ManipularDadosDeServicos do %>
+        <td><%=link_to h(servico.descricao), servico_path(servico.id) %></td>
+        <td><%=h servico.modalidade%></td>
+      <% end %>
+    <% end %>
+  <% end %>
+<%else%>
+  <b> Não existem serviços cadastrados em nossa base de dados.</b>
+  <p><%= link_to 'Novo serviço', new_servico_path %></p>
+<%end%>

@@ -1,0 +1,12 @@
+<% content_for :titulo, 'Importar Clientes' %>
+<br />
+<% form_tag importar_clientes_pessoas_path, :multipart => true do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Unidade:</td>
+      <td><%=h @unidade.nome %></td>
+    </tr>
+    <%= campo_de_cadastro 'Arquivo:', (file_field_tag 'file') %>
+    <tr><td></td><td><%= submit_tag 'Enviar'%> | <%= link_to 'Voltar', pessoas_path  %></td></tr>
+  </table>
+<% end %>

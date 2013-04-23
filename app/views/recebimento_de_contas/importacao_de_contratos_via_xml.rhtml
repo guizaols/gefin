@@ -1,0 +1,13 @@
+<% content_for :titulo, 'Importação de Contratos do Contas a Receber (XML)' %>
+
+<% form_tag importacao_de_contratos_via_xml_recebimento_de_contas_path, :multipart => true do %>
+  <table>
+    <%= campo_de_cadastro 'Arquivo', (file_field_tag 'arquivo') %>
+    <tr><td></td><td><%= submit_tag 'Enviar'%></td></tr>
+  </table>
+<% end %>
+<br />
+
+<b>
+  <%= link_to 'Arquivo de Layout da Importação de Contratos', download_layout_recebimento_de_contas_path %>
+</b>

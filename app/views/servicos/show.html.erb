@@ -1,0 +1,19 @@
+<% content_for :titulo, "Detalhes" %>
+<table>
+  <tr>
+    <td><b>Descrição:</b></td>
+    <td><%=h @servico.descricao%></td>
+  </tr>
+  <tr>
+    <td><b>Unidade:</b></td>
+    <td><%=h @servico.unidade.nome%></td>
+  </tr>
+    <tr>
+    <td><b>Ativo:</b></td><td><%=@servico.ativo ? "Sim" : "Não" %> </td>
+  </tr>
+  <%=show_unless_blank 'Modalidade',@servico.modalidade%>
+  <%=show_unless_blank "Código do Serviço Sigat",@servico.codigo_do_servico_sigat%>  
+    <td>
+      <%= link_to 'Alterar', edit_servico_path(@servico) %> | <%= link_to 'Voltar', servicos_path %>
+    </td>
+</table>

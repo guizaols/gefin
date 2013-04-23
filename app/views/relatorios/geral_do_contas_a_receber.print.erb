@@ -1,0 +1,127 @@
+<% total_geral_juros = 0 %>
+<% total_geral_multa = 0 %>
+<% total_geral_honorarios = 0 %>
+<% total_geral_protesto = 0 %>
+<% total_geral_outros = 0 %>
+<% total_geral_desconto = 0 %>
+<% total_geral_taxa_boleto = 0 %>
+<% total_geral = 0 %>
+<% total_geral_a_receber = 0 %>
+
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:periodo_min].blank? ? '' : params[:busca][:periodo_min] %> a <%=h params[:busca][:periodo_max].blank? ? '' : params[:busca][:periodo_max] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="100%">
+  <tr align="center" style="font-size: 12px;">
+    <th style="width: 280px">CLIENTE</th>
+    <th style="width: 140px">CONTRATO</th>
+    <th style="width: 80px">JUROS</th>
+    <th style="width: 80px">MULTA</th>
+    <th style="width: 80px">HONORÁRIO</th>
+    <th style="width: 80px">PROTESTO</th>
+    <th style="width: 80px">OUTROS</th>
+    <th style="width: 80px">DESCONTO</th>
+    <th style="width: 80px">TX. BOLETO</th>
+    <th style="width: 65px">VCTO</th>
+    <th style="width: 65px">DATA REC.</th>
+    <th style="width: 100px">VAL. A RECEB.</th>
+    <th style="width: 100px">VAL. RECEBIDO</th>
+    <th style="width: 100px">SITUAÇÃO</th>
+  </tr>
+
+  <% @parcelas.each do |grupo, parcelas| %>
+    <tr align="left" style="font-size: 12px;">
+      <td colspan="13">
+	<b>Entidade:</b>
+        <%=h parcelas.first.unidade.entidade.nome %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b>Unidade:</b>
+        <%=h parcelas.first.unidade.nome %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b>Serviço:</b>
+        <%=h grupo %>
+      </td>
+    </tr>
+
+    <% total_multa = 0 %>
+    <% total_juros = 0 %>
+    <% total_desconto = 0 %>
+    <% total_honorarios = 0%>
+    <% total_protesto = 0%>
+    <% total_taxa_boleto = 0%>
+    <% total_outros = 0 %>
+    <% total_grupo = 0 %>
+    <% total_a_receber = 0 %>
+    <% valor_total_multas_e_juros = [] %>
+
+    <% parcelas.each do |parcela| %>
+        <% valor_total_multas_e_juros = Gefin.calcular_juros_e_multas(:vencimento=>parcela.data_vencimento,:data_base=>Date.today,:valor=>parcela.valor,:juros=>parcela.conta.juros_por_atraso,:multa=>parcela.conta.multa_por_atraso) %>
+	<tr>
+	  <td style="text-align: left"><%=h parcela.conta.pessoa.nome %></td>
+	  <td style="text-align: left"><%=h parcela.conta.numero_de_controle %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.valor_dos_juros, 'R$') %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.valor_da_multa, 'R$') %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.honorarios, 'R$') %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.protesto, 'R$') %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.outros_acrescimos, 'R$') %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.valor_do_desconto, 'R$') %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.taxa_boleto, 'R$') %></td>
+	  <td style="text-align: center"><%=h parcela.data_vencimento %></td>
+	  <td style="text-align: center"><%=h parcela.data_da_baixa %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.valor, 'R$') if parcela.valor %></td>
+	  <td style="text-align: left"><%=h preco_formatado(parcela.valor_liquido, 'R$') if parcela.valor_liquido %></td>
+	  <td style="text-align: center"><%=h parcela.situacao_verbose %></td>
+	</tr>
+        <% total_juros += parcela.valor_dos_juros %>
+        <% total_multa += parcela.valor_da_multa %>
+        <% total_honorarios += parcela.honorarios %>
+        <% total_protesto += parcela.protesto %>
+        <% total_outros += parcela.outros_acrescimos %>
+        <% total_desconto += parcela.valor_do_desconto %>
+        <% total_taxa_boleto += parcela.taxa_boleto %>
+        <% total_grupo += parcela.valor_liquido if parcela.valor_liquido %>
+        <% total_a_receber += parcela.valor if parcela.valor %>
+    <% end %>
+
+    <tr>
+      <td colspan="11" style="text-align: center; font-weight: bold; font-size: 12px;">
+        Total Atividade ==>
+      </td>
+      <td colspan="1" style="text-align: left; font-weight: bold; font-size: 12px;">
+        <%=h preco_formatado(total_a_receber, 'R$') %>
+      </td>
+      <td colspan="1" style="text-align: left; font-weight: bold; font-size: 12px;">
+        <%=h preco_formatado(total_grupo, 'R$') %>
+      </td>
+      <td colspan="1"></td>
+    </tr>
+
+    <% total_geral_juros += total_juros %>
+    <% total_geral_multa += total_multa %>
+    <% total_geral_honorarios += total_honorarios %>
+    <% total_geral_protesto += total_protesto %>
+    <% total_geral_outros += total_outros %>
+    <% total_geral_desconto += total_desconto %>
+    <% total_geral_taxa_boleto += total_taxa_boleto %>
+    <% total_geral += total_grupo %>
+    <% total_geral_a_receber += total_a_receber %>
+  <% end %>
+
+  <tr style="font-size: 12px; text-align: center">
+    <td colspan="2"><b>Totais ==></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_juros, 'R$') %></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_multa, 'R$') %></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_honorarios, 'R$') %></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_protesto, 'R$') %></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_outros, 'R$') %></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_desconto, 'R$') %></b></td>
+    <td colspan="1"><b><%=h preco_formatado(total_geral_taxa_boleto, 'R$') %></b></td>
+    <td colspan="2"></td>
+    <td><b><%=h preco_formatado(total_geral_a_receber, 'R$') %></b></td>
+    <td><b><%=h preco_formatado(total_geral, 'R$') %></b></td>
+  </tr>
+</table>
+
+<br />

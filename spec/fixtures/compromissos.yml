@@ -1,0 +1,21 @@
+
+ligar_para_o_cliente:
+  unidade: senaivarzeagrande
+  conta: curso_de_corel_do_paulo
+  conta_type: RecebimentoDeConta
+  data_agendada: "2009-02-10 00:00:00"
+  descricao: Ligar para o Cliente
+
+retornar_ligacao:
+  unidade: senaivarzeagrande
+  conta: curso_de_eletronica_do_paulo
+  conta_type: RecebimentoDeConta
+  data_agendada: "2009-02-18 00:00:00"
+  descricao: Retornar Ligação
+
+visitar_cliente:
+  unidade: sesivarzeagrande
+  conta: curso_de_corel_do_paulo
+  conta_type: RecebimentoDeConta
+  data_agendada: "2009-02-10 00:00:00"
+  descricao: visitar cliente

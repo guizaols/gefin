@@ -1,0 +1,13 @@
+<% content_for :titulo, 'Perfis de Acesso' %>
+<% listagem_table :new => new_perfil_path,
+                  :permissoes => Perfil::ManipularPerfisDeAcesso,
+                  :headers => ['Descricao'],
+                  :style => 'width: 70%' do %>
+  <% for perfil in @perfis %>
+    <% listagem_tr :edit => edit_perfil_path(perfil),
+                   :destroy => perfil,
+                   :permissoes => Perfil::ManipularPerfisDeAcesso do %>
+      <td><%= link_to h(perfil.descricao), perfil_path(perfil.id) %></td>
+    <% end %>
+  <% end %>
+<% end %>

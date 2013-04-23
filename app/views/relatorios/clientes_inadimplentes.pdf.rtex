@@ -1,0 +1,87 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\fontsize{7pt}{12pt}\selectfont
+\begin{longtable}{|p{1.3cm}|p{1.3cm}|p{1.3cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{2.0cm}|p{2.0cm}|p{2.0cm}|p{2.0cm}|}
+
+<% total_original = 0; total_acrescimos = 0; total_descontos = 0; total_geral = 0 %>
+
+<% @contas_receber.each do |pessoa, contas| %>
+    \hline
+    \multicolumn{6}{|l}{\textbf{Responsável:} <%=hl pessoa.nome %>}
+    \multicolumn{5}{l|}{\textbf{CPF:} <%=hl pessoa.cpf %>} \\
+    \multicolumn{10}{|l|}{\textbf{Endereço:} <%=hl pessoa.endereco %>} \\
+    \multicolumn{3}{|l}{\textbf{E-mail:} <%=hl pessoa.email.first %>}
+    \multicolumn{3}{l}{\textbf{Telefone 1:} <%=hl pessoa.telefone[0] %>}
+    \multicolumn{2}{l}{\textbf{Telefone 2:} <%=hl pessoa.telefone[1] %>}
+    \multicolumn{2}{l|}{\textbf{Telefone 3:} <%=hl pessoa.telefone[2] %>}
+    \hline
+
+    <% contas.each do |conta| %>
+        \multicolumn{6}{|l}{\textbf{<%=hl !conta.dependente.blank? ? conta.dependente.nome : 'Sem dependente cadastrado' %>}}
+        \multicolumn{5}{l|}{Tel. Aluno: <%=hl conta.pessoa.telefone.first %>} \\
+        \multicolumn{1}{|l}{}
+        \multicolumn{2}{l}{Pai: <%=hl !conta.dependente.blank? ? conta.dependente.nome_do_pai : 'Sem dependente cadastrado' %>}
+        \multicolumn{9}{l|}{Mãe: <%=hl !conta.dependente.blank? ? conta.dependente.nome_da_mae : 'Sem dependente cadastrado' %>} \\
+        \hline
+        <% valor_original = 0; valor_acrescimos = 0; valor_desconto = 0; valor_total = 0 %>
+        <% @parcelas = [] %>
+
+        <% conta.parcelas.each{|parcela| @parcelas << parcela if (parcela.data_da_baixa.blank?) && (Date.today > parcela.data_vencimento.to_date) } %>
+        \multicolumn{3}{|c}{}
+        \multicolumn{1}{c|}{\textbf{Turma}} &
+        \multicolumn{1}{|c|}{\textbf{Nº Parcela}} &
+        \multicolumn{1}{|c|}{\textbf{Vencimento}} &
+        \multicolumn{1}{|c|}{\textbf{Atraso}} &
+        \multicolumn{1}{|c|}{\textbf{Valor orig.}} &
+        \multicolumn{1}{|c|}{\textbf{Total desc.}} &
+        \multicolumn{1}{|c|}{\textbf{Total acres.}} &
+        \multicolumn{1}{|c|}{\textbf{Valor Total}} \\
+        \hline
+
+        <% @parcelas.each do |parcela| %>
+            \multicolumn{2}{|c}{<%=hl parcela.situacao_verbose %>} & &
+            <%=hl parcela.numero %> &
+            <%=hl parcela.data_vencimento %> &
+            <%=hl (Date.today - parcela.data_vencimento.to_date).to_i %> &
+            <%=hl preco_formatado(parcela.valor, 'R$') %> &
+            <%=hl preco_formatado(parcela.valor_do_desconto, 'R$') %> &
+            <%=hl preco_formatado((parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos), 'R$') %> &
+            <%=hl preco_formatado(((parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos) - parcela.valor_do_desconto), 'R$') %>
+            \\
+            <% valor_original += parcela.valor %>
+            <% valor_acrescimos += (parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos) %>
+            <% valor_desconto += parcela.valor_do_desconto %>
+            <% valor_total += (parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos) - parcela.valor_do_desconto %>
+            \hline
+        <% end %>
+
+        \multicolumn{4}{|c}{} &
+        \multicolumn{2}{|l}{\textbf{TOTAL DO RESPONSÁVEL:}} &
+        \multicolumn{1}{c}{<%=hl preco_formatado(valor_original, 'R$') %>} &
+        \multicolumn{1}{c}{<%=hl preco_formatado(valor_desconto, 'R$') %>} &
+        \multicolumn{1}{c}{<%=hl preco_formatado(valor_acrescimos, 'R$') %>} &
+        \multicolumn{1}{c|}{<%=hl preco_formatado(valor_total, 'R$') %>}
+        \hline
+
+        <% total_original += valor_original %>
+        <% total_acrescimos += valor_acrescimos %>
+        <% total_descontos += valor_desconto %>
+        <% total_geral += valor_total %>
+    <% end %>
+    \hline
+<% end %>
+
+\multicolumn{4}{|c}{} &
+\multicolumn{2}{|l}{\textbf{TOTAL GERAL:}} &
+\multicolumn{1}{c}{<%=hl preco_formatado(total_original, 'R$') %>} &
+\multicolumn{1}{c}{<%=hl preco_formatado(total_descontos, 'R$') %>} &
+\multicolumn{1}{c}{<%=hl preco_formatado(total_acrescimos, 'R$') %>} &
+\multicolumn{1}{c|}{<%=hl preco_formatado(total_geral, 'R$') %>}
+\hline
+
+\end{longtable}
+\end{center}

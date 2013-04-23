@@ -1,0 +1,15 @@
+<% content_for :titulo, "Listando Unidades" %>
+
+<% listagem_table :new => new_unidade_path,:permissoes =>Perfil::ManipularDadosDasUnidades, :headers => ['Nome', 'Sigla'] do %>
+
+<% for unidade in @unidades %>
+  <% listagem_tr :edit => edit_unidade_path(unidade), :destroy => unidade_path(unidade),:permissoes=>Perfil::ManipularDadosDasUnidades do %>
+
+    <td><%=  link_to h(unidade.nome), unidade %></td>
+    <td><%=h unidade.sigla %></td>
+    
+  <% end %>
+<% end %>
+<% end %>
+
+

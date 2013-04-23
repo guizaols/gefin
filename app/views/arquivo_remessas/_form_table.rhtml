@@ -1,0 +1,19 @@
+<% parcelas.each_pair do |conta, parcelas| %>
+  <tr class="<%= cycle('impar', 'par')%>">
+    <td colspan="4"><b>Número de Controle</b> - <%= link_to h(conta.numero_de_controle), conta %></td>
+    <td style="text-transform: uppercase"><b>Fornecedor</b> - <%= link_to h(conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social), conta.pessoa %></td>
+  </tr>
+  <% parcelas.each do |parcela| %>
+    <tr class="<%= cycle('impar', 'par') %>">
+      <td>
+          <%= check_box_tag 'arquivo_remessa[parcelas_ids][]', parcela.id, checked_parcelas(checked_parcelas_dis, parcela.id),
+              :id => "par_#{conta.id}_#{parcela.id}", :class => 'selecionados', :lang => parcela.valor_liquido,
+              :onchange => "if ($(this).checked) { #{remote_function(:url => {:action => 'valida_parcela', :controller => 'arquivo_remessas', :id => parcela.id})}}" %>
+      </td>
+      <td style="text-align: center"><%=h parcela.numero %></td>
+      <td><%=h parcela.data_vencimento %></td>
+      <td><%=h preco_formatado(parcela.valor, 'R$') %></td>
+      <td><%=h parcela.situacao_verbose %></td>
+    </tr>
+  <% end %>
+<% end %>

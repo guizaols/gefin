@@ -1,0 +1,10 @@
+<tr>
+  <td class="field_descriptor">Histórico</td>
+  <td>
+    <%= divs_para_explicar_auto_complete(tipo + '_de_conta_historico') %>
+    <%= f.text_area :historico, {:simple_tag => true , :id => "historico", :size => "61x3"}.merge(hash_com_opcoes_do_auto_complete(tipo + '_de_conta_historico')).merge(@desabilitar_edicao ? {:disabled=>true} : {}) %>
+    <div id="historico_auto_complete" class="auto_complete_para_conta"></div>
+    <%= auto_complete_field("historico", :url => auto_complete_for_historico_historicos_path, :after_update_element => after_update_element, :indicator => "loading_historico", :with => "'argumento=' + $('historico').value") %>
+    <%= image_tag 'loading.gif', :id => "loading_historico", :style => "display:none" %>
+  </td>
+</tr>

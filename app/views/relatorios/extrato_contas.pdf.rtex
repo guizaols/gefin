@@ -1,0 +1,101 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:data_min], params[:busca][:data_max]) %>}
+\fontsize{7pt}{10pt}\selectfont
+
+<% conta_corrente = ContasCorrente.find(params[:busca][:conta_corrente_id]) %>
+<% contador = 1 %>
+
+\textbf{Resumo da Conta Corrente:} <%=hl conta_corrente.resumo %>}
+\vspace{10pt}
+
+<% @itens_movimentos.group_by {|item_movimento| item_movimento.movimento.data_lancamento}.each do |data, items| %>
+   \begin{longtable}{|p{2.0cm}|p{5.0cm}|p{5.0cm}|p{2.0cm}|p{2.0cm}|}
+     <% saldo_anterior = conta_corrente.saldo_anterior(data, session[:unidade_id]) %>
+
+     <% saldo_dinheiro = 0; saldo_cheque = 0; saldo_atual = 0; entradas = 0; saidas = 0; dinheiro_entrada = 0 %>
+     <% dinheiro_saida = 0; cheque_entrada = 0; cheque_saida = 0; parcela = []; valor_aux = [] %>
+
+     \hline
+     \multicolumn{3}{|r}{\textbf{Saldo inicial em:}}
+     \multicolumn{2}{l}{<%=hl data %> }
+     \multicolumn{2}{l|}{<%=hl preco_formatado(saldo_anterior, 'R$') %>} \\
+     \hline
+     \textbf{Item} & \textbf{Número de Controle} & \textbf{Fornecedores/Cliente/Outros} & \textbf{Valor} & \textbf{Saldo} \\
+     \hline
+
+     <% items.each do |item| %>
+        <% parcela = item.movimento.conta.parcelas.find_by_id(item.movimento.parcela_id) rescue nil %>
+        <% item.tipo == "D" ? entradas += item.valor : saidas += item.valor %>
+        <% saldo_atual = saldo_atual + (item.verifica_valor) %>
+
+        <%=hl contador %> &
+        <%=hl item.movimento.numero_de_controle %> &
+        <%=hl item.movimento.pessoa.nome %> &
+        <%=hl preco_formatado(item.verifica_valor, 'R$') %> &
+        <%=hl preco_formatado(saldo_atual, 'R$') %> \\
+        \hline
+
+        <% if (parcela.blank? ? '' : parcela.forma_de_pagamento == Parcela::DINHEIRO) || item.movimento.provisao == Movimento::SIMPLES %>
+            <% item.tipo == "D" ? dinheiro_entrada += item.valor : dinheiro_saida += item.valor %>
+        <% elsif parcela.forma_de_pagamento == Parcela::CHEQUE %>
+
+            <% if item.tipo == "D" %>
+                <% cheque_entrada += item.valor %>
+                <%# if parcela.cheques.first.prazo == Cheque::VISTA %>
+                    <%# item.movimento.itens_movimentos.each{|i| valor_aux << i if i.tipo == 'C' && !items.include?(i.id)} %>
+                    <%# valor_aux -= items %>
+                    <%# cheque_saida += valor_aux.collect(&:valor).sum %>
+                <%# end %>
+            <% else %>
+                <% cheque_saida += item.valor %>
+            <% end %>
+            <%# valor_aux = [] %>
+        <% end %>
+
+        <% contador += 1 %>
+     <% end %>
+
+     <% saldo_cheque = conta_corrente.saldo_anterior(data, session[:unidade_id], Parcela::CHEQUE) %>
+     <% saldo_dinheiro = saldo_anterior - saldo_cheque %>
+
+     \multicolumn{5}{|c|}{\textbf{Resumo em: }{\textbf{<%=hl data %>}}} \\
+     \hline
+     & \textbf{Saldo Inicial} & \textbf{Entradas} & \textbf{Saídas} & \textbf{Saldo Final} \\
+     \hline
+
+     <% if conta_corrente.identificador == ContasCorrente::CAIXA %>
+        \textbf{Dinheiro} &
+        <%=hl preco_formatado(saldo_dinheiro, 'R$') %> &
+        <%=hl preco_formatado((dinheiro_entrada), 'R$') %> &
+        <%=hl preco_formatado((dinheiro_saida), 'R$') %> &
+        <%=hl preco_formatado(saldo_dinheiro + (dinheiro_entrada - dinheiro_saida), 'R$') %>
+        \hline
+
+        \textbf{Cheque à vista} &
+        <%=hl preco_formatado(saldo_cheque, 'R$') %> &
+        <%=hl preco_formatado((cheque_entrada), 'R$') %> &
+        <%=hl preco_formatado((cheque_saida), 'R$') %> &
+        <%=hl preco_formatado(saldo_cheque + (cheque_entrada - cheque_saida), 'R$') %>
+        \hline
+
+        \textbf{Total} & <%=hl preco_formatado(saldo_anterior, 'R$') %> &
+        <%=hl preco_formatado((dinheiro_entrada + cheque_entrada), 'R$') %> &
+        <%=hl preco_formatado((dinheiro_saida + cheque_saida), 'R$') %> &
+        <%=hl preco_formatado((saldo_anterior + (dinheiro_entrada + cheque_entrada) - (dinheiro_saida + cheque_saida)), 'R$') %> \\
+        \hline
+   <% else %>
+        \textbf{Total} & <%=hl preco_formatado(saldo_anterior, 'R$') %> &
+        <%=hl preco_formatado(entradas, 'R$') %> &
+        <%=hl preco_formatado(saidas, 'R$') %> &
+        <%=hl preco_formatado(saldo_anterior + (entradas - saidas), 'R$') %>
+        \hline
+   <% end %>
+
+  \end{longtable}
+  \vspace{10pt}
+
+<% end %>
+\end{center}

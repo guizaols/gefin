@@ -1,0 +1,16 @@
+
+<% form_for @servico, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <%= f.text_field :descricao, :label=>"Descrição" %>
+    <%= f.check_box :ativo, :label=>"Ativo" %>
+    <tr>  
+      <td class="field_descriptor">Modalidade</td><td><%= f.select_ou_crie_um_novo :modalidade, (Servico.find(:all, :order => 'modalidade ASC').collect {|c| c.modalidade }).uniq.reject(&:blank?) %></td>
+    </tr>
+  
+    <%= f.text_field :codigo_do_servico_sigat, :label =>"Código do Serviço SIGAT" %>
+    <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+
+<% end %>

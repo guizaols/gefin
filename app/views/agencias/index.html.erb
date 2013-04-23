@@ -1,0 +1,26 @@
+<% content_for :titulo, "Agências" %>
+
+<%= link_to_function "Importar Agências" do |page|
+  page.toggle "selecao_unidade"
+end %>
+
+<div id="selecao_unidade" style="display:none;">
+  <% form_remote_tag :url => importar_agencias_agencias_path, :loading => "Element.show('loading_form');", :success => "Element.hide('loading_form');" do %>
+    <table>
+      <%= campo_de_cadastro 'Entidade',
+        (select_tag :entidade, options_for_select(Entidade.retorna_entidades_para_select(@unidade.entidade_id))) %>
+      <tr><td></td><td><%= submit_tag "Importar" %><%= image_tag('loading.gif', :id => "loading_form", :style => "display:none") %></td></tr>
+    </table>
+  <% end %>
+</div>
+
+<% listagem_table :new => new_agencia_path, :permissoes => Perfil::ManipularDadosDasAgencias, :headers => ['Nome', 'Numero', 'Telefone', 'Contato'] do %>
+  <% for agencia in @agencias %>
+    <% listagem_tr :edit => edit_agencia_path(agencia), :destroy => agencia, :permissoes => Perfil::ManipularDadosDasAgencias do %>
+      <td><%= link_to h(agencia.nome), agencia %></td>
+      <td><%=h agencia.numero %></td>
+      <td><%=h agencia.telefone_contato %></td>
+      <td><%=h agencia.nome_contato %></td>
+    <% end %>
+  <% end %>
+<% end %>

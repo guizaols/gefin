@@ -1,0 +1,69 @@
+<% content_for :titulo, "Follow-Up" %>
+
+<p class="projecoes_details">
+  Unidade:
+  <%= @conta.unidade.nome.untaint %>
+  <br />
+  <% if @conta.is_a?(RecebimentoDeConta) || @conta.is_a?(PagamentoDeConta)%>
+    Unidade Organizacional:
+    <%= @conta.unidade_organizacional.nome.untaint %>
+    <br />
+  <% end %>
+  <% if @conta.is_a?(RecebimentoDeConta) %>
+    Serviço: <%= @conta.servico.descricao.untaint %>
+  <% else %>
+    Número de Controle: <%= @conta.numero_de_controle.untaint %>
+  <% end %>
+  <br />
+  Cliente:
+  <%= @conta.pessoa.nome.untaint %>
+  <br />
+  <% if @conta.is_a?(RecebimentoDeConta) %>
+    Número de Controle:
+    <%= @conta.numero_de_controle.untaint %>
+  <% end %>
+</p>
+
+<% listagem_table :headers => ['Data / Hora', 'Descrição', 'Valor Operação', 'Tipo de carta', 'Responsável'], :ocultar_ultima_th => true do %>
+  <% for historico_operacao in @historico_operacoes %>
+    <% listagem_tr do  %>
+      <td><%=h historico_operacao.created_at.strftime("%d/%m/%Y %H:%M:%S") %></td>
+      <td><%=h historico_operacao.descricao %>
+        <%= (link_to_function("Justificativa" ,:id=>"link_#{historico_operacao.id}") do |page|
+            page.show("justificativa_#{historico_operacao.id}")
+            page.hide("link_#{historico_operacao.id}")
+          end) unless historico_operacao.justificativa.blank? %>
+        <div id='<%= "justificativa_#{historico_operacao.id}" %>' style='display:none;' >
+          <b>Justificativa:</b> <%=h historico_operacao.justificativa %>
+        </div>
+      </td>
+      <td><%=h preco_formatado(historico_operacao.valor, "R$") %></td>
+      <td><%=h historico_operacao.numero_carta_cobranca_verbose %></td>
+      <td><%=h historico_operacao.usuario.funcionario.nome rescue nil %></td>
+    <% end %>
+  <% end %>
+<% end %>
+
+<p class="print" >
+  <% if (@conta.is_a?(PagamentoDeConta) && current_usuario.possui_permissao_para(Perfil::ManipularDadosDePagamentoDeContas)) || (@conta.is_a?(RecebimentoDeConta) && @conta.pode_ser_modificado? && current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas)) %>
+    <%= link_to_function 'Adicionar Follow-Up' do |page| page.toggle :novo_historico end %> |
+  <% end %>
+
+  <% if (@conta.is_a?(Movimento) && current_usuario.possui_permissao_para(Perfil::ManipularDadosDosMovimentos)) %>
+    <%= link_to_function 'Adicionar Follow-Up' do |page| page.toggle :novo_historico end %> |
+  <% end %>
+
+  <% if(@conta.is_a?(PagamentoDeConta) || @conta.is_a?(RecebimentoDeConta)) %>
+    <%= link_to 'Voltar', @conta.is_a?(PagamentoDeConta) ? pagamento_de_conta_path(@conta.id) : recebimento_de_conta_path(@conta.id) %>
+  <% else %>
+    <%= link_to 'Voltar', movimento_path(@conta.id) %>
+  <% end %>
+
+  <% if !@historico_operacoes.blank? %>
+    | <%= link_to_function 'Imprimir', "window.open('#{url_for(:action => 'index', :format => 'print')}')"%>
+  <% end %>
+</p>
+
+<div id="novo_historico" style="<%= params[:historico_operacao] && params[:historico_operacao][:descricao].blank? ? "display:true;" :"display:none;" %>">
+  <%= render :partial => 'form' %>
+</div>

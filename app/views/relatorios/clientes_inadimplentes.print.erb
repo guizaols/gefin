@@ -1,0 +1,106 @@
+<% total_original = 0; total_acrescimos = 0; total_descontos = 0; total_geral = 0 %>
+
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:periodo_min].blank? ? '' : params[:busca][:periodo_min] %> a <%=h params[:busca][:periodo_max].blank? ? '' : params[:busca][:periodo_max] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="100%">
+  <% @contas_receber.each do |pessoa, contas| %>
+    <tr>
+      <td colspan="1" style="width: 500px; text-align: left"><b>Responsável: </b><%=h pessoa.nome %></td>
+      <td colspan="10" style="text-align: left">
+        <% if pessoa.tipo_pessoa == Pessoa::FISICA %>
+          <b>CPF: </b><%=h pessoa.cpf %>
+        <% else %>
+          <b>CNPJ </b><%=h pessoa.cnpj %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="11" style="text-align: left"><b>Endereço: </b><%=h pessoa.endereco %></td>
+    </tr>
+    <tr>
+      <td colspan="1" style="width: 300px; text-align: left"><b>E-mail: </b><%=h pessoa.email.first %></td>
+      <td colspan="2" style="width: 200px; text-align: left"><b>Telefone 1: </b> <%=h pessoa.telefone[0] %></td>
+      <td colspan="2" style="width: 200px; text-align: left"><b>Telefone 2: </b> <%=h pessoa.telefone[1] %></td>
+      <td colspan="6" style="width: 200px; text-align: left"><b>Telefone 3: </b> <%=h pessoa.telefone[2] %></td>
+    </tr>
+
+    <% contas.each do |conta| %>
+      <tr>
+        <td colspan="3" style="text-align: left"><b>Aluno: </b><%=h !conta.dependente.blank? ? conta.dependente.nome : 'Sem dependente cadastrado' %></td>
+        <td colspan="8" style="text-align: left"><b>Tel. Aluno: </b><%=h conta.pessoa.telefone.first %></td>
+      </tr>
+      <tr>
+        <td colspan="1" style="width: 500px; text-align: left"><b>Pai: </b><%=h !conta.dependente.blank? ? conta.dependente.nome_do_pai : 'Sem dependente cadastrado' %></td>
+        <td colspan="9" style="text-align: left"><b>Mãe: </b><%=h !conta.dependente.blank? ? conta.dependente.nome_da_mae : 'Sem dependente cadastrado' %></td>
+      </tr>
+
+      <% valor_original = 0; valor_acrescimos = 0; valor_desconto = 0; valor_total = 0 %>
+      <% @parcelas = [] %>
+      <% conta.parcelas.each{|parcela| @parcelas << parcela if (parcela.data_da_baixa.blank?) && (Date.today > parcela.data_vencimento.to_date) } %>
+
+      <tr align="center">
+        <th colspan="2"></th>
+        <th style="width: 80px">Nº Parcela</th>
+        <th style="width: 80px">Vencimento</th>
+        <th style="width: 80px">Atraso</th>
+        <th style="width: 200px">Valor orig.</th>
+        <th style="width: 200px">Total desc.</th>
+        <th style="width: 200px">Total acres.</th>
+        <th style="width: 200px">Valor Total</th>
+      </tr>
+
+      <% @parcelas.each do |parcela| %>
+        <tr>
+          <% if parcela.situacao != Parcela::ENVIADO_AO_DR %>
+            <td colspan="2" style="text-align: center"><%=h parcela.situacao_verbose %></td>
+          <% else %>
+            <td colspan="2" style="text-align: center">Em atraso (Enviada ao DR)</td>
+          <% end %>
+          <td><%=h parcela.numero %></td>
+          <td><%=h parcela.data_vencimento %></td>
+          <td><%=h (Date.today - parcela.data_vencimento.to_date).to_i %></td>
+          <td><%=h preco_formatado(parcela.valor, 'R$') %></td>
+          <td><%=h preco_formatado(parcela.valor_do_desconto, 'R$') %></td>
+          <td><%=h preco_formatado((parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos), 'R$') %></td>
+          <td><%=h preco_formatado(((parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos) - parcela.valor_do_desconto), 'R$') %></td>
+        </tr>
+
+        <% valor_original += parcela.valor %>
+        <% valor_acrescimos += (parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos) %>
+        <% valor_desconto += parcela.valor_do_desconto %>
+        <% valor_total += (parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.honorarios + parcela.taxa_boleto + parcela.protesto + parcela.outros_acrescimos) - parcela.valor_do_desconto %>
+      <% end %>
+
+      <tr>
+        <td colspan="3"></td>
+        <td colspan="2" style="font-weight: bold">TOTAL DO RESPONSÁVEL:</td>
+        <td><%=h preco_formatado(valor_original, 'R$') %></td>
+        <td><%=h preco_formatado(valor_desconto, 'R$') %></td>
+        <td><%=h preco_formatado(valor_acrescimos, 'R$') %></td>
+        <td><%=h preco_formatado(valor_total, 'R$') %></td>
+      </tr>
+      <tr>
+        <td colspan="11"></td>
+      </tr>
+
+      <% total_original += valor_original %>
+      <% total_acrescimos += valor_acrescimos %>
+      <% total_descontos += valor_desconto %>
+      <% total_geral += valor_total %>
+    <% end %>
+  <% end %>
+
+  <tr style="font-weight: bold">
+    <td colspan="3"></td>
+    <td colspan="2">TOTAL GERAL: </td>
+    <td style="text-align: center"><%=h preco_formatado(total_original, 'R$') %></td>
+    <td style="text-align: center"><%=h preco_formatado(total_descontos, 'R$') %></td>
+    <td style="text-align: center"><%=h preco_formatado(total_acrescimos, 'R$') %></td>
+    <td style="text-align: center"><%=h preco_formatado(total_geral, 'R$') %></td>
+  </tr>
+</table>
+
+<br />

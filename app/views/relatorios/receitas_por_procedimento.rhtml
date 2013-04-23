@@ -1,0 +1,20 @@
+<%  content_for :titulo,"Receitas por Procedimento"%>
+
+<% form_remote_tag :url => receitas_por_procedimento_relatorios_path do %>
+  <table>
+    <%= campo_de_cadastro 'Conta Contábil Inicial', auto_complete_tag_para_qualquer_campo(:conta_contabil_inicial, auto_complete_for_conta_contabil_plano_de_contas_path) %>
+    <%= campo_de_cadastro 'Conta Contábil Final', auto_complete_tag_para_qualquer_campo(:conta_contabil_final, auto_complete_for_conta_contabil_plano_de_contas_path) %>
+    <%= campo_de_cadastro 'Unidade Inicial', auto_complete_tag_para_qualquer_campo(:unidade_organizacional_inicial, auto_complete_for_unidade_organizacional_unidades_organizacionais_path) %>
+    <%= campo_de_cadastro 'Unidade Final', auto_complete_tag_para_qualquer_campo(:unidade_organizacional_final, auto_complete_for_unidade_organizacional_unidades_organizacionais_path) %>
+    <%= campo_de_cadastro 'Centro Inicial', auto_complete_tag_para_qualquer_campo(:centro_inicial, auto_complete_for_centro_para_relatorio_centros_path) %>
+    <%= campo_de_cadastro 'Centro Final', auto_complete_tag_para_qualquer_campo(:centro_final, auto_complete_for_centro_para_relatorio_centros_path) %>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Opção de Impressão:</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','pdf',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag "Pesquisar" %></td></tr>
+  </table>
+<% end %>

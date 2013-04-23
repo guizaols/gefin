@@ -1,0 +1,17 @@
+<% content_for :titulo, "Detalhes" %>
+
+<table>
+  <%= show_unless_blank 'Número', @convenio.numero %>
+  <%= show_unless_blank 'Tipo de Servico', @convenio.tipo_de_servico %>
+  <%= show_unless_blank 'Conta Corrente', (@convenio.contas_corrente.descricao rescue nil) %>
+  <%= show_unless_blank 'Quantidade de Trasmissão', @convenio.quantidade_de_trasmissao %>
+  <%# unless @convenio.contas_correntes.empty? %>
+    <%#*<tr>%>
+      <%#*<td valign="top"><b>Contas Correntes:</b></td>%>
+      <%#*<td><%= listagem_de_contas_para_convenio(@convenio) </td>%>
+    <%#*</tr>%>
+  <%# end %>
+</table>
+
+<%= "#{link_to 'Alterar', edit_convenio_path(@convenio)} | "  if current_usuario.possui_permissao_para(Perfil::ManipularDadosDosConvenios)%>
+<%= link_to 'Voltar', convenios_path %>

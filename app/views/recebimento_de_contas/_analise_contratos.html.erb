@@ -1,0 +1,64 @@
+<% if @recebimento_de_contas.length > 0 %>
+  <p>
+    <b><%= pluralize(@recebimento_de_contas.length, 'contrato encontrado', 'contratos encontrados') %>:</b>
+    <b><%= link_to_function 'Listar contratos', "listarContratos();", :id => 'listar_contratos' %></b>
+    <b><%= link_to_function 'Ocultar contratos', "ocultarContratos();", :id => 'ocultar_contratos', :style => 'display: none;' %></b>
+    <% unless @mostrar_form.last %>
+      | <b><%= link_to_function 'Imprimir contratos' do |page|
+          page.new_window_to analise_contratos_recebimento_de_contas_path(:busca => params[:busca], :format => 'print')
+        end %></b>
+    <% end %>
+  </p>
+  <div id="listagem" style="display: none;">
+    <% listagem_table :headers => ['Número de Controle','Cliente','Serviço', 'Início', 'Valor do Contrato', 'Parcelas', 'Situação', 'Serviço Iniciado?', ''] do %>
+      <% @recebimento_de_contas.each do |recebimento_de_conta| %>
+        <% listagem_tr do %>
+          <td><%= link_to h(recebimento_de_conta.numero_de_controle), recebimento_de_conta %></td>
+          <td><%=h recebimento_de_conta.pessoa.nome %></td>
+          <td><%=h recebimento_de_conta.servico.descricao %></td>
+          <td><%=h recebimento_de_conta.data_inicio %></td>
+          <td><%=h preco_formatado(recebimento_de_conta.valor_do_documento) %></td>
+          <td><%=h recebimento_de_conta.numero_de_parcelas %></td>
+          <td><%=h recebimento_de_conta.situacao_verbose + " / " + recebimento_de_conta.situacao_fiemt_verbose %></td>
+          <td>
+            <% unless recebimento_de_conta.servico_iniciado? %>
+              <%= 'NÃO' %>
+            <% else %>
+              <%= 'SIM' %>
+            <% end %>
+          </td>
+          <td>
+            <%= "Contabilizado" if recebimento_de_conta.contabilizacao_da_receita %>
+          </td>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+  <%= javascript_tag "listarContratos();" if params[:mostrar] %>
+
+  <% if @mostrar_form.first %>
+    <% form_tag calcular_proporcao_recebimento_de_contas_path(:busca => params[:busca]) do %>
+      <table>
+        <tr>
+          <td class="field_descriptor">Histórico</td>
+          <td>
+            <%= divs_para_explicar_auto_complete('conta_historico') %>
+            <%=  text_area_tag 'historico', nil, {:simple_tag=>true,:id=>"historico", :size => "70x2"}.merge(hash_com_opcoes_do_auto_complete('conta_historico')) %>
+            <div id="historico_auto_complete" class="auto_complete_para_conta"></div>
+            <%= auto_complete_field("historico",:url => auto_complete_for_historico_historicos_path, :indicator=>"loading_historico", :with=>"'argumento=' + $('historico').value") %>
+            <%= image_tag 'loading.gif', :id => "loading_historico", :style => "display:none" %>
+          </td>
+        </tr>
+        <tr>
+          <td>
+          </td>
+          <td>
+            <%= submit_tag 'Calcular' %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+  <% end %>
+
+<% end %>
+

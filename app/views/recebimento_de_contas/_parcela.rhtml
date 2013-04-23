@@ -1,0 +1,26 @@
+<tr>
+  <th>
+    <%=h numero %>
+  </th>
+
+  <th>
+    <%= calendar_date_select_tag_com_mascara "parcela[#{chave.to_s}][data_vencimento]", (params["parcela"]["#{chave.to_s}"]["data_vencimento"] rescue data_vencimento), :size => 10,
+      :readonly => [Parcela::RENEGOCIADA, Parcela::CANCELADA, Parcela::QUITADA].include?(situacao.to_i) ? true : false %>
+  </th>
+  <% if situacao_contrato == RecebimentoDeConta::Cancelado || situacao_contrato == RecebimentoDeConta::Evadido %>
+    <th>
+      <%= text_field_tag "parcela[#{chave.to_s}][valor]", (params["parcela"]["#{chave.to_s}"]["valor"] rescue valor.real.to_s), :lang => situacao.to_i, :class => "valor", :size => 10, :onblur => "valor_total_das_parcelas();",
+        :readonly => true, :onkeypress => "return(MascaraMoeda(parcela_#{chave.to_s}_valor, \".\",\",\", event))" %>
+    </th>    
+  <% else %>
+    <th>
+      <%= text_field_tag "parcela[#{chave.to_s}][valor]", (params["parcela"]["#{chave.to_s}"]["valor"] rescue valor.real.to_s), :lang => situacao.to_i, :class => "valor", :size => 10, :onblur => "valor_total_das_parcelas();",
+        :readonly => [Parcela::RENEGOCIADA, Parcela::CANCELADA, Parcela::QUITADA].include?(situacao.to_i) ? true : false, :onkeypress => "return(MascaraMoeda(parcela_#{chave.to_s}_valor, \".\",\",\", event))" %>
+    </th>
+  <% end %>
+  <th>
+    <%= label_tag situacao_verbose %>
+    <%= hidden_field_tag "parcela[#{chave.to_s}][situacao]", situacao.to_i %>
+  </th>
+</tr>
+<%#= mascara_para_valor("parcela_#{chave.to_s}_valor") %>

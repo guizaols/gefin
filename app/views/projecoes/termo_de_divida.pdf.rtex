@@ -1,0 +1,115 @@
+\fontsize{11pt}{11pt}\selectfont
+
+\begin{table}{\vspace{10pt}}
+\end{table}
+
+\hspace{70pt}\textbf{INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA} \\
+
+\hspace{85pt}\textbf{E COMPOSIÇÃO AMIGÁVEL POR MÚTUO ACORDO} \\
+\\
+
+<% valor_total = 0 %>
+<% @parcelas.each do |parcela| %>
+    <% parcela.calcular_juros_e_multas!(Date.today, parcela.data_vencimento)%>
+    <% valor_total += parcela.calcula_valor_total_da_parcela(true).to_i %>
+<% end %>
+
+\hspace{10pt}I - Pelo presente Instrumento particular e na melhor forma de direito, em que são partes, de um lado, o <%=hl @unidade.nome %>, com sede na <%=hl @unidade.endereco %> - <%=hl @unidade.bairro %>, <%=hl @unidade.localidade.nome %> - <%=hl @unidade.localidade.uf.upcase %>, CEP: <%=hl @unidade.cep %>, inscrita no CNPJ: <%=hl @unidade.cnpj %> neste ato representado pelo(a) <%=hl @unidade.responsavel %>, com poderes para firmar acordos, a seguir denominado simplesmente, CREDOR e de outro lado e de comum acordo, denominado DEVEDOR: \\
+
+\hspace{10pt}Sr(a): <%=hl @conta.pessoa.fisica? ? @conta.pessoa.nome : @conta.pessoa.razao_social %> \\
+CPF/CNPJ: <%=hl @conta.pessoa.fisica? ? @conta.pessoa.cpf : @conta.pessoa.cnpj %> \\
+Endereço: <%=hl @conta.pessoa.endereco %>, <%=hl @conta.pessoa.numero %> \\
+Bairro: <%=hl @conta.pessoa.bairro %> \\
+Cidade: <%=hl @conta.pessoa.localidade ? @conta.pessoa.localidade.nome : "Sem localidade cadastrada".upcase %> \hspace{20pt}UF: <%=hl @conta.pessoa.localidade ? @conta.pessoa.localidade.uf.upcase : "Sem UF cadastrada".upcase %> \\
+
+
+\hspace{10pt}Reconhece a(s) divída(s) da(s) parcela(s) devida(s) abaixo por parte do DEVEDOR, em razão do curso/serviço de <%=hl @conta.servico.descricao %> o débito de <%=hl @parcelas_renegociadas.length %> parcela(s) devidamente acrescida(s) das penalidades contratuais: \\
+
+<% total = 0 %>
+
+\begin{longtable}{|p{6.0cm}|p{5.0cm}|p{3.0cm}|}
+\hline
+\textbf{Contrato} & \textbf{Valor} & \textbf{Vencimento}
+\hline
+
+<% @parcelas_renegociadas.each_with_index do |parcela, index| %>
+    <% parcela.calcular_juros_e_multas! %>
+    %\hspace{30pt}<%=hl index + 1 %> - R\$ <%=hl preco_formatado(parcela.calcula_valor_total_da_parcela(true).to_i) %> <%=hl valor_por_extenso(parcela.calcula_valor_total_da_parcela(true).to_i) %> com vencimento para dia <%=hl parcela.data_vencimento %>.\\
+    \fontsize{9pt}{9pt}\selectfont
+    <%=hl parcela.conta.servico.descricao %> &
+    \fontsize{9pt}{9pt}\selectfont
+    <%=hl preco_formatado(parcela.calcula_valor_total_da_parcela(true).to_i, 'R$') %> &
+    \fontsize{9pt}{9pt}\selectfont
+    <%=hl parcela.data_vencimento %>
+    \hline
+    <% total += parcela.calcula_valor_total_da_parcela(true).to_i %>
+<% end %>
+\fontsize{10pt}{10pt}\selectfont
+\textbf{Total:} &
+\fontsize{10pt}{10pt}\selectfont
+\textbf{<%=hl preco_formatado(total, 'R$') %>} &
+\hline
+\end{longtable}
+
+\\
+\hspace{10pt}E firma acordo comprometendo-se ao pagamento, respeitando as datas de vencimento dos boletos bancários enviados para o endereço acima informado:
+\\
+
+<% total = 0 %>
+\begin{longtable}{|p{6.0cm}|p{5.0cm}|p{3.0cm}|}
+\hline
+\textbf{Contrato} & \textbf{Valor} & \textbf{Vencimento}
+\hline
+<% @parcelas.each_with_index do |parcela, index| %>
+    %\hspace{30pt}<%=hl index + 1 %> - R\$ <%=hl preco_formatado(parcela.calcula_valor_total_da_parcela(true).to_i) %> <%=hl valor_por_extenso(parcela.calcula_valor_total_da_parcela(true).to_i) %> com vencimento para dia <%=hl parcela.data_vencimento %>.\\
+    \fontsize{9pt}{9pt}\selectfont
+    <%=hl parcela.conta.servico.descricao %> &
+    \fontsize{9pt}{9pt}\selectfont
+    <%=hl preco_formatado(parcela.calcula_valor_total_da_parcela(true).to_i, 'R$') %> &
+    \fontsize{9pt}{9pt}\selectfont
+    <%=hl parcela.data_vencimento %>
+    \hline
+    <% total += parcela.calcula_valor_total_da_parcela(true).to_i %>
+<% end %>
+\fontsize{10pt}{10pt}\selectfont
+\textbf{Total:} &
+\fontsize{10pt}{10pt}\selectfont
+\textbf{<%=hl preco_formatado(total, 'R$') %>} &
+\hline
+\end{longtable}
+
+
+\hspace{10pt}II – O CREDOR procederá à liberação da restrição junto ao SPC e Serasa após o pagamento da primeira ou única parcela do presente acordo, no prazo máximo de 05 (cinco) dias úteis.\\ \\
+III- Havendo atraso na(s) parcela(s) decorrente(s) deste acordo, com prazo superior a 10 (dez) dias, implicará em nova negativação junto aos órgãos de proteção ao crédito.\\ \\
+IV- Fica ajustado que qualquer atraso no pagamento da(s) prestação(es) ora pactuada(s) importará no vencimento antecipado das demais independentemente de interpelação, quando for o caso, notificação ou mesmo simples aviso, podendo o CREDOR, desde logo, efetuar a cobrança judicial do saldo devedor, acrescido de multa no importe de 2% e juros moratórios à taxa de 0,0333% ao dia, a contar da data do acordo no caso de não adimplemento de nenhuma parcela, ou do vencimento da última prestação paga, bem como poderá ainda cobrar honorários advocatícios no valor de 20% sobre o débito em aberto e demais cominações legais, saldo esse cuja liquidez e certeza, extensivos aos acessórios, o (a) DEVEDOR(A) reconhece, para o fim de ser cobrado, com os acréscimos, por via de execução, perante o juízo competente.\\ \\
+V- O presente instrumento particular de confissão de dívida e composição amigável por mútuo acordo é lavrado nos termos da legislação vigente pertinente à espécie. \\ \\
+VI- Fica eleito como competente para dirimir eventuais dúvidas decorrentes do presente contrato, o foro de Cuiabá-MT, com a exclusão de qualquer outro, por mais privilegiado que seja. \\ \\
+E, por estarem justo e contratado, reconhecem o presente instrumento no pagamento e compensação da primeira parcela do acordo firmado neste ato. \\ \\
+<%=hl @unidade.localidade.nome %>/<%=hl @unidade.localidade.uf.upcase %>, <%= Date.today.strftime("%d de %B de %Y")%>.
+
+\fontsize{10pt}{10pt}\selectfont
+\begin{longtable}{p{8.0cm}p{8.0cm}}
+& \\
+%& \\
+%& \\
+%& \\
+%& \\
+%& \\
+\line(1,0){200pt} & \line(1,0){200pt} \\
+%& \\
+%\fontsize{10pt}{10pt}\selectfont
+%Nome: <%=hl @unidade.responsavel %> & Nome: <%=hl @conta.pessoa.nome.upcase %>  \\
+%\fontsize{10pt}{10pt}\selectfont
+%CPF: <%=hl @unidade.responsavel_cpf %> & CPF/CNPJ: <%=hl @conta.pessoa.tipo_pessoa == 1 ? @conta.pessoa.cpf : @conta.pessoa.cnpj %>  \\
+%\fontsize{10pt}{10pt}\selectfont
+%PELO CREDOR: & PELO DEVEDOR: \\
+%\fontsize{10pt}{10pt}\selectfont
+%<%=hl @unidade.sigla %> & \\
+%& \\
+%& \\
+%Testemunhas: & \\
+%& \\
+%\fontsize{10pt}{10pt}\selectfont
+%Nome: & Nome: \\
+%\fontsize{10pt}{10pt}\selectfont
+%CPF: & CPF: \\

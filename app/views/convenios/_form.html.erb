@@ -1,0 +1,120 @@
+<% form_for @convenio, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Tipo de Convênio</td>
+      <td><%=f.select :tipo_convenio,[['Cobrança', Convenio::COBRANCA],['Pagamento',Convenio::PAGAMENTO]], {:include_blank => true}, :onchange => "desenha_view(this.value)"%></td>
+    </tr>
+
+    <%= f.text_field :numero, :label => 'Número', :size => '50px' %>
+
+    <tr id="servico" style="display:none;">
+      <td class="field_descriptor">Serviço</td><td>
+        <%= auto_complete_para_qualquer_campo(f, 'servico', auto_complete_for_servico_servicos_path, {:opcoes_para_text_field => {:disabled => @desabilitar_edicao, :size => '80px'}}) %>
+      </td>
+    </tr>
+
+    <tr id="banco">
+      <td class="field_descriptor">Banco</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f,:banco, auto_complete_for_banco_bancos_path, {:opcoes_para_text_field => {:size => '50px'}}) %>
+      </td>
+    </tr>
+
+    <tr id="agencia" style="display:none;">
+      <td  class="field_descriptor">Agência</td> <td>
+        <%= auto_complete_para_qualquer_campo(f, 'agencia', auto_complete_for_agencias_do_banco_agencias_path, {:complemento_dos_params => "+ '&banco_id=' + $('convenio_banco_id').value"}) %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Situação</td>
+      <td><%= f.select :situacao, [['ATIVO', 1], ['INATIVO', 2]], {:include_blank=>true} %></td>
+    </tr>
+
+    <tr id="quantidade_transmissao" style="display:none;">
+      <td class="field_descriptor">Quantidade de Trasmissão</td>
+      <td><%= f.select :quantidade_de_trasmissao, [['01', 1], ['02', 2]], :selected => 2 %></td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Data de Registro</td>
+      <td><%= calendar_date_select_com_mascara(f, 'data_registro') %></td>
+    </tr>
+
+    <tr id="conta_corrente" style="display:none;">
+      <td  class="field_descriptor">Conta Corrente</td> <td>
+        <%= auto_complete_para_qualquer_campo(f, 'contas_corrente', auto_complete_for_conta_corrente_contas_correntes_path, {:opcoes_para_text_field => {:size => '50px'}}) %>
+      </td>
+    </tr>
+
+    <tr style="display:none;" id="carteira">
+      <td class="field_descriptor">Nº Carteira</td>
+      <td><%= f.text_field :numero_carteira, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr style="display:none;" id="variacao_da_carteira">
+      <td class="field_descriptor">Variação Carteira</td>
+      <td><%= f.text_field :variacao_carteira, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr id="tipo_documento" style="display:none;">
+      <td class="field_descriptor">Tipo de Documento</td>
+      <td><%= f.select :tipo_documento, Convenio::TIPOS_DE_DOCUMENTO %></td>
+    </tr>
+
+    <tr style="display:none;" id="indicativo_sacador">
+      <td class="field_descriptor">Indicativo Sacador</td>
+      <td><%= f.text_field :indicativo_sacador, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr style="display:none;" id="local_pagamento">
+      <td class="field_descriptor">Local Pagamento</td>
+      <td><%= f.text_field :local_pagamento, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr style="display:none;" id="instrucoes">
+      <td class="field_descriptor">Instruções <%= link_to_function '+' do |page|
+          page.insert_html :bottom, 'div_instrucoes', :partial => 'instrucao'
+        end %>
+      </td>
+      <td id="div_instrucoes" style="list-style-type: none;">
+        <%= render :partial => 'instrucao' if @convenio.new_record? %>
+        <%= render :partial => 'instrucao', :object => 'convenio', :collection => @convenio.instrucoes if @convenio.instrucoes %>
+      </td>
+    </tr>
+
+    <tr style="display:none;" id="reservado_empresa">
+      <td class="field_descriptor">Reservado Empresa</td>
+      <td><%= f.text_field :reservado_empresa, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr style="display:none;" id="numero_bordero">
+      <td class="field_descriptor">Número do Borderô</td>
+      <td><%= f.text_field :numero_bordero, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr style="display:none;" id="cod_operacao">
+      <td class="field_descriptor">Código Operação</td>
+      <td><%= f.text_field :cod_operacao, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+
+    <tr id="tipo_documento" style="display:none;">
+      <td class="field_descriptor">Tipo de ento</td>
+      <td><%= f.select :tipo_convenio_boleto, [['Simples', Convenio::SIMPLES],['Vinculada',Convenio::VINCULADA],['Registrada', Convenio::REGISTRADA],['Descontada', Convenio::DESCONTADA],['Direta Especial', Convenio::DIRETA_ESPECIAL]] %></td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Descrição Modalidade</td>
+      <td><%= f.text_field :tipo_de_servico, :simple_tag => true, :size => '50px' %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= f.submit 'Salvar' %></td>
+    </tr>
+  </table>
+<% end %>
+
+<% javascript_tag do %>
+  desenha_view($('convenio_tipo_convenio').value);
+<% end %>

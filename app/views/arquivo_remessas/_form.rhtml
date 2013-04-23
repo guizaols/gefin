@@ -1,0 +1,59 @@
+<br />
+<% form_for(@arquivo_remessa,  :html => {:id => "form_arquivo_remessa"}) do |f| %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data Inicial</td>
+      <td><%= calendar_date_select_tag_com_mascara "busca[data_inicial]", @busca[:data_inicial] %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Data Final</td>
+      <td><%= calendar_date_select_tag_com_mascara "busca[data_final]", @busca[:data_final] %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Nº de Controle</td>
+      <td><%= text_field_tag "busca[controle]", @busca[:controle], :size => '50px' %></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td>
+        <%= button_to_remote 'Pesquisar', :url => pesquisa_parcelas_arquivo_remessas_path, :with => "Form.serialize('form_arquivo_remessa'),",:loading => "Element.show('loading_arq_rem');", :success => "Element.hide('loading_arq_rem');" %>
+        <%= image_tag('loading.gif', :id => "loading_arq_rem", :style => "display:none") %>
+      </td>
+    </tr>
+  </table>
+
+
+  <% listagem_table :headers => ['Sel', 'Número da Parcela', 'Data de Vencimento', 'Valor', 'Situação'], :ocultar_ultima_th => true, :style => "width:90%;" do %>
+    <% unless @parcelas.blank? %>
+      <tbody id="resultado_pesquisa_remessa">
+        <%= render :partial => 'form_table', :locals => {:checked_parcelas_dis => @arquivo_remessa.array_parcelas_ids, :parcelas => @parcelas} %>
+      </tbody>
+    <% else %>
+      <tbody id="resultado_pesquisa_remessa"></tbody>
+    <% end %>
+      <tr>
+        <td>
+          <%= link_to_function 'Todas' do |page| page << "marcaOuDesmarcaParcelas(true);" end %>
+          <br />
+          <%= link_to_function 'Nenhuma' do |page| page << "marcaOuDesmarcaParcelas(false);" end %>
+        </td>
+      </tr>
+  <% end %>
+
+  <table>
+    <tr>
+      <td class="field_descriptor">Nome</td>
+      <td><%= f.text_field :nome %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Conta Corrente</td>
+      <td><%=f.select :convenio_id, Convenio.all.collect{|conv| [conv.contas_corrente.descricao, conv.id] if conv.tipo_convenio == Convenio::PAGAMENTO}.compact,{:include_blank=>true}%>
+      </td>
+    </tr>
+    <tr>
+      <td><%= f.submit 'Salvar' %> | <%= link_to 'Voltar', arquivo_remessas_path %></td>
+    </tr>
+  </table>
+<% end %>

@@ -1,0 +1,26 @@
+<h1>Contas a Pagar - Geral</h1>
+
+<% form_remote_tag :url => contas_a_pagar_geral_relatorios_path, :loading => "Element.show('loading_pag_geral');", :success => "Element.hide('loading_pag_geral');" do %>
+  <table>
+    <%= campo_de_cadastro 'Fornecedor', auto_complete_tag_para_qualquer_campo(:fornecedor, auto_complete_for_fornecedor_cpf_cnpj_pessoas_path)%>
+    <%= campo_de_cadastro 'Tipo de Documento', select_tag('busca[tipo_de_documento]', options_for_select([""] + ContaPagarReceber::TIPOS_DE_DOCUMENTO)) %>
+    <tr>
+      <td class="field_descriptor">Período </td>
+      <td>
+        <label for="busca_periodo_pagamento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'pagamento'), true %><b>Pagamento</b></label>
+        <label for="busca_periodo_vencimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'vencimento'), false %><b>Vencimento</b></label>
+      </td>
+    </tr>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Tipo de Relatório', select_tag('busca[opcao_de_relatorio]', options_for_select([['Todas', ''], ['Pagamentos','pagamentos'],['Inadimplência','inadimplencia'], ['Contas à Pagar', 'contas_a_pagar'], ['Pagamentos com Atraso', 'pagamentos_com_atraso']], :selected => '')) %>
+    <%= campo_de_cadastro 'Situação', select_tag('busca[situacao]', options_for_select([['Todas', 'todas'], ['Pendentes', Parcela::PENDENTE], ['Atrasadas', 'atrasadas'], ['Vincendas', 'vincendas'], ['Quitadas', Parcela::QUITADA]], :selected => 'todas')) %>
+    <%= campo_de_cadastro 'Ordenação', select_tag('busca[ordenacao]', options_for_select([['Ordem Alfabética','pessoas.nome ASC, pessoas.razao_social ASC'],['Data de Pagamento','parcelas.data_do_pagamento'],['Data de Vencimento','parcelas.data_vencimento']],:selected=>'pessoas.nome')) %>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %><%= loading_image('pag_geral') %></td></tr>
+  </table>
+<% end %>

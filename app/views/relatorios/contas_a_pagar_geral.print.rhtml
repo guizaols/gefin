@@ -1,0 +1,125 @@
+<% total_geral_liquido = 0 %>
+<% total_geral_juros = 0 %>
+<% total_geral_multa = 0 %>
+<% total_geral_outros = 0 %>
+<% total_geral_desconto = 0 %>
+<% total_geral_retencoes = 0 %>
+<% total_final = 0 %>
+<% cont = 0 %>
+<% cont_aux = 0 %>
+
+<div style="text-align: center; width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:periodo_min].blank? ? '' : params[:busca][:periodo_min] %> a <%=h params[:busca][:periodo_max].blank? ? '' : params[:busca][:periodo_max] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px" width="100%" cellpadding="2px">
+  <tr align="center" style="font-size: 12px">
+    <th style="width: 275px">Fornecedor/Cliente</th>
+    <th style="width: 80px">Data Emissão</th>
+    <th style="width: 100px">Nota Fiscal</th>
+    <th style="width: 150px">Contrato</th>
+    <th style="width: 80px">Vcto</th>
+    <th style="width: 80px">Data Pgto.</th>
+    <th style="width: 80px">Val. Par</th>
+    <th style="width: 80px">Retenção</th>
+    <th style="width: 80px">Desconto</th>
+    <th style="width: 80px">Valor Liq.</th>
+    <th style="width: 80px">Juros</th>
+    <th style="width: 65px">Multa</th>
+    <th style="width: 65px">Outros</th>
+    <th>Situação</th>
+  </tr>
+
+  <% @parcelas.each do |grupo, parcelas| %>
+      <% cont_aux += 1 %>
+      <% if cont == 0 %>
+        <tr align="center" style="font-size: 12px;">
+          <td colspan="13">
+            <b>Entidade:</b>
+            <%=h parcelas.first.unidade.entidade.nome %>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <b>Unidade:</b>
+            <%=h parcelas.first.unidade.nome %>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </td>
+        </tr>
+    <% end %>
+
+    <% total_liquido = 0 %>
+    <% total_juros = 0 %>
+    <% total_multa = 0 %>
+    <% total_outros = 0 %>
+    <% total_desconto = 0 %>
+    <% total_retencoes = 0 %>
+    <% total_geral = 0 %>
+
+    <% parcelas.each do |parcela| %>
+      <tr>
+        <% valores_parcela = 0 %>
+        <% valores_parcela = parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.outros_acrescimos + parcela.valores_novos_recebimentos - parcela.soma_impostos_da_parcela - parcela.valor_do_desconto %>
+
+        <td style="text-align: left; padding-left: 4px"><%=h parcela.conta.pessoa.nome %></td>
+        <td style="text-align: center"><%=h parcela.conta.data_emissao %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h parcela.conta.numero_nota_fiscal_string %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h parcela.conta.numero_de_controle %></td>
+        <td style="text-align: center"><%=h parcela.data_vencimento %></td>
+        <td style="text-align: center"><%=h parcela.data_da_baixa if parcela.data_da_baixa %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.valor) %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.soma_impostos_da_parcela) %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.valor_do_desconto) if parcela.valor_do_desconto %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h valores_parcela > 0 ? preco_formatado(valores_parcela) : preco_formatado(0) %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.valor_dos_juros) if parcela.valor_dos_juros %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.valor_da_multa) if parcela.valor_da_multa %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.outros_acrescimos) if parcela.outros_acrescimos %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h parcela.situacao_verbose %></td>
+      </tr>
+
+        <% total_geral += parcela.valor %>
+        <% total_liquido += valores_parcela %>
+        <% total_retencoes += parcela.soma_impostos_da_parcela %>
+        <% total_juros += parcela.valor_dos_juros %>
+        <% total_multa += parcela.valor_da_multa %>
+        <% total_outros += parcela.outros_acrescimos %>
+        <% total_desconto += parcela.valor_do_desconto %>
+    <% end %>
+
+    <tr style="font-size: 12px; font-weight: bold">
+      <td></td>
+      <td style="text-align: right; padding-right: 4px;" colspan="4">Totais ==></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_retencoes) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_desconto) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_liquido) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_juros) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_multa) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_outros) %></td>
+      <td></td>
+    </tr>
+
+    <% total_geral_liquido += total_liquido %>
+    <% total_geral_juros += total_juros %>
+    <% total_geral_multa += total_multa %>
+    <% total_geral_outros += total_outros %>
+    <% total_geral_desconto += total_desconto %>
+    <% total_geral_retencoes += total_retencoes %>
+    <% total_final += total_geral %>
+    <% cont += 1 %>
+  <% end %>
+
+  <tr style="font-size: 12px; font-weight: bold">
+    <td></td>
+    <td style="text-align: right; padding-right: 4px;" colspan="4">Totais Gerais ==></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_final) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_retencoes) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_desconto) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_liquido) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_juros) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_multa) %></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_outros) %></td>
+    <td></td>
+  </tr>
+
+</table>
+
+<br />

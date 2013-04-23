@@ -1,0 +1,19 @@
+<% content_for :titulo, "Compromissos do dia" %>
+
+<% remote_form_for @compromisso_para_busca, :url=>{:action =>:update_tabela_compromissos} do |c| %>
+  <table>
+    <%= campo_de_cadastro 'Pesquisa Por Contrato:', auto_complete_para_qualquer_campo(c, :conta, auto_complete_for_contas_a_receber_compromissos_path) %>
+    <%= campo_de_cadastro 'Data Agendada:', (campo_para_busca_por_faixa_de_data :data) %>
+    <%= campo_de_cadastro 'Ordem:', (select_tag 'ordem', options_for_select([['Nome do Inadimplente', 0], ['Data de Agendamento', 1]])) %>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Pesquisar' %>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="tabela_lista_de_compromissos">
+  <%= render :partial=>'lista_de_compromissos' %>
+</div>

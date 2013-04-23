@@ -1,0 +1,35 @@
+centro:
+  nome: Centro
+  numero: 2445
+  digito_verificador: 6
+  endereco: Av. Ipiranga
+  bairro: Centro
+  complemento: Prédio
+  telefone: 2324-2433
+  fax: 2343-2342
+  email: central@bradesco.com.br
+  nome_contato: Ana Luiza
+  email_contato: aninha@terra.com.br
+  telefone_contato: 2323-3433
+  ativo: true
+  localidade: primeira
+  banco: banco_do_brasil
+  entidade: senai
+
+prainha:
+  nome: Prainha
+  numero: 2345
+  digito_verificador: 9
+  endereco: Rua dos Trabalhadores
+  bairro: Alegrete
+  complemento: Prédio
+  telefone: 2343-2343
+  fax: 2343-2343
+  email: prainha@bb.com.br
+  nome_contato: João Carlos
+  email_contato: joao@gmail.com
+  telefone_contato: 9876-7823
+  ativo: false
+  localidade: segunda
+  banco: banco_caixa
+  entidade: sesi

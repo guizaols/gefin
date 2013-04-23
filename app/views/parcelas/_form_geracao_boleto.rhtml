@@ -1,0 +1,20 @@
+<% form_for :parcela, :url => { :action => 'gerar_boleto', :controller => 'parcelas', :recebimento_de_conta_id => @parcela.conta.id, :id => @parcela.id }, :builder => TableFormBuilder do |parcela| %>
+  <h1><%=h !@parcela.parcela_mae_id ? "Geração de Boleto da Parcela número #{@parcela.numero}" : "Geração de Boleto número #{@parcela.numero_parcela_filha}" %></h1>
+  <table>
+    <%#*<tr>%>
+      <%#*<td class="field_descriptor">Formato</td>%>
+      <%#*<td><%= select_tag :formato, formatos_para_geracao_de_boleto </td>%>
+    <%#*</tr>%>
+    <tr>
+      <td class="field_descriptor">Conta Corrente</td>
+      <td><%= select_tag 'convenio_id', options_for_select([''] + Convenio.find_all_by_unidade_id(session[:unidade_id]).collect{|conv| [conv.contas_corrente.descricao, conv.id] if conv.tipo_convenio == Convenio::COBRANCA}.compact) %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Gerar' %> | <%= button_to_function 'Cancelar' do |page| page.replace_html('form_para_geracao_boleto', '<div id="form_para_geracao_boleto"></div>') end %>
+      </td>
+    </tr>
+  </table>
+  <h1></h1>
+<% end %>

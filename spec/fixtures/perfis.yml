@@ -1,0 +1,43 @@
+
+master_main:
+  id: 1      
+  descricao: Master
+  #permissao: SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+  permissao: <%= Perfil::MASTER %>
+
+gerente_main:
+  id: 2
+  descricao: Gerente
+  #permissao: SSSSSSNSSSSSSSSSSSNSSNSSNNSNSSSSSNSNNNSSSSSNSNNNSSSSSSSSSSNN
+  permissao: <%= Perfil::GERENTE %>
+
+operador_financeiro_main:
+  id: 3
+  descricao: Operador Financeiro
+  #permissao: SSSSSSNSSSSSSSNSNNNSSNSSNNSNSSSSSNSNNNNNSSSNSNNNSSSSSSSSSSSN
+  permissao: <%= Perfil::OPERADORFINANCEIRO %>
+
+operador_cr_main:
+  id: 4
+  descricao: Operador CR
+  #permissao: NNSNSSNSSSSSSNSSNNNNNNNSNNNNNNSNNNSNNNNNNNSNSNNNNSSSNSSSSSSN
+  permissao: <%= Perfil::OPERADORCR %>
+
+operador_cp_main:
+  id: 5
+  descricao: Operador CP
+  #permissao: NNSNSSNSSSSSSNSSNNNNNNNSNNNNNNSSNNSNNNNNNNSNSNNNSNNNNSSSSSSN
+  permissao: <%= Perfil::OPERADORCP %>
+
+consulta_main:
+  id: 6
+  descricao: Consulta
+  #permissao: NNSNSSNSNNNSSNSSNNNNNNNSNNNNNNNNNNNNNNNNNNSNNNNNNNNNNNNNNSSN
+  permissao: <%= Perfil::CONSULTA %>
+    
+contador_main:
+  id: 7
+  descricao: Contador
+  #permissao: NNSNSSNSNSSSSNSSNNNNNNNSNNSNSSSSNNSNNNNNNNSNSNSSSSSSSSSSSSSN
+  permissao: <%= Perfil::CONTADOR %>
+

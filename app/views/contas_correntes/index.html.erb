@@ -1,0 +1,13 @@
+<% content_for :titulo, "Contas Correntes" %>
+
+<% listagem_table :new => new_contas_corrente_path, :permissoes => Perfil::ManipularDadosDasContasCorrentes, :headers => ['Tipo', 'Numero Conta', 'Dígito', 'Descricao'] do %>
+
+  <% for contas_corrente in @contas_correntes %>
+    <% listagem_tr :edit => edit_contas_corrente_path(contas_corrente), :destroy => contas_corrente,:permissoes => Perfil::ManipularDadosDasContasCorrentes do %>
+      <td><%=h contas_corrente.nome_identificador %></td>
+      <td><%= h(contas_corrente.numero_conta) %></td>
+      <td><%=h contas_corrente.digito_verificador %></td>
+      <td><%= link_to h(contas_corrente.descricao), contas_corrente %></td>
+    <% end %>
+  <% end %>
+<% end %>

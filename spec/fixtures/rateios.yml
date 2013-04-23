@@ -1,0 +1,24 @@
+rateio_primeira_parcela:
+ unidade_organizacional: sesi_colider_unidade_organizacional
+ valor: 1111
+ centro: centro_forum_social
+ parcela: primeira_parcela
+ conta_contabil: plano_de_contas_ativo_contribuicoes_sesi
+
+segundo_rateio_primeira_parcela:
+  unidade_organizacional: sesi_colider_unidade_organizacional
+  valor: 2222
+  centro: centro_forum_social
+  parcela: primeira_parcela
+  conta_contabil: plano_de_contas_ativo_despesas
+
+rateio_segunda_parcela:
+  unidade_organizacional: sesi_colider_unidade_organizacional
+  valor: 4000
+  centro: centro_forum_social
+  parcela: segunda_parcela_sesi
+  conta_contabil: plano_de_contas_ativo_contribuicoes
+
+
+
+

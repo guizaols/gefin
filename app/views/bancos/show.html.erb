@@ -1,0 +1,25 @@
+<% content_for :titulo, "Detalhes" %>
+<table>
+  <tr>
+    <td><b>Nome:</b></td>
+    <td><%=h @banco.descricao%></td>
+  </tr>
+  <%= show_unless_blank 'Código do Banco', @banco.codigo_do_banco%>
+  <tr>
+    <td><b>Atualização:</b></td>
+    <td><%= @banco.updated_at.to_s_br %></td>
+  </tr>
+  <tr>
+    <td><b>Ativo:</b></td><td><%=@banco.ativo ? "Sim" : "Não" %> </td>
+  </tr>
+  <tr>
+    <td>
+      <%= link_to 'Alterar', edit_banco_path(@banco) %> | <%= link_to 'Voltar', bancos_path %>
+    </td>
+  </tr>
+</table>
+
+
+
+
+

@@ -1,0 +1,86 @@
+<% javascript_tag do %>
+  var controle_de_itens = 1;
+  var controle=0;
+
+  function criaImpostoDaParcela(partial,numero_de_itens,parcela)
+  {
+  valor = $('retido').innerHTML;
+  valor = valor.split(">").last();
+  if ((valor) > (parcela/100)){
+  alert('Valor dos impostos maior que o valor da parcela!');
+  }
+
+  if(numero_de_itens > 0 && controle != 1)
+  {
+  controle_de_itens = numero_de_itens + 1;
+  controle = 1;
+  }
+  var view;
+  view = partial.replace(/index/g,controle_de_itens); 
+  var elemento = document.getElementById('tbody_itens_do_imposto');
+  new Insertion.Bottom(elemento, view);
+  controle_de_itens ++;
+  verificaSeElementoEstaVisivel($('imposto_da_parcela'));
+  }
+<% end %>
+
+<% content_for :titulo, "Imposto" %>
+
+<% listagem_table :headers => ['Número','Vencimento','Valor do Documento', 'Valor da Parcela','Valor Retido', 'Valor Líquido'] do %>
+  <% listagem_tr do %>
+    <td><%=h @conta.numero_de_controle  %></td>
+    <td><%=h @conta.primeiro_vencimento %></td>
+    <td><%=h preco_formatado(@conta.valor_do_documento,"R$") %></td>
+    <td><%=h preco_formatado(@parcela.valor,"R$") %></td>
+    <td><span id="retido"></span></td>
+    <td><span id="liquido"></span></td>
+  <% end %>
+<% end %>
+
+<% form_tag gravar_imposto_pagamento_de_conta_parcela_path(@parcela.conta_id, @parcela.id), :method=>'get' do %>
+
+<%= error_messages_for :parcela, :object_name => 'salvar essa parcela' %><br />
+  <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && @parcela.data_da_baixa.blank? && @parcela.situacao != Parcela::ESTORNADA %>
+    <p>Impostos da Parcela
+      <%= (link_to_function 'Incluir' do |page| page << link_para_imposto_rateio('imposto',@parcela,@entidade,@conta) end) %>
+    </p>
+  <% end %>
+  
+  <table id="imposto_da_parcela" <%= "style='display:none'" if @parcela.dados_do_imposto.blank? %> >
+    <thead>
+      <tr>
+        <td width="150"><b>Imposto</b></td>
+        <td width="220"><b>Data de Recolhimento</b></td>
+        <td><b>Alíquota %</b></td>
+        <td><b>Valor R$</b></td>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align: right;">
+          <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && @parcela.data_da_baixa.blank? && @parcela.situacao != Parcela::ESTORNADA %>
+            <%= (link_to_function 'Incluir' do |page| page << link_para_imposto_rateio('imposto', @parcela, @entidade, @conta) end) %>
+          <% end %>
+        </td>
+      </tr>
+    </tfoot>
+     <tbody id="tbody_itens_do_imposto">
+      <% unless @parcela.dados_do_imposto.blank? %>
+        <% @parcela.dados_do_imposto.each do |chave,dados|%> 
+          <%= render(:partial => 'parcelas/imposto_da_parcela',:locals=>{:chave=>chave,:entidade_id => @entidade.id, :imposto_id =>dados["imposto_id"],:data_de_recolhimento=>dados["data_de_recolhimento"],:valor_imposto=>dados["valor_imposto"],:aliquota=>dados["aliquota"],:valor_doc=>@conta.valor_do_documento,:parcela=>@parcela.valor,:data_da_baixa=>@parcela.data_da_baixa})%>
+        <% end %>
+      <% end %>
+      <tr><td></td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <% if (@parcela.situacao != Parcela::ESTORNADA) %>
+      <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && @parcela.data_da_baixa.blank? %>
+        <%= (submit_tag "Enviar") %> |
+      <% end %>
+    <% end %>
+    <%= link_to 'Voltar',pagamento_de_conta_path(@parcela.conta.id) %>
+  </p>
+  <%= atualiza_view(@parcela.valor) %>
+<% end %>

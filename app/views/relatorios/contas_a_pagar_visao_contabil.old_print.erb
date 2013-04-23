@@ -1,0 +1,47 @@
+<% total_geral_valor = 0 %>
+
+<div style="text-align: center; width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:data] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="1250px" cellpadding="2">
+  <tr align="center" style="font-size: 12px;">
+    <th style="width: 130px">Documento</th>
+    <th style="width: 180px">Número de Controle</th>
+    <th style="width: 500px">Fornecedor</th>
+    <th style="width: 90px">Data Emissão</th>
+    <th style="width: 110px">Data Vencimento</th>
+    <th style="width: 150px">Valor Líquido</th>
+    <th style="width: 90px">Data da Baixa</th>
+  </tr>
+
+  <% @parcelas.each do |parcela| %>
+    <% movimentos = parcela.movimentos.collect{|mov| mov.tipo_lancamento == 'N' && mov.data_lancamento.to_date <= params[:busca][:data].to_date} %>
+    <% if !movimentos.include?(true) %>
+      <% valor_liquido_percela = parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.valores_novos_recebimentos + parcela.outros_acrescimos - parcela.soma_impostos_da_parcela - parcela.valor_do_desconto %>
+      <tr style="text-align: left">
+        <td style="width: 130px; padding-left: 4px"><%=h parcela.conta.numero_nota_fiscal_string %></td>
+        <td style="padding-left: 4px"><%=h parcela.conta.numero_de_controle %></td>
+        <td style="padding-left: 4px"><%=h parcela.conta.pessoa.fisica? ? parcela.conta.pessoa.nome : parcela.conta.pessoa.razao_social %></td>
+        <td style="text-align: center"><%=h parcela.conta.data_emissao %></td>
+        <td style="text-align: center"><%=h parcela.data_vencimento %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(valor_liquido_percela) %></td>
+        <% if !parcela.data_da_baixa.blank? && Date.today >= parcela.data_da_baixa.to_date %>
+          <td style="text-align: center"><%=h parcela.data_da_baixa %></td>
+        <% else %>
+          <td style="text-align: center"></td>
+        <% end %>
+      </tr>
+      <% total_geral_valor += valor_liquido_percela %>
+    <% end %>
+  <% end %>
+
+  <tr style="font-size: 12px; font-weight: bold">
+    <td colspan="5" style="text-align: right; padding-right: 4px">Total ==></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_valor, 'R$') %></td>
+    <td></td>
+  </tr>
+</table>
+
+<br />

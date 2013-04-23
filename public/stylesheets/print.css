@@ -1,0 +1,102 @@
+body {
+    font: 8pt Arial, Helvetica, sans-serif;
+    margin: 10px 0;
+    text-align: center;
+    background-color: #ffffff;;    
+}
+
+#cabecalho_fiemt {
+    display: none;
+}
+
+.projecoes_details {
+    text-align: left;
+}
+
+.print_logo {
+    padding-right: 50px;
+    border-width: 0;
+}
+
+#menu {
+    display: none;
+}
+
+#rodape {
+    display: none;
+}
+
+h1 {
+    color: #000;
+    font-size: 14pt;
+    text-align: left;
+}
+
+.listagem {
+    /*border-collapse: collapse;*/
+    background-color: white;
+    border-spacing: 0;
+    font-size: 11px;
+    width: 100%;
+}
+
+
+.listagem thead td {
+    background-image: url(/images/layout/listagem_topo.jpg);
+    background-repeat: no-repeat;
+    height: 100px;
+    text-align: center;
+}
+
+.listagem thead th {
+    background-color: #006009;
+    color: black;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.listagem tbody td {
+    text-align: center;
+}
+
+.listagem thead th.ultima_coluna {
+    border-top: 5px white solid;
+}
+
+.listagem tr.par {
+    background-color: #d6d6d6;
+}
+
+.listagem th.ultima_coluna,
+.listagem td.ultima_coluna {
+    text-align: right;
+    padding-right: 35px;
+}
+
+.listagem .ultima_coluna img {
+    margin-right: 15px;
+}
+
+.listagem input {
+    font: 8pt Arial, Helvetica, sans-serif;
+    border: none;
+    width: 100px;
+    text-align: center;
+}
+
+.listagem thead th.sel {
+    display: none;
+}
+
+.listagem thead tr.thead_image {
+    display: none;
+}
+
+.print {
+    display:none;
+}
+
+.calendar_date_select_popup_icon {
+    display: none;
+}
+

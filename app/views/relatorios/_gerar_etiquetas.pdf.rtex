@@ -1,0 +1,75 @@
+
+\fontsize{11pt}{10pt}\selectfont
+
+\setlength{\arrayrulewidth}{1.5pt}
+
+<% if params[:recebimentos][:etiqueta] == 'continuas' %>
+    <% params[:recebimentos][:ids].each_with_index do |identificador, index| %>
+        <% recebimento = RecebimentoDeConta.find(identificador) %>
+        \begin{tabular}{l}
+        \\
+          <%=hl recebimento.pessoa.nome.upcase %> \\
+        \\
+          <%=hl "#{recebimento.pessoa.endereco.upcase}, #{recebimento.pessoa.numero.upcase if recebimento.pessoa.numero}" %> \\
+        \\
+          <%=hl recebimento.pessoa.bairro.upcase if recebimento.pessoa.bairro %> \\
+        \\
+          <%=hl "#{recebimento.pessoa.localidade.nome.upcase if recebimento.pessoa.localidade} - #{recebimento.pessoa.localidade.uf.upcase if recebimento.pessoa.localidade} #{recebimento.pessoa.cep.upcase if recebimento.pessoa.cep}" %> \\
+        \\
+        \\
+        \\
+        \end{tabular}
+    <% end %>
+
+<% else %>
+
+    <% array_geral = []; array_direita = [];  array_esquerda = [] %>
+        <% params[:recebimentos][:ids].each_with_index do |identificador, index| %>
+            <% recebimento = RecebimentoDeConta.find(identificador) %>
+            <% array_geral << recebimento %>
+        <% end %>
+    <% array_geral.each_with_index{|item, indice| (indice + 1).modulo(2) != 0 ? array_direita << item : array_esquerda << item} %>
+
+
+    \begin{minipage}{6cm}
+        <% array_direita.each do |direita| %>
+            \begin{longtable}{p{6.0cm}}
+                <%=hl direita.pessoa.nome.upcase %>
+                \\
+                <%=hl "#{direita.pessoa.endereco.upcase}, #{direita.pessoa.numero.upcase if direita.pessoa.numero}" %>
+                \\
+                <%=hl direita.pessoa.bairro.upcase if direita.pessoa.bairro %>
+                \\
+                <%=hl "#{direita.pessoa.localidade.nome.upcase if direita.pessoa.localidade} - #{direita.pessoa.localidade.uf.upcase if direita.pessoa.localidade} #{direita.pessoa.cep.upcase if direita.pessoa.cep}" %>
+                \\
+            \end{longtable}
+            \vspace{20pt}
+        <% end %>
+    \end{minipage}
+    \hfill
+    \begin{minipage}{6cm}
+        <% array_esquerda.each_with_index do |esquerda, i| %>
+            \begin{longtable}{p{6.0cm}}
+                <%=hl esquerda.pessoa.nome.upcase %>
+                \\
+                <%=hl "#{esquerda.pessoa.endereco.upcase}, #{esquerda.pessoa.numero.upcase if esquerda.pessoa.numero}" %>
+                \\
+                <%=hl esquerda.pessoa.bairro.upcase if esquerda.pessoa.bairro %>
+                \\
+                <%=hl "#{esquerda.pessoa.localidade.nome.upcase if esquerda.pessoa.localidade} - #{esquerda.pessoa.localidade.uf.upcase if esquerda.pessoa.localidade} #{esquerda.pessoa.cep.upcase if esquerda.pessoa.cep}" %>
+                \\
+            \end{longtable}
+            \vspace{20pt}
+            <% if i + 1 == array_esquerda.length && array_esquerda.length < array_direita.length %>
+                \begin{longtable}{p{6.0cm}}
+                    \\
+                    \\
+                    \\
+                    \\
+                    \\
+                \end{longtable}
+                \vspace{20pt}
+            <% end %>
+        <% end %>
+    \end{minipage}
+<% end %>

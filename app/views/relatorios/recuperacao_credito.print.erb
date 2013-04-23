@@ -1,0 +1,192 @@
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <br />
+</div>
+<br /><br />
+
+
+<% meses = []; Parcela::MES.sort.each {|elemento| meses << elemento.last}; %>
+<% array_auxiliar = [] %>
+<% 0.upto(12) do |i| %>
+  <% array_auxiliar[i]= 0 %>
+<% end %>
+
+<% if params[:busca][:tipo_do_relatorio] == "0" %>
+
+  <% array_a_receber = []; array_clone_a_receber = []; %>
+  <% 1.upto(12) do |i|%>
+    <% array_a_receber <<  0 %>
+    <% array_clone_a_receber << "#{preco_formatado(0)}" %>
+  <% end %>
+
+  <% array_geral = []; array_clone_geral = [] %>
+  <% 1.upto(12) do %>
+    <% array_geral << 0 %>
+    <% array_clone_geral << "#{preco_formatado(0)}" %>
+  <% end %>
+
+  <% array_recebido = []; array_clone_recebido = []; %>
+  <% 1.upto(12) do %>
+    <% array_recebido << 0 %>
+    <% array_clone_recebido << "#{preco_formatado(0)}" %>
+  <% end %>
+
+  <% inadimplentes = []; inadimplentes_clone = [] %>
+  <% 1.upto(12) do %>
+    <% inadimplentes << 0 %>
+    <% inadimplentes_clone << "0"%>
+  <% end %>
+
+  <% rodape = [] %>
+  <% 1.upto(12) do %>
+    <% rodape << "" %>
+  <% end %>
+
+  <% @contas.each do |chave, elemento| %>
+    <% if chave!= "anos_anteriores" %>
+      <% array_a_receber[chave - 1] =  elemento["a_receber"] %>
+      <% array_recebido[chave - 1] =  elemento["recebido"] %>
+      <% array_geral[chave - 1] =  elemento["geral"] %>
+      <% inadimplentes[chave - 1] =   elemento["inadimplencia"] %>
+      <% inadimplentes_clone[chave-1] = "#{elemento["inadimplencia"]}" %>
+      <% array_clone_a_receber[chave - 1] = "#{preco_formatado(elemento["a_receber"])}" %>
+      <% array_clone_geral[chave - 1] = "#{preco_formatado(elemento["geral"])}" %>
+      <% array_clone_recebido[chave - 1] = "#{preco_formatado(elemento["recebido"])}" %>
+    <% end %>
+  <% end %>
+
+  <table border="1px" style="font-size: 11px" width="100%">
+    <tr align="center" style="font-size: 12px; font-weight: bold">
+      <td rowspan="2">TOTAIS</td>
+      <td rowspan="2">ANOS ANTERIORES</td>
+      <td colspan="12">Exercício de <%= hl params[:busca][:ano] %></td>
+      <td rowspan="2">TOTAL NO ANO  <%= hl params[:busca][:ano] %></td>
+      <td rowspan="2">TOTAL GERAL</td>
+    </tr>
+    <tr align="center" style="font-size: 12px; font-weight: bold">
+      <% meses.each do |mes| %>
+        <td><%= mes %></td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">A RECEBER</td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["a_receber"]) %></td>
+      <% array_clone_a_receber.each do |val| %>
+        <td style="text-align: right; padding-right: 4px; width: 70px"><%=h val %></td>
+      <% end %>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(array_a_receber.sum) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["a_receber"] + array_a_receber.sum) %></td>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">RECEBIDO</td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["recebido"]) %></td>
+      <% array_clone_recebido.each do |val| %>
+        <td style="text-align: right; padding-right: 4px"><%=h val %></td>
+      <% end %>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(array_recebido.sum) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["recebido"] + array_recebido.sum) %></td>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">GERAL</td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["geral"]) %></td>
+      <% array_clone_geral.each do |val| %>
+        <td style="text-align: right; padding-right: 4px"><%=h val %></td>
+      <% end %>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(array_a_receber.sum + array_recebido.sum) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["geral"] + array_geral.sum) %></td>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">INADIMPLENTES</td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(@contas["anos_anteriores"]["inadimplencia"] * 100) + '%' %></td>
+      <% inadimplentes_clone.each do |val| %>
+        <td style="text-align: right; padding-right: 4px"><%=h val + '%' %></td>
+      <% end %>
+      <td style="text-align: right; padding-right: 4px"><%#=h preco_formatado(array_a_receber.sum.to_f / (array_recebido.sum+array_a_receber.sum) * 100) + '%' %>
+<%=h ((array_a_receber.sum.to_f/(array_recebido.sum+array_a_receber.sum)*100).round(2)).to_s + '%' %>
+      </td>
+      <td style="text-align: right; padding-right: 4px"><%=h ((((@contas["anos_anteriores"]["a_receber"] + array_a_receber.sum).to_f / (array_geral.sum + @contas["anos_anteriores"]["geral"])))*100).round(2).to_s + '%' %>
+      </td>
+    </tr>
+  </table>
+<% else %>
+  <table border="1px" style="font-size: 11px" width="100%">
+    <tr align="center" style="font-size: 12px; font-weight: bold">
+      <td rowspan="2">ATIVIDADES</td>
+      <td rowspan="2">ANOS ANTERIORES</td>
+      <td colspan="12">Exercício de <%= hl params[:busca][:ano] %></td>
+      <td rowspan="2">TOTAL NO ANO <%= hl params[:busca][:ano] %></td>
+      <td rowspan="2">TOTAL GERAL</td>
+    </tr>
+    <tr align="center" style="font-size: 12px; font-weight: bold">
+      <% meses.each do |mes| %>
+        <td><%= mes %></td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <td colspan="17" style="background: #CFCFCF; font-weight: bold">A RECEBER</td>
+    </tr>
+    <% valor_total_a_receber = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] %>
+    <% @contas['receber'].each do |elemento| %>
+      <tr>
+        <td style="text-align: left; width: 300px"><%=h elemento.first %></td>
+        <% elemento.last.each{|mes,valor| if mes != "anos_anteriores"; array_auxiliar[mes] = valor; valor_total_a_receber[mes] += valor; else ; array_auxiliar[0] = valor; valor_total_a_receber[0] += valor; end}; %>
+        <% array_auxiliar.collect{|x| "#{preco_formatado(x)}" unless x.blank?}.each do |value| %>
+          <td style="text-align: right; padding-right: 4px; width: 100px"><%=h value %> </td>
+        <% end %>
+        <td style="text-align: right; padding-right: 4px; width: 130px"><%=h preco_formatado(array_auxiliar.compact.sum-array_auxiliar[0]) %></td>
+        <td style="text-align: right; padding-right: 4px; width: 130px"><%=h preco_formatado((array_auxiliar.compact.sum-array_auxiliar[0])+array_auxiliar[0]) %></td>
+        <% valor_total_a_receber[13] += array_auxiliar.compact.sum - array_auxiliar[0] %>
+        <% valor_total_a_receber[14] += (array_auxiliar.compact.sum-array_auxiliar[0])+ array_auxiliar[0] %>
+        <% 1.upto(12) do |i| %>
+          <% array_auxiliar[i] = 0 %>
+        <% end %>
+      </tr>
+    <% end %>
+    <tr>
+      <td>A RECEBER</td>
+      <% valor_total_a_receber.each do |val_total| %>
+        <td style="text-align: right; padding-right: 4px; width: 130px"><%=h preco_formatado(val_total) %></td>
+      <% end %>
+    </tr>
+
+    <tr>
+      <td colspan="17" style="background: #CFCFCF; font-weight: bold">RECEBIDO</td>
+    </tr>
+    <% valortotal_recebido = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] %>
+    <% @contas['recebido'].each do |elemento| %>
+      <tr>
+        <td style="text-align: right; padding-right: 4px"><%=h elemento.first %></td>
+        <% elemento.last.each{|mes,valor| if mes != "anos_anteriores"; array_auxiliar[mes] = valor; valortotal_recebido[mes] += valor; else ; array_auxiliar[0] = valor; valortotal_recebido[0] += valor; end}; %>
+        <% array_auxiliar.collect{|x| "#{preco_formatado(x)}" unless x.blank?}.each do |value| %>
+          <td style="text-align: right; padding-right: 4px; width: 130px"><%=h value %></td>
+        <% end %>
+        <td style="text-align: right; padding-right: 4px; width: 130px"><%=h preco_formatado(array_auxiliar.compact.sum-array_auxiliar[0]) %></td>
+        <td style="text-align: right; padding-right: 4px; width: 130px"><%=h preco_formatado((array_auxiliar.compact.sum-array_auxiliar[0]) + array_auxiliar[0]) %></td>
+        <% valortotal_recebido[13] += array_auxiliar.compact.sum - array_auxiliar[0] %>
+        <% valortotal_recebido[14] += (array_auxiliar.compact.sum-array_auxiliar[0])+ array_auxiliar[0] %>
+        <% 1.upto(12) do |i| %>
+          <% array_auxiliar[i]= 0 %>
+        <% end %>
+      </tr>
+    <% end %>
+    <tr style="background: #CFCFCF; font-weight: bold">
+      <td>RECEBIDO</td>
+      <% valortotal_recebido.each do |val_total| %>
+        <td style="text-align: right; padding-right: 4px; width: 130px"><%=h preco_formatado(val_total) %></td>
+      <% end %>
+    </tr>
+
+    <tr style="background: #CFCFCF; font-weight: bold">
+      <td>TOTAL GERAL</td>
+      <% valortotal_recebido.each_with_index do |val_total, key| %>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(val_total + valor_total_a_receber[key]) %></td>
+      <% end %>
+    </tr>
+  </table>
+<% end %>
+
+<br />

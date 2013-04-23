@@ -1,0 +1,61 @@
+<div id="pesquisa_para_envio_parcelas_dr">
+  <%= hidden_field_tag 'data_inicial', params['data_inicial'] %>
+  <%= hidden_field_tag 'data_final', params['data_final'] %>
+  <% if @parcelas.length > 0 %>
+    <p>
+      <b>Enviar para:</b><br />
+      <label for="radio_dr">DR</label>
+      <%= radio_button_tag 'operacao', RecebimentoDeConta::DR, true, :id => 'radio_dr' %>
+      <label for="radio_terceirizada">Terceirizada</label>
+      <%= radio_button_tag 'operacao', RecebimentoDeConta::TERCEIRIZADA, false, :id => 'radio_terceirizada' %><br /><br />
+      <%= submit_tag "Efetuar Operação" %><%= loading_image('envio_dr_action') %>
+    </p>
+    <% listagem_table :headers => [check_box_tag("selecionar_todas", nil, false, :onchange => "selecionarTodas(this);"), "Nº", 'Vencimento','Valor', 'Retenção', 'Valor Líquido', 'Pago em', 'Valor Pago', 'Multa', 'Juros', 'Outros', 'Desconto', 'Situação'] do %>
+      <% @parcelas.each do |grupo, parcelas| %>
+        <% listagem_tr do %>
+          <td style="font-weight: bold">Nº Controle: </td>
+          <td colspan="3" style="font-weight: bold"><%= link_to h(grupo.numero_de_controle), grupo %></td>
+          <td style="font-weight: bold">Cliente: </td>
+          <td colspan="4" style="font-weight: bold"><%= link_to h(grupo.pessoa.fisica? ? grupo.pessoa.nome : grupo.pessoa.razao_social), grupo.pessoa %></td>
+          <td style="font-weight: bold">Serviço: </td>
+          <td colspan="3" style="font-weight: bold"><%=h grupo.servico.descricao %></td>
+        <% end %>
+        <% parcelas.each do |parcela| %>
+          <% listagem_tr do %>
+            <td class="parcela">
+              <% if parcela.situacao != Parcela::ENVIADO_AO_DR %>
+                <%= check_box_tag 'parcelas[]', parcela.id %>
+              <% else %>
+                <%= check_box_tag 'parcelas[]', parcela.id, false, :disabled => true %>
+              <% end %>
+            </td>
+            <td><%=h parcela.parcela_mae_id.blank? ? parcela.numero : parcela.numero_parcela_filha %></td>
+            <td><%=h(data_formatada(parcela.data_vencimento)) %></td>
+            <td><%=h(preco_formatado(parcela.valor)) %></td>
+            <td><%=h(preco_formatado(parcela.soma_impostos_da_parcela)) %></td>
+            <td><%=h(preco_formatado(parcela.calcula_valor_liquido_da_parcela)) %></td>
+            <td><%=h parcela.data_da_baixa if parcela.data_da_baixa %></td>
+            <td><%=h preco_formatado(parcela.valor_liquido) if parcela.valor_liquido %></td>
+            <td><%=h preco_formatado(parcela.valor_da_multa) if parcela.valor_da_multa %></td>
+            <td><%=h preco_formatado(parcela.valor_dos_juros) if parcela.valor_dos_juros %></td>
+            <td><%=h preco_formatado(parcela.outros_acrescimos) if parcela.outros_acrescimos %></td>
+            <td><%=h preco_formatado(parcela.valor_do_desconto) if parcela.valor_do_desconto %></td>
+            <td>
+              <%=h (parcela.situacao_verbose) %>
+              <%= ' (baixa DR)' if parcela.baixa_pela_dr %>
+            </td>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+  <%#<div class="right">%>
+  <%#<p><b>Operação</b></p>%>
+  <%#= image_tag('loading.gif', :id => "loading_envio_dr_action", :style => "display:none") %>
+  <%#= select_tag "operacao", options_for_select([["", ""], ["Enviar ao DR", "1"], ["Devedores Duvidosos Ativos", "2"]]) %>
+  <%#= submit_tag "Efetuar Operação" %>
+  <%#</div>%>
+  <% else %>
+    <p><b>Nenhuma parcela encontrada.</b></p>
+  <% end %>
+</div>

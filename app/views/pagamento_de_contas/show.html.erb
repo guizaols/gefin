@@ -1,0 +1,45 @@
+<% content_for :titulo, "Detalhes" %>
+
+<table>  
+  <%=show_unless_blank 'Número de Controle', @pagamento_de_conta.numero_de_controle %>
+  <%=show_unless_blank 'Tipo de Documento', @pagamento_de_conta.tipo_de_documento %>
+  <%=show_unless_blank 'Provisão', @pagamento_de_conta.provisao == 1 ? "SIM" : "NÃO" %>
+  <%=show_unless_blank 'Rateio', @pagamento_de_conta.rateio == 1 ? "SIM" : "NÃO" %>
+  <%=show_unless_blank 'Fornecedor', (@pagamento_de_conta.pessoa.fisica? ? @pagamento_de_conta.pessoa.nome : @pagamento_de_conta.pessoa.razao_social) %>
+  <%=show_unless_blank 'Conta Contábil Fornecedor', @pagamento_de_conta.conta_contabil_pessoa.codigo_contabil + ' - ' + @pagamento_de_conta.conta_contabil_pessoa.nome if @pagamento_de_conta.conta_contabil_pessoa %>
+  <%=show_unless_blank 'Data de Lançamento', @pagamento_de_conta.data_lancamento %>
+  <%=show_unless_blank 'Data Emissão', @pagamento_de_conta.data_emissao %>
+  <%=show_unless_blank 'Valor do Documento', preco_formatado(@pagamento_de_conta.valor_do_documento) %>
+  <%=show_unless_blank 'Número de Parcelas', @pagamento_de_conta.numero_de_parcelas %>
+  <%=show_unless_blank 'Número de Documento', @pagamento_de_conta.numero_nota_fiscal_string %>
+  <%=show_unless_blank 'Primeiro Vencimento', @pagamento_de_conta.primeiro_vencimento %>
+  <%=show_unless_blank 'Histórico', @pagamento_de_conta.historico %>
+  <%=show_unless_blank 'Conta Contábil Despesa', @pagamento_de_conta.conta_contabil_despesa.codigo_contabil + ' - ' + @pagamento_de_conta.conta_contabil_despesa.nome %>
+  <%=show_unless_blank 'Unidade Organizacional', @pagamento_de_conta.unidade_organizacional.codigo_da_unidade_organizacional + ' - ' + @pagamento_de_conta.unidade_organizacional.nome %>
+  <%=show_unless_blank 'Centro de Responsabilidade', @pagamento_de_conta.centro.codigo_centro + ' - ' + @pagamento_de_conta.centro.nome %>
+</table>
+
+<p>
+  <%= link_to_remote 'Imprimir', :url => {:action => 'resumo', :id => params[:id]} %>
+  <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDePagamentoDeContas) && @pagamento_de_conta.parcelas.any?{|parc| parc.situacao != Parcela::ESTORNADA} %>
+    | <%= link_to 'Alterar', edit_pagamento_de_conta_path(@pagamento_de_conta) %>
+  <% end %>
+
+  <% if current_usuario.possui_permissao_para_um_item(Perfil::ConsultarFollowUpAPagar) %>
+    | <%=link_to 'Follow-Up', pagamento_de_conta_historico_operacoes_path(@pagamento_de_conta) %>
+  <% end %>
+</p>
+
+<%= render :partial => 'parcelas/index', :object => @conta = @pagamento_de_conta %>
+
+<p><%= link_to 'Voltar', pagamento_de_contas_path %></p>
+
+<% if flash[:notices]  %>
+  <% flash[:notices].each do |notice| %>
+    <%= update_page_tag do |page|
+      page.alert notice.untaint
+    end %>
+  <% end %>
+<% end %>
+
+<div id='form_para_estornar_provisao_de_pagamento' style='display:none;'></div>

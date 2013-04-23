@@ -1,0 +1,19 @@
+# TODO reduzir Flog o máximo possível
+MaximumFlogComplexity: 100
+MaximumFlayThreshold: 14
+RoodiConfig:
+  # Insert here your custom roody checks, like:
+  CyclomaticComplexityMethodCheck: { complexity: 15 }  #TODO: reduzir para 8
+  EmptyRescueBodyCheck:            { }
+  # ClassNameCheck:                  { pattern: !ruby/regexp /^[A-Z][a-zA-Z0-9]*$/ }
+ReekConfig:
+  LongMethod:
+    max_statements: 15
+    enabled: true
+  Duplication:
+    enabled:true
+    exclude:
+    - params
+  # Insert here your custom reek checks, like:
+  # NestedIterators: 
+  #  enabled: false

@@ -1,0 +1,57 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo], 'vendas') %>}
+\fontsize{7pt}{12pt}\selectfont
+\begin{longtable}{|p{5.0cm}|p{5.0cm}|p{1.5cm}|p{0.6cm}|p{1.5cm}|p{1.5cm}|p{1.6cm}|p{5.0cm}|}
+\hline
+\textbf{Cliente} & \textbf{Contrato} & \textbf{Data Venda} & \textbf{Vcto} & \textbf{Inclusão} & \textbf{Nº Parcelas} & \textbf{Valor} & \textbf{Vendedor}\\
+\hline
+
+<% total_geral = 0 %>
+
+<% @parcelas.each do |grupo, parcelas| %>
+
+    \multicolumn{2}{|c}{\textbf{Entidade:} <%=hl parcelas.first.conta.unidade.entidade.nome %>} &
+    \multicolumn{2}{c}{\textbf{Unidade:} <%=hl parcelas.first.conta.unidade.nome %>} &
+    \multicolumn{2}{c}{\textbf{Serviço:} <%=hl grupo %>} &
+    \multicolumn{2}{c|}{\textbf{Modalidade:} <%=hl parcelas.first.conta.servico.modalidade %>} \\
+    \hline
+
+    <% contas = [] %>
+
+    <% total_grupo = 0 %>
+    <% parcelas.each do |parcela| %>
+        <% contas << parcela.conta %>
+    <% end %>
+
+    <% contas.uniq.each do |conta| %>
+        <%=hl conta.pessoa.nome %> &
+        <%=hl conta.numero_de_controle %> &
+        <%=hl conta.data_venda %> &
+        <%=hl conta.dia_do_vencimento %> &
+        <%=hl conta.data_venda  %> &
+        <%=hl conta.numero_de_parcelas %> &
+        <%=hl preco_formatado_com_ponto(conta.valor_do_documento) %> &
+        <%=hl conta.nome_vendedor %> &
+        <% total_grupo += conta.valor_do_documento if conta.valor_do_documento %>
+        \hline
+    <% end %>
+
+    \multicolumn{6}{|r}{\textbf{Total Atividade...>>>}} &
+    \multicolumn{2}{l|}{<%=hl preco_formatado(total_grupo, 'R$') %>} \\
+    \hline
+
+    <% total_geral += total_grupo %>
+
+<% end %>
+
+\multicolumn{6}{|r}{\textbf{Total...>>>}} &
+\multicolumn{2}{l|}{<%=hl preco_formatado(total_geral, 'R$') %>} \\
+\hline
+
+\end{longtable}
+\end{center}

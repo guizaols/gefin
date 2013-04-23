@@ -1,0 +1,14 @@
+<% content_for :titulo, "Detalhes" %>
+
+<p>
+  <b>Imposto:</b>
+  <%=h @lancamento_imposto.imposto.descricao %>
+</p>
+
+<p>
+  <b>Data de recolhimento:</b>
+  <%=h @lancamento_imposto.data_de_recolhimento %>
+</p>
+
+<%= link_to 'Alterar', edit_pagamento_de_conta_parcela_lancamento_imposto_path(@lancamento_imposto.parcela.conta_id,@lancamento_imposto.parcela_id,@lancamento_imposto) %> |
+<%= link_to 'Voltar',pagamento_de_conta_parcela_lancamento_impostos_path(@lancamento_imposto.parcela.conta_id,@lancamento_imposto.parcela_id) %>

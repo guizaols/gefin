@@ -1,0 +1,10 @@
+<h1>Contas Correntes - Extrato de Contas (BETA)</h1>
+
+<% form_remote_tag :url => extrato_contas_beta_relatorios_path, :loading => "Element.show('loading_extra');", :success => "Element.hide('loading_extra');" do %>
+  <table>
+    <%= campo_de_cadastro 'Conta Corrente', auto_complete_tag_para_qualquer_campo(:conta_corrente, auto_complete_for_conta_corrente_contas_correntes_path) %>
+    <%= campo_de_cadastro 'Data de Referência', campo_para_busca_por_faixa_de_data('data') %>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %><%= image_tag('loading.gif', :id => "loading_extra", :style => "display:none") %></td></tr>
+  </table>
+<% end %>

@@ -1,0 +1,45 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|p{0.5cm}|p{12.7cm}|p{1.0cm}|}
+\hline
+\multicolumn{1}{|c}{\textbf{Data}} &
+\multicolumn{1}{c}{\textbf{Histórico}} &
+\multicolumn{1}{l|}{\textbf{Carta}} \\
+\hline
+
+<% @historicos.each do |cobrador, historicos_cobrador| %>
+
+\multicolumn{3}{|l|}{\textbf{Funcionário:} <%=hl cobrador %>} \\
+\hline
+
+<% historicos_cobrador.group_by{|historico| historico.conta.servico.descricao}.each do |servico, historico_servico| %>
+
+\multicolumn{3}{|l|}{\textbf{Entidade:} <%=hl historico_servico.first.conta.unidade.entidade.nome %>\hspace{50pt}\textbf{Serviço:} <%=hl servico %>}
+\\
+\hline
+ <% historico_servico.group_by{|historico| historico.conta.numero_de_controle}.each do |conta, historico_servico| %>
+      \multicolumn{1}{|l}{\textbf{Contrato:} <%=hl conta %>} &
+      \multicolumn{2}{c|}{\textbf{Cliente:} <%=hl historico_servico.first.conta.pessoa.nome rescue 'Pessoa Excluída' %>} \\
+      \hline
+      <% historico_servico.each do |historico| %>
+           <% unless historico.blank? %>
+                <%=hl historico.created_at.to_date.to_s_br %> &
+                <%=hl "#{historico.descricao unless historico.descricao.blank?}. #{historico.justificativa unless historico.justificativa.blank?}" %> &
+                <%=hl historico.numero_carta_cobranca if historico.numero_carta_cobranca %> \\
+                \hline
+           <% end %>
+      <% end %>
+  <% end %>
+
+\hline
+<% end %>
+<% end %>
+
+\end{longtable}
+\end{center}

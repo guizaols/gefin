@@ -1,0 +1,156 @@
+<br />
+<div style="color: red"><center>(*)Campos de preenchimento obrigatório</center></div>
+<% form_for @pessoa, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <table>
+    <tr>
+      <td  class="field_descriptor">Tipo de Pessoa*</td>
+      <td> <%=f.select :tipo_pessoa, [["Pessoa Física", 1], ["Pessoa Jurídica", 2]], {:include_blank => true}, :onchange => diferenciar_PF_PJ %></td>
+    </tr>
+    <tr> <td  class="field_descriptor">Categoria*</td>
+      <td>
+        <label for="pessoa_cliente"> <%= f.check_box("cliente", {:onclick => "desenha_a_tela_de_cadastrar_pessoa();",:simple_tag => true}) %>Cliente</label>
+        <label for="pessoa_fornecedor"> <%= f.check_box("fornecedor", {:onclick => "desenha_a_tela_de_cadastrar_pessoa();", :simple_tag => true}) %>Fornecedor</label>
+        <label for="pessoa_funcionario" id="label_pessoa_funcionario"> <%= f.check_box("funcionario", {:onclick => "desenha_a_tela_de_cadastrar_pessoa();", :simple_tag => true}) %>Funcionário</label>
+      </td>
+    </tr>
+
+    <tr id="razao_social" <%= 'style="display:none"' if @pessoa.tipo_pessoa == 1  %>>
+      <td  class="field_descriptor">Razão Social* </td>
+      <td>
+        <%# if @pessoa.juridica? && @pessoa.verifica_contrato_iniciado_e_baixa_de_parcela %>
+          <%#=h @pessoa.razao_social %>
+        <%# else %>
+          <%= f.text_field :razao_social, :simple_tag => true, :onblur => 'insere_a_razao_social_no_nome_fantasia();' %>
+        <%# end %>
+      </td>
+    </tr>
+
+    <tr>
+      <td id="nome" class="field_descriptor">Nome*</td>
+      <td><%# if @pessoa.fisica? && @pessoa.verifica_contrato_iniciado_e_baixa_de_parcela %>
+            <%#=h @pessoa.nome %>
+          <%# else %>
+            <%= f.text_field :nome, :simple_tag => true %>
+          <%# end %>
+      </td>
+    </tr>
+    <tr>
+      <td id="rg_ie" class="field_descriptor"><%=@pessoa.label_do_campo_rg_ie %></td> <td> <%= f.text_field :rg_ie, :simple_tag=>true, :maxlength => 15, :size => 15 %></td>
+    </tr>
+
+    <tr id="cpf">
+      <td  class="field_descriptor">CPF*</td> <td> <%= f.text_field(:cpf,:simple_tag=>true, :maxlength => 14, :size => 14,
+          :onchange=>pesquisa_se_cpf_ou_cnpj_ja_existem("cpf",@pessoa.id.blank? ? "" : @pessoa.id)) %>
+          <%= image_tag('loading.gif', :id => "loading_form", :style => "display:none") %>
+      </td>
+    </tr>
+
+    <tr id="inadimplencia">
+      <td  class="field_descriptor">Inadimplência*</td> <td><label><%= @pessoa.new_record? ? 0 : @pessoa.dias_em_atraso %> </label></td>
+    </tr>
+
+    <tr id="cnpj">
+      <td  class="field_descriptor">CNPJ*</td> <td> <%= f.text_field(:cnpj,:simple_tag=>true, :maxlength => 18, :size => 18,
+        :onchange=>pesquisa_se_cpf_ou_cnpj_ja_existem("cnpj",@pessoa.id.blank? ? "" : @pessoa.id))%></td>
+    </tr>
+
+    <tr id="data_nascimento" <%= 'style="display:none"' if @pessoa.tipo_pessoa == 1  %>>
+      <td  class="field_descriptor"> Data de Nascimento* </td> <td><%= f.text_field :data_nascimento, :simple_tag => true, :size => 10 %></td>
+    </tr>
+
+    <tr id="contato" <%= 'style="display:none"' if @pessoa.tipo_pessoa == 1  %>>
+      <td  class="field_descriptor"> Contato* </td> <td><%= f.text_field :contato, :simple_tag=>true  %></td>
+
+    </tr>
+
+    <%= f.text_field :cep, :label =>"CEP*", :maxlength => 10, :size => 10 %>
+    <%= f.text_field :endereco, :label =>"Endereço*", :after => ', ' + f.text_field(:numero, :simple_tag => true, :size => 10, :maxlength => 10) %>
+    <%= f.text_field :bairro, :label =>"Bairro*" %>
+    <tr>
+      <td class="field_descriptor">Localidade*</td>
+      <td><%= auto_complete_para_qualquer_campo(f,:localidade,auto_complete_for_localidade_localidades_path) %></td>
+    </tr>
+    <%= f.text_field :complemento %>
+
+    <tr>
+      <td  class="field_descriptor">Telefones/Fax* <%= link_to_function "+" do |page|
+          page.insert_html :bottom, "telefones_secundarios", :partial => 'telefone'
+        end
+      %> </td>
+      <td>
+        <ul id="telefones_secundarios" style="list-style-type: none;">
+          <%= render :partial => 'telefone' if @pessoa.new_record? %>
+          <%= render :partial => 'telefone', :object => 'telefone', :collection => @pessoa.telefone   if @pessoa.telefone%>
+        </ul>
+      </td>
+    </tr>
+
+    <tr>
+      <td  class="field_descriptor">Emails* <%= link_to_function "+" do |page|
+          page.insert_html :bottom, "emails_secundarios", :partial => 'email'
+        end
+      %></td>
+      <td>
+        <ul id="emails_secundarios"  style="list-style-type: none;">
+          <%= render :partial => 'email' if @pessoa.new_record? %>
+          <%= render :partial => 'email', :object => 'email', :collection => @pessoa.email   if @pessoa.email%>
+        </ul>
+      </td>
+    </tr>
+
+    <tr id="banco" style="display:none;">
+      <td  class="field_descriptor">Banco*</td>
+      <td><%= f.select :banco_id, Banco.all.collect {|p| [ p.descricao, p.id ] }, { :include_blank => true } %></td>
+    </tr>
+
+    <tr id="agencia" style="display:none;">
+      <td  class="field_descriptor">Agência*</td> <td>
+        <%= auto_complete_para_qualquer_campo(f, "agencia", auto_complete_for_agencias_do_banco_agencias_path, {:complemento_dos_params => "+ '&banco_id=' + $('pessoa_banco_id').value"}) %>
+      </td>
+    </tr>
+
+    <tr id="conta" style="display:none;" >
+      <td  class="field_descriptor">Conta*</td> <td> <%= f.text_field :conta, :simple_tag=>true  %>  </td>
+    </tr>
+
+
+    <tr id="matricula" style="display:none;">
+      <td  class="field_descriptor">Matrícula*</td> <td><%= f.text_field :matricula , :simple_tag=>true  %></td>
+    </tr>
+
+    <tr id="cargo" style="display:none;">
+      <td  class="field_descriptor">Cargo*</td>
+      <td><%= f.select_ou_crie_um_novo :cargo,(Pessoa.find(:all).collect {|c| c.cargo }).uniq.reject(&:blank?) %></td>
+    </tr>
+
+    <tr id="ativo" style="display:none;">
+      <td  class="field_descriptor">Status do Funcionário*</td><td><label for="pessoa_funcionario_ativo"> <%= f.check_box("funcionario_ativo",:simple_tag=>true)%>Ativo</label></td>
+    </tr>
+
+    <%= f.text_area :observacoes,:label=> 'Observações',:cols => 35, :rows => 10 %>
+    <tr>
+      <td id="industriario" class="field_descriptor">Industriário*</td>
+      <td>
+        <%= f.select :industriario, [["NÃO", Pessoa::NAO], ["SIM", Pessoa::SIM]] %>
+      </td>
+    </tr>
+    <tr>
+      <td></td><td><%= f.submit "Salvar" %></td>
+    </tr>
+
+  </table>
+  <%= javascript_tag "desenha_a_tela_de_cadastrar_pessoa(); #{diferenciar_PF_PJ}"%>
+  <%= mascara_para_data('pessoa_data_nascimento') %>
+  <%= mascara_para_cpf('pessoa_cpf') %>
+  <%= mascara_para_cnpj('pessoa_cnpj') %>
+
+
+
+
+
+
+<% end %>
+
+<%= link_to 'Voltar', pessoas_path %>
+

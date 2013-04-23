@@ -1,0 +1,270 @@
+curso_de_tecnologia_do_paulo:
+  ano: 2009
+  tipo_de_documento: CTR
+  numero_nota_fiscal: 888555
+  pessoa: paulo
+  dependente: dependente_paulo_primeiro
+  servico: curso_de_tecnologia
+  data_inicio: 2009-09-24
+  data_final: 2009-10-24
+  data_inicio_servico: 2009-09-24
+  data_final_servico: 2009-10-24
+  dia_do_vencimento: 1
+  valor_do_documento: 1000
+  numero_de_parcelas: 1
+  vigencia: 1
+  rateio: 1
+  historico: MyString
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2009-09-24 15:58:02
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: false
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CTR09/09888555"
+  multa_por_atraso: 2
+  juros_por_atraso: 1
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_design_do_paulo:
+  ano: 2009
+  tipo_de_documento: CPMF
+  numero_nota_fiscal: 762444
+  pessoa: paulo
+  dependente: dependente_paulo_primeiro
+  servico: curso_de_design
+  data_inicio: 2009-06-28
+  data_final: 2009-08-28
+  data_inicio_servico: 2009-06-28
+  data_final_servico: 2009-08-28
+  dia_do_vencimento: 5
+  valor_do_documento: 6000
+  numero_de_parcelas: 2
+  historico: Curso de design do paulo
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2009-06-28 18:00:30
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: true
+  situacao: 1
+  vigencia: 2
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CPMF09/09762444"
+  rateio: 0
+  multa_por_atraso: 2
+  juros_por_atraso: 1
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_design_do_paulo_onde_as_parcelas_vencerao_proximo_ano:
+  ano: 2009
+  tipo_de_documento: CPMF
+  numero_nota_fiscal: 111555
+  pessoa: paulo
+  dependente: dependente_paulo_primeiro
+  servico: curso_de_design
+  data_inicio: 2009-12-31
+  data_final: 2010-03-31
+  data_inicio_servico: 2009-12-31
+  data_final_servico: 2010-03-31
+  dia_do_vencimento: 5
+  valor_do_documento: 9000
+  numero_de_parcelas: 3
+  vigencia: 3
+  historico: Curso de design do paulo que vencerá ano que vem
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2009-12-31 15:30:00
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: false
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CPMF09/09111555"
+  rateio: 0
+  multa_por_atraso: 2
+  juros_por_atraso: 1
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_design_do_paulo_onde_as_parcelas_vencerao_no_proximo_mes:
+  ano: 2009
+  tipo_de_documento: CTR
+  numero_nota_fiscal: 000777
+  pessoa: paulo
+  dependente: dependente_paulo_primeiro
+  servico: curso_de_tecnologia
+  data_inicio: 2009-04-30
+  data_final: 2009-06-30
+  data_inicio_servico: 2009-04-30
+  data_final_servico: 2009-06-30
+  dia_do_vencimento: 31
+  valor_do_documento: 9000
+  numero_de_parcelas: 2
+  vigencia: 2
+  historico: Curso de tecnoligia do paulo
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2009-04-30 12:30:00
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: false
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CTR09/09000777"
+  rateio: 0
+  multa_por_atraso: 2
+  juros_por_atraso: 1
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_eletronica_do_paulo:
+  ano: 2009
+  tipo_de_documento: CTR
+  numero_nota_fiscal: 000777
+  pessoa: paulo
+  dependente: dependente_paulo_primeiro
+  servico: curso_de_eletronica
+  data_inicio: 2009-01-01
+  data_final: 2009-12-31
+  data_inicio_servico: 2009-01-01
+  data_final_servico: 2009-12-31
+  dia_do_vencimento: 20
+  valor_do_documento: 10000
+  numero_de_parcelas: 2
+  vigencia: 12
+  historico: Curso de eletronica do paulo
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2008-12-15
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: true
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CTR09/09000788"
+  rateio: 0
+  multa_por_atraso: 2
+  juros_por_atraso: 1
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_corel_do_paulo:
+  ano: 2009
+  tipo_de_documento: CTR
+  numero_nota_fiscal: 000782
+  pessoa: paulo
+  dependente: dependente_paulo_primeiro
+  servico: curso_de_corel
+  data_inicio: 2009-01-01
+  data_final: 2009-12-31
+  data_inicio_servico: 2009-01-01
+  data_final_servico: 2009-12-31
+  dia_do_vencimento: 10
+  valor_do_documento: 5000
+  numero_de_parcelas: 2
+  vigencia: 12
+  historico: Curso de Corel Draw do paulo
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2008-12-20
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: true
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CTR09/09000791"
+  rateio: 0
+  multa_por_atraso: 2
+  juros_por_atraso: 1
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_tecnologia_do_andre:
+  ano: 2009
+  tipo_de_documento: CTR
+  numero_nota_fiscal: 000782
+  pessoa: andre
+  servico: curso_de_tecnologia
+  data_inicio: 2009-01-01
+  data_final: 2009-06-30
+  data_inicio_servico: 2009-01-01
+  data_final_servico: 2009-06-30
+  dia_do_vencimento: 10
+  valor_do_documento: 3000
+  numero_de_parcelas: 1
+  vigencia: 1
+  historico: Curso de Tecnologia do André
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2008-12-20
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: true
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CTR09/09000798"
+  rateio: 0
+  multa_por_atraso: 0
+  juros_por_atraso: 0
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+
+curso_de_prototype_do_andre:
+  ano: 2009
+  tipo_de_documento: CTR
+  numero_nota_fiscal: 000987
+  pessoa: andre
+  servico: curso_de_tecnologia
+  data_inicio: 2009-01-01
+  data_final: 2011-06-30
+  data_inicio_servico: 2009-01-01
+  data_final_servico: 2011-06-30
+  dia_do_vencimento: 10
+  valor_do_documento: 3000
+  numero_de_parcelas: 1
+  vigencia: 1
+  historico: Curso de Tecnologia do André
+  conta_contabil_receita: plano_de_contas_ativo_despesas_senai
+  unidade_organizacional: senai_unidade_organizacional
+  centro: centro_forum_economico
+  data_venda: 2008-12-20
+  origem: <%= RecebimentoDeConta::Interna %>
+  vendedor: felipe
+  cobrador: felipe
+  parcelas_geradas: true
+  situacao: 1
+  unidade: senaivarzeagrande
+  numero_de_controle: "SVG-CTR09/09000987"
+  rateio: 0
+  multa_por_atraso: 0
+  juros_por_atraso: 0
+  numero_de_renegociacoes: 0
+  situacao_fiemt: 1
+  servico_iniciado: true
+

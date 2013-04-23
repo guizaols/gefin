@@ -1,0 +1,1 @@
+tar -czvf financeiro-`date +%Y-%m-%d`.tar.gz ../gefin/* --exclude=inotegration* --exclude=*.bat --exclude=../gefin/server --exclude=compactar_projeto --exclude=database.yml --exclude=*.log --exclude=tmp/* --exclude=nbproject --exclude=.gitignore --exclude=*.sqlite3 --exclude=*.tar.gz

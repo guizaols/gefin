@@ -1,0 +1,42 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo]) %>}
+\fontsize{7pt}{12pt}\selectfont
+
+<% if params["busca"]["opcao_relatorio"] == "1" || params["busca"]["opcao_relatorio"] == "3" %>
+\begin{longtable}{|p{6.5cm}p{6.5cm}p{6.5cm}p{6.5cm}|}
+\hline
+\textbf{Serviços/Atividade} & \textbf{Modalidade} & \textbf{Total a Receber} & \textbf{Total Recebido}  \\
+\hline
+<% cont = 0 %>
+<% @parcelas.group_by{ |parcela| parcela.conta.servico.descricao }.each do |key, value| %>
+  <%= hl key %> & <%= hl value.first.conta.servico.modalidade %> & <%= hl preco_formatado(value.collect{|parcela| parcela.valor }.sum, "R$") %> & <%= hl preco_formatado(value.collect{|parcela| parcela.valor_liquido }.sum, "R$") %> \\
+\hline
+
+<% cont += 1 %>
+<% end %>
+
+& \textbf{Totais....>>} & <%= hl preco_formatado(@parcelas.sum(&:valor), "R$") %> & <%= hl preco_formatado(@parcelas.sum(&:valor_liquido), "R$") %> \\
+\hline
+
+<% else %>
+
+\begin{longtable}{|p{6.5cm}p{6.5cm}p{6.5cm}p{6.5cm}|}
+\hline
+\multicolumn{2}{|c}{\textbf{Serviços/Atividade}} & \textbf{Modalidade} & \textbf{Total a Receber} \\
+\hline
+
+<% @parcelas.group_by{ |parcela| parcela.conta.servico.descricao }.each do |key, value| %>
+  <%= hl key %> & & <%= hl value.first.conta.servico.modalidade %> & <%= hl preco_formatado(value.collect{|parcela| parcela.valor }.sum, "R$") %> \\
+\hline
+<% end %>
+
+& & & \textbf{Totais....>>} <%= hl preco_formatado(@parcelas.sum(&:valor), "R$") %> \\
+\hline
+
+<% end %>
+
+\end{longtable}
+\end{center}

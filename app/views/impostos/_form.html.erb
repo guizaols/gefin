@@ -1,0 +1,17 @@
+<% form_for @imposto, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <%= f.text_field :descricao, :label => 'Descrição' %>
+    <%= f.text_field :sigla %>
+    <%= f.text_field :aliquota, :label => 'Alíquota', :onkeypress => "return(MascaraMoeda(imposto_aliquota, \".\",\",\", event))" %>
+    <tr><th class="field_descriptor">Tipo</th><td><%= f.select :tipo, Imposto.retorna_tipos_de_aliquota, { :include_blank => true } %></td></tr>
+    <tr><th class="field_descriptor">Classificação</th><td><%= f.select :classificacao, Imposto.retorna_classificacoes_das_aliquotas, { :include_blank => true}, :onchange => diferenciar_impostos %></td></tr>
+    <tr id="conta_debito"><th class="field_descriptor">Conta Débito</th><td><%= auto_complete_para_qualquer_campo(f, "conta_debito", auto_complete_for_conta_contabil_plano_de_contas_path, { :analisar_conta => true }) %></td></tr>
+    <tr id="conta_credito"><th class="field_descriptor">Conta Crédito</th><td><%= auto_complete_para_qualquer_campo(f, "conta_credito", auto_complete_for_conta_contabil_plano_de_contas_path, { :analisar_conta => true }) %></td></tr>
+  <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+
+  <%= javascript_tag diferenciar_impostos %>
+  
+<% end %>

@@ -1,0 +1,14 @@
+<% content_for :titulo, 'Bancos' %>
+
+<%if @bancos.length > 0%>
+  <% listagem_table :new => new_banco_path, :permissoes => Perfil::ManipularDadosDosBancos, :headers => ['Descrição'], :style => 'width: 70%' do %>
+    <% for banco in @bancos %>
+      <% listagem_tr :edit => edit_banco_path(banco), :destroy => banco, :permissoes => Perfil::ManipularDadosDosBancos do %>
+        <td><%=link_to h(banco.descricao), banco_path(banco.id) %></td>
+      <% end %>
+    <% end %>
+  <% end %>
+<%else%>
+  <b> Não existem bancos cadastrados em nossa base de dados.</b>
+  <p><%= link_to 'Novo banco', new_banco_path %></p>
+<%end%>

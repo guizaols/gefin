@@ -1,0 +1,31 @@
+<% form_tag atualiza_valores_das_parcelas_recebimento_de_conta_path do %>
+  <%= error_messages_for :recebimento_de_conta %>
+  <table>
+    <tr>
+      <th>Parcela</th>
+      <th>Data Vencimento</th>
+      <th>Valor</th>
+      <th>Situacão</th>
+    </tr>
+    <% soma_das_parcelas_pendentes = 0 %>
+    <% @recebimento_de_conta.dados_parcela.sort.each do |parcela| %>
+      <% if [Parcela::PENDENTE, Parcela::JURIDICO, Parcela::PERMUTA, Parcela::BAIXA_DO_CONSELHO, Parcela::DESCONTO_EM_FOLHA, Parcela::QUITADA, Parcela::ENVIADO_AO_DR, Parcela::DEVEDORES_DUVIDOSOS_ATIVOS].include?(parcela.last["situacao"]) %>
+        <%= render :partial => 'parcela', :locals => {:chave => parcela.first, :numero => parcela.last["numero"] , :valor => (parcela.last["valor"].real.to_f / 100).real.to_s,
+          :data_vencimento => parcela.last["data_vencimento"], :situacao => parcela.last["situacao"], :situacao_verbose => parcela.last["situacao_verbose"],
+          :situacao_contrato => @recebimento_de_conta.situacao_fiemt} %>
+        <% soma_das_parcelas_pendentes += parcela.last["valor"] %>
+      <% end %>
+    <% end %>
+  </table>
+  <p>
+    <b>Valor a ser recebido:</b> R$
+    <span id="valor_do_documento"><%= format("%.2f", soma_das_parcelas_pendentes/100.0) %></span>
+    <br />
+    <b>Soma das parcelas pendentes:</b> R$
+    <span id="soma_total_das_parcelas" > </span>
+  </p>
+  <p><%= submit_tag "Salvar" %> | <%= link_to 'Voltar', recebimento_de_conta_path(@recebimento_de_conta.id) %></p>
+<%  end %>
+<% javascript_tag do %>
+  valor_total_das_parcelas();
+<% end %>

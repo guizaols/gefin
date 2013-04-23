@@ -1,0 +1,42 @@
+<% parcelas = parcelas.find_all{|parcela| parcela.situacao != Parcela::RENEGOCIADA} unless @mostrar_todas %>
+<% parcelas.each do |parcela| %>
+  <tr id="parcela_<%= h parcela.id %>" class="<%= cycle('impar', 'par') %> pc <%= parcela.situacao_verbose %> parcela">
+    <td><%= h parcela.parcela_mae_id.blank? ? parcela.numero : parcela.numero_parcela_filha %></td>
+    <td><%= h(data_formatada(parcela.data_vencimento)) %></td>
+    <td><%= h(preco_formatado(parcela.valor)) %></td>
+    <td><%= h(preco_formatado(parcela.soma_impostos_da_parcela)) %></td>
+    <td><%= h(preco_formatado(parcela.calcula_valor_liquido_da_parcela)) %></td>
+    <td><%= h parcela.data_da_baixa if parcela.data_da_baixa %></td>
+    <% if @conta.is_a?(PagamentoDeConta) && !parcela.parcela_mae_id.blank? %>
+      <td><%= h preco_formatado(parcela.calcula_valor_liquido_da_parcela) if parcela.valor_liquido %></td>
+    <% else %>
+      <td><%= h preco_formatado(parcela.valor_liquido) if parcela.valor_liquido %></td>
+    <% end %>
+    <td><%= h preco_formatado(parcela.valor_da_multa) if parcela.valor_da_multa %></td>
+    <td><%= h preco_formatado(parcela.valor_dos_juros) if parcela.valor_dos_juros %></td>
+    <td><%= h preco_formatado(parcela.outros_acrescimos) if parcela.outros_acrescimos %></td>
+    <td><%= h preco_formatado(parcela.valor_do_desconto) if parcela.valor_do_desconto %></td>
+    <td>
+      <%= h(parcela.situacao_verbose) %>
+      <%= ' (baixa DR)' if parcela.baixa_pela_dr %>
+    </td>
+    <td class="parcela">
+      <% if (@conta.is_a?(RecebimentoDeConta) && current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas)) || (@conta.is_a?(PagamentoDeConta) && current_usuario.possui_permissao_para(Perfil::ManipularDadosDePagamentoDeContas)) %>
+        <%= actions_for_parcelas(@conta, parcela) %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+<% listagem_tr do %>
+  <td colspan="13"><b>Filtro:</b>
+    <% if @conta.is_a?(RecebimentoDeConta) %>
+      <% if @mostrar_todas %>
+        <%= radio_button_para_filtrar_parcelas ['Vincendas', 'Em atraso', 'Canceladas', 'Quitadas', 'Renegociadas', 'Enviada ao DR', 'Perdas no Recebimento de Creditos - Clientes', 'Todas'], 'Todas' %>
+      <% else %>
+        <%= radio_button_para_filtrar_parcelas ['Vincendas', 'Em atraso', 'Canceladas', 'Quitadas', 'Enviada ao DR', 'Perdas no Recebimento de Creditos - Clientes', 'Todas'], 'Todas' %>
+      <% end %>
+    <% else %>
+      <%= radio_button_para_filtrar_parcelas ['Vincendas', 'Em atraso', 'Canceladas', 'Quitadas', 'Estornadas', 'Todas'], 'Todas' %>
+    <% end %>
+  </td>
+<% end %>

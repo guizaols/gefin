@@ -1,0 +1,19 @@
+<table id="devolver_cheques" style="display:none">
+  <%= campo_de_cadastro 'Data da Devolução', (calendar_date_select_tag_com_mascara 'cheques[data_do_evento]', data_do_evento) %>
+  <%= campo_de_cadastro 'Tipo da Ocorrência', (select_tag 'cheques[tipo_da_ocorrencia]', options_for_select([['Baixa de transferência para o DR', Cheque::ENVIO_DR], ['Baixado', Cheque::RENEGOCIACAO]],
+      :selected => (tipo_da_ocorrencia.to_i rescue Cheque::ENVIO_DR))) %>
+  <%= campo_de_cadastro 'Conta Contábil', auto_complete_para_qualquer_campo_tag('conta_contabil_devolucao_id',
+    auto_complete_for_conta_contabil_plano_de_contas_path, (conta_contabil_devolucao_id rescue nil), (nome_conta_contabil_devolucao rescue nil),
+    {:analisar_conta => true, :complemento_do_after_update_element => "   $('cheques_conta_contabil_devolucao_nome').value = $('conta_contabil_devolucao_nome').value ;
+      $('cheques_conta_contabil_devolucao_id').value = $('conta_contabil_devolucao_id').value;", :opcoes_para_text_field => {:size => 70}} ) %>
+  <%= campo_de_cadastro 'Alínea', (select_tag 'cheques[alinea]', options_for_select(OcorrenciaCheque.retorna_para_select), :style => "width:700px") %>
+  <tr>
+    <td>
+      <%= hidden_field_tag 'cheques[conta_contabil_devolucao_id]', (conta_contabil_devolucao_id rescue nil) %>
+      <%= hidden_field_tag 'cheques[conta_contabil_devolucao_nome]', (conta_contabil_devolucao_nome rescue nil) %>
+    </td>
+  </tr>
+  <%= campo_de_cadastro 'Histórico', (text_field_tag 'cheques[historico]', (historico rescue nil),
+    :id => 'cheques_historico', :size => 100) %>
+  <tr><td></td><td><%= submit_tag 'Enviar' unless @cheques.blank? %></td></tr>
+</table>

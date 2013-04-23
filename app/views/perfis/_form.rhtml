@@ -1,0 +1,43 @@
+<div id="formulario">
+  <% form_for @perfil do |perfil| %>
+    <%= error_messages_for :perfil, :object_name => 'este perfil' %>
+    <table>
+      <tr>
+        <td class="field_descriptor">Nome do Perfil:</td><td><%= perfil.text_field :descricao %></td>
+      </tr>
+      <% if @perfil.new_record? %>
+        <tr>
+          <td>
+          </td>
+          <td><p>
+              Com base em:
+              <%= select('perfis_antigos', '',
+                @perfis.collect(&:descricao),
+                {:include_blank => true, :selected => @selecionado},
+                :onchange => remote_function(:url => {:action => 'update_formulario'},
+                  :with => "'descricao=' + $('perfis_antigos_').value + '&nome=' + $('perfil_descricao').value"
+                )) %>
+            </p>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <td></td>
+        <td>
+          <ul style="list-style: none">
+            <%= lista_permicoes(@permissoes, false) %>
+          </ul>
+        </td>
+      </tr>
+      <tr><td><br /></td></tr>
+      <tr><td></td>
+        <td>
+          <%= link_to_function 'Todos' do |page| page << "selecionarChecksPerfis(true);" end %> |
+          <%= link_to_function 'Nenhum' do |page| page << "selecionarChecksPerfis(false);" end %>
+        </td>
+      </tr>
+      <tr><td></td><td><br /><%= submit_tag 'Salvar' %></td></tr>
+    </table>
+  <% end %>
+  <%= link_to 'Voltar', perfis_path %>
+</div>

@@ -1,0 +1,27 @@
+<% form_remote_tag :url => {:action => 'lancar_reajuste'}, :loading => "Element.show('loading_reaj')", :success => "Element.hide('loading_reaj')" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Valor do Reajuste</td>
+      <td><%= text_field_tag 'valor_reajuste', nil, :onkeypress => "return(MascaraMoeda(valor_reajuste, \".\",\",\", event))" %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Calcular valor (%)</td>
+      <td>
+        <%= text_field_tag 'porcentagem', nil, :size => '10', :onkeypress => "return(MascaraMoeda(porcentagem, \".\",\",\", event))" %>
+        <%= link_to_remote 'Calcular', :url => {:action => 'calcula_valor_reajuste', :id => @recebimento_de_conta.id}, :with => "'porcentagem=' + $('porcentagem').value + '&data_reajuste=' + $('data_reajuste').value", :loading => "Element.show('loading_calc_reaj')", :success => "Element.hide('loading_calc_reaj')" %><%= loading_image 'calc_reaj' %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Data do Reajuste</td>
+      <td><%= text_field_tag 'data_reajuste', Date.today.to_s_br, :size => '10px', :maxlength => '10' %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Salvar' %>
+        <%= button_to_function 'Cancelar', 'Modalbox.hide()' %><%= loading_image 'reaj' %>
+      </td>
+    </tr>
+  </table>
+  <%= mascara_para_data('data_reajuste') %>
+<% end %>

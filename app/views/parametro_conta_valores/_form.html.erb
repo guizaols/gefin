@@ -1,0 +1,18 @@
+<% form_for @parametro_conta_valor, :builder => TableFormBuilder do |f| %>
+  <%= error_messages_for  :parametro_conta_valor, :object_name => ' o parâmetro' %>
+
+  <table>
+    <tr><th class="field_descriptor">Tipo</th>
+      <td>
+        <%= f.select :tipo, ParametroContaValor.retorna_tipos_de_parametro, {:include_blank => true} %>
+      </td>
+    </tr>
+    <tr><th class="field_descriptor">Conta Contábil</th>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f, "conta_contabil", auto_complete_for_conta_contabil_plano_de_contas_path, {:analisar_conta => true, :opcoes_para_text_field => {:size => '60px'}}) %>
+      </td>
+    </tr>
+    <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+  
+<% end %>

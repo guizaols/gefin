@@ -1,0 +1,297 @@
+<% listagem_table :headers => ['Número','Vencimento','Valor da Parcela', 'Valor Líquido da Parcela','Situação'] do %>
+  <% listagem_tr do %>
+    <td><%=h @parcela.numero  %></td>
+    <td><%=h @parcela.data_vencimento %></td>
+    <td><%=h preco_formatado(@parcela.valor) %></td>
+    <td><span id="soma_total" > <%=h preco_formatado(@parcela.valor) %></span></td>
+    <td><%=h @parcela.situacao_verbose %></td>
+  <% end %>
+<% end %>
+
+<% form_for [@conta, @parcela], :url => {:action => 'gravar_baixa', :controller => 'parcelas', :id => @parcela.id}.merge(verifica_se_recebimento_ou_pagamento), :html => { :method => :post }, :builder => TableFormBuilder do |parcela| %>
+  <%= parcela.error_messages %>
+  <br />
+  <table>
+    <tr>
+      <td class="field_descriptor">Data do Pagamento</td>
+      <td><%= parcela.calendar_date_select :data_da_baixa, :disabled => @parcela.baixada ? true : false,
+          :onchange => atualiza_valor_dos_juros('data_da_baixa', @parcela.id, @conta.id) %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Forma de Pagamento</td>
+      <td><%= !@parcela.baixada ? (parcela.select :forma_de_pagamento, formas_de_pagamento, {:include_blank => true}, :onchange => "diferenciarFormaDePagamento('#{@conta.is_a?(PagamentoDeConta) ? 'pagamento_de_contas' : 'recebimento_de_contas'}', #{@conta.id}, #{@parcela.id})") :  @parcela.forma_de_pagamento_verbose %>
+        <% if @conta.is_a?(RecebimentoDeConta) && @parcela.baixada && [Parcela::CHEQUE, Parcela::CARTAO].include?(@parcela.forma_de_pagamento) %>
+          <% if (!@parcela.cartoes.blank? && @parcela.cartoes.first.situacao != Cartao::BAIXADO) || (!@parcela.cheques.blank? && @parcela.cheques.first.situacao != Cheque::BAIXADO)  %>
+            <%= button_to_function 'Trocar forma de pagamento' do |page| page << "Modalbox.show($('form_para_resgatar'), {title: 'Resgatar Cheque/Cartão'});aumentaMB();" end %>
+          <% end %>
+        <% end %>
+      </td>
+    </tr>
+
+    <tr <%= mostra_campos_da_baixa_por_banco %> id="tr_de_conta_corrente">
+      <td class="field_descriptor">Conta Corrente</td>
+      <td><%= auto_complete_para_qualquer_campo(parcela, "conta_corrente", auto_complete_for_conta_corrente_com_filtro_por_identificador_contas_correntes_path,
+          {:complemento_do_after_update_element => "$('td_de_conta_contabil_da_conta_corrente').innerHTML = value.getAttribute('lang').split('_')[1];
+      Element.show('tr_de_conta_contabil_da_conta_corrente'); Element.highlight('tr_de_conta_contabil_da_conta_corrente')",
+            :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 50}}) %></td>
+    </tr>
+
+    <tr id="tr_de_conta_contabil_da_conta_corrente" <%= 'style="display:none;"' if @parcela.conta_corrente.blank? %>>
+      <td class="field_descriptor">Conta Contábil</td>
+      <td id="td_de_conta_contabil_da_conta_corrente"><%=h @parcela.conta_corrente.conta_contabil.nome if @parcela.conta_corrente %></td>
+    </tr>
+
+    <% if @conta.is_a?(PagamentoDeConta) %>
+      <tr <%=mostra_campos_da_baixa_por_banco %> id="tr_de_numero_comprovante">
+        <td class="field_descriptor">Número do Comprovante</td>
+        <td><%= parcela.text_field :numero_do_comprovante, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+    <% end %>
+
+    <% parcela.fields_for :cheques do |obj_cheque| %>
+      <tr id="tr_tipo_de_cheque" <%= mostra_campos_da_baixa_por_cheque %> >
+        <td class="field_descriptor">Tipo de Cheque</td>
+        <td>
+          <%= obj_cheque.select :prazo, [['À Vista', Cheque::VISTA], ['A Prazo', Cheque::PRAZO]], {:include_blank => true}, :onchange => seleciona_conta_contabil_caixa(@parcela.unidade), :disabled => @parcela.baixada ? true : false %>
+        </td>
+      </tr>
+
+      <tr id="tr_data_deposito" <%=mostra_campos_da_baixa_por_cheque %>>
+        <td class="field_descriptor">Data para Depósito </td>
+        <td><%=obj_cheque.calendar_date_select :data_para_deposito, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+
+      <tr id="tr_conta_transitoria" <%=mostra_campos_da_baixa_por_cheque %>>
+        <td class="field_descriptor" >Conta Contábil Transitória</td>
+        <td>
+          <%= auto_complete_para_qualquer_campo_tag('parcela[cheques_attributes][0][conta_contabil_transitoria_id]', auto_complete_for_conta_contabil_plano_de_contas_path,(@parcela.cheques.first.conta_contabil_transitoria_id rescue nil),(@parcela.cheques.first.nome_conta_contabil_transitoria rescue nil),{:analisar_conta=>true,:opcoes_para_text_field=>{:disabled=>@parcela.baixada, :size => 30}})  %>
+        </td>
+      </tr>
+
+      <tr id="tr_nome_do_banco" <%=mostra_campos_da_baixa_por_cheque %> >
+        <td class="field_descriptor">Banco </td>
+        <td><%=obj_cheque.select :banco_id, Cheque.retorna_bancos_para_select, {:include_blank => true}, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+
+      <tr id="tr_nome_do_titular" <%=mostra_campos_da_baixa_por_cheque %> >
+        <td class="field_descriptor">Nome do Titular </td>
+        <td><%=obj_cheque.text_field :nome_do_titular, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+
+      <tr id="tr_nome_agencia" <%=mostra_campos_da_baixa_por_cheque %> >
+        <td class="field_descriptor">Agência </td>
+        <td><%=obj_cheque.text_field :agencia, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+
+      <tr id="tr_nome_conta" <%=mostra_campos_da_baixa_por_cheque %>>
+        <td class="field_descriptor">Conta do Cheque </td>
+        <td><%=obj_cheque.text_field :conta, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+
+      <tr id="tr_numero_do_cheque" <%=mostra_campos_da_baixa_por_cheque %>>
+        <td class="field_descriptor">Número do Cheque </td>
+        <td><%=obj_cheque.text_field :numero, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+    <% end %>
+
+    <% parcela.fields_for :cartoes do |obj_cartao| %>
+      <tr id="tr_bandeira" <%=mostra_campos_da_baixa_por_cartao %>  >
+        <td class="field_descriptor">Bandeira </td>
+        <td><%=obj_cartao.select :bandeira, Cartao.retorna_bandeiras_para_select, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+      <tr id="tr_numero_do_cartao" <%=mostra_campos_da_baixa_por_cartao %> >
+        <td class="field_descriptor">Número do Cartão </td>
+        <td><%=obj_cartao.text_field :numero, :simple_tag => true, :disabled => @parcela.baixada ? true : false,:onkeyup=>"this.value = this.value.replace(/[a-z]/g,'');" %></td>
+      </tr>
+      <tr id="tr_validade_do_cartao" <%=mostra_campos_da_baixa_por_cartao %>>
+        <td class="field_descriptor">Validade do Cartão </td>
+        <td><%=obj_cartao.text_field :validade,:size=>4, :simple_tag => true, :disabled => @parcela.baixada ? true : false, :onkeyup => "AplicaMascara('XX/XXXX', this)"; %></td>
+      </tr>
+      <tr id="tr_nome_do_titular_cartao" <%=mostra_campos_da_baixa_por_cartao %>>
+        <td class="field_descriptor">Nome do Titular </td>
+        <td><%=obj_cartao.text_field :nome_do_titular, :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+      </tr>
+    <% end %>
+
+    <tr>
+      <td class="field_descriptor">Observações</td>
+      <td><%= parcela.text_area :observacoes, :label => "Observações", :size => "30x5", :simple_tag => true, :disabled => @parcela.baixada ? true : false %></td>
+    </tr>
+    <%= parcela.text_field :historico, :label => "Histórico", :size => 93, :disabled => @parcela.baixada ? true : false %>
+  </table>
+  <table>
+    <thead><tr><td></td><th>Valor</th><th>Conta Contábil</th><th>Unidade</th><th>Centro</th></tr></thead>
+    <tbody id="tbody_valores">
+      <% [['desconto','valor_do_desconto_em_reais'],['multa','valor_da_multa_em_reais'],['juros','valor_dos_juros_em_reais'],['outros','outros_acrescimos_em_reais']].each do |elemento| %>
+        <tr>
+          <td><b><%= elemento.first.capitalize.gsub('_', ' ') %></b></td>
+          <td>
+            <%= parcela.text_field elemento.last, :size => 5, :simple_tag => true, :disabled => @parcela.baixada ? true : false, :class => elemento.first == 'desconto' ? "valores_desconto": "valores", :onblur => "mostra_elemento_justificativa(); valor_total(); insere_nome_e_id_para_baixa(this,'#{elemento.first.to_s}');", :onkeypress => "return(MascaraMoeda(parcela_#{elemento.last}, \".\",\",\", event))" %>
+          </td>
+          <td>
+            <%= auto_complete_para_qualquer_campo(parcela,"conta_contabil_#{elemento.first}", auto_complete_for_conta_contabil_plano_de_contas_path, {:analisar_conta => true, :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}}) %>
+          </td>
+          <td>
+            <%= auto_complete_para_qualquer_campo(parcela,"unidade_organizacional_#{elemento.first}", auto_complete_for_unidade_organizacional_unidades_organizacionais_path, {:opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}}) %>
+            <% javascript_tag do %>
+              if((($('parcela_<%= "#{elemento.last}"%>').value) != '0,00') && ($('parcela_nome_unidade_organizacional_<%= "#{elemento.first}"%>').disabled == false)) {
+              $('parcela_unidade_organizacional_<%= "#{elemento.first}_id"%>').value = '<%= "#{@parcela.conta.unidade_organizacional.id}" %>'
+              $('parcela_nome_unidade_organizacional_<%= "#{elemento.first}"%>').value = '<%=h "#{@parcela.conta.unidade_organizacional.codigo_da_unidade_organizacional} - #{@parcela.conta.unidade_organizacional.nome}" %>'
+              }
+            <% end %>
+          </td>
+          <td>
+            <%= auto_complete_para_qualquer_campo(parcela,"centro_#{elemento.first}", auto_complete_for_centro_centros_path, {:complemento_dos_params => "+ '&unidade_organizacional_id=' + $('parcela_unidade_organizacional_#{elemento.first}_id').value + '&elemento=' ", :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}})%>
+            <% javascript_tag do %>
+              if(($('parcela_<%= "#{elemento.last}"%>').value != '0,00') && ($('parcela_nome_centro_<%= "#{elemento.first}"%>').disabled == false)) {
+              $('parcela_centro_<%= "#{elemento.first}_id"%>').value = '<%= "#{@parcela.conta.centro.id}" %>'
+              $('parcela_nome_centro_<%= "#{elemento.first}"%>').value = '<%=h "#{@parcela.conta.centro.codigo_centro} - #{@parcela.conta.centro.nome}" %>'
+              }
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+
+      <% if @parcela.conta.is_a?(PagamentoDeConta) %>
+        <% [['irrf','irrf_em_reais'],['outros_impostos','outros_impostos_em_reais']].each do |elemento| %>
+          <tr>
+            <td><b><%= elemento.first.capitalize.gsub('_', ' ') %></b></td>
+            <td>
+              <%= parcela.text_field elemento.last, :size => 5, :simple_tag => true, :disabled => @parcela.baixada ? true : false , :class => "valores_desconto", :onblur => "valor_total(); insere_nome_e_id_para_baixa(this,'#{elemento.first.to_s}');", :onkeypress => "return(MascaraMoeda(parcela_#{elemento.last}, \".\",\",\", event))" %>
+            </td>
+            <td>
+              <%= auto_complete_para_qualquer_campo(parcela, "conta_contabil_#{elemento.first}", auto_complete_for_conta_contabil_plano_de_contas_path, {:analisar_conta => true, :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}}) %>
+            </td>
+            <td>
+              <%= auto_complete_para_qualquer_campo(parcela, "unidade_organizacional_#{elemento.first}", auto_complete_for_unidade_organizacional_unidades_organizacionais_path, {:opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}}) %>
+              <% javascript_tag do %>
+                if(($('parcela_<%= "#{elemento.last}"%>').value != '0,00' && $('parcela_<%= "#{elemento.last}"%>').value != '') && ($('parcela_nome_unidade_organizacional_<%= "#{elemento.first}"%>').disabled == false)) {
+                $('parcela_unidade_organizacional_<%= "#{elemento.first}_id"%>').value = '<%= "#{@parcela.conta.unidade_organizacional.id}" %>'
+                $('parcela_nome_unidade_organizacional_<%= "#{elemento.first}"%>').value = '<%=h "#{@parcela.conta.unidade_organizacional.codigo_da_unidade_organizacional} - #{@parcela.conta.unidade_organizacional.nome}" %>'
+                }
+              <% end %>
+            </td>
+            <td>
+              <%= auto_complete_para_qualquer_campo(parcela, "centro_#{elemento.first}", auto_complete_for_centro_centros_path, {:complemento_dos_params => "+ '&unidade_organizacional_id=' + $('parcela_unidade_organizacional_#{elemento.first}_id').value + '&elemento=' ", :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}})%>
+              <% javascript_tag do %>
+                if(($('parcela_<%= "#{elemento.last}"%>').value != '0,00' && $('parcela_<%= "#{elemento.last}"%>').value != '') && ($('parcela_nome_centro_<%= "#{elemento.first}"%>').disabled == false)) {
+                $('parcela_centro_<%= "#{elemento.first}_id"%>').value = '<%= "#{@parcela.conta.centro.id}" %>'
+                $('parcela_nome_centro_<%= "#{elemento.first}"%>').value = '<%=h "#{@parcela.conta.centro.codigo_centro} - #{@parcela.conta.centro.nome}" %>'
+                }
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+
+      <% if @parcela.conta.is_a?(RecebimentoDeConta) %>
+        <% [['honorarios', 'honorarios_em_reais'], ['protesto', 'protesto_em_reais'], ['taxa_boleto', 'taxa_boleto_em_reais']].each do |elemento| %>
+          <tr>
+            <td><b><%= elemento.first.capitalize.gsub('_', ' ') %></b></td>
+            <td>
+              <%= parcela.text_field elemento.last, :size => 5, :simple_tag => true, :disabled => @parcela.baixada ? true : false , :class => "valores", :onblur => "mostra_elemento_justificativa(); valor_total(); insere_nome_e_id_para_baixa(this,'#{elemento.first.to_s}');", :onkeypress => "return(MascaraMoeda(parcela_#{elemento.last}, \".\",\",\", event))" %>
+            </td>
+            <td>
+              <%= auto_complete_para_qualquer_campo(parcela, "conta_contabil_#{elemento.first}", auto_complete_for_conta_contabil_plano_de_contas_path, {:analisar_conta => true, :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}}) %>
+            </td>
+            <td>
+              <%= auto_complete_para_qualquer_campo(parcela, "unidade_organizacional_#{elemento.first}", auto_complete_for_unidade_organizacional_unidades_organizacionais_path, {:opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}}) %>
+              <% javascript_tag do %>
+                if(($('parcela_<%= "#{elemento.last}"%>').value != '0,00') && ($('parcela_nome_unidade_organizacional_<%= "#{elemento.first}"%>').disabled == false)) {
+                $('parcela_unidade_organizacional_<%= "#{elemento.first}_id"%>').value = '<%= "#{@parcela.conta.unidade_organizacional.id}" %>'
+                $('parcela_nome_unidade_organizacional_<%= "#{elemento.first}"%>').value = '<%=h "#{@parcela.conta.unidade_organizacional.codigo_da_unidade_organizacional} - #{@parcela.conta.unidade_organizacional.nome}" %>'
+                }
+              <% end %>
+            </td>
+            <td>
+              <%= auto_complete_para_qualquer_campo(parcela, "centro_#{elemento.first}", auto_complete_for_centro_centros_path, {:complemento_dos_params => "+ '&unidade_organizacional_id=' + $('parcela_unidade_organizacional_#{elemento.first}_id').value + '&elemento=' ", :opcoes_para_text_field => {:disabled => @parcela.baixada, :size => 30}})%>
+              <% javascript_tag do %>
+                if(($('parcela_<%= "#{elemento.last}"%>').value != '0,00') && ($('parcela_nome_centro_<%= "#{elemento.first}"%>').disabled == false)) {
+                $('parcela_centro_<%= "#{elemento.first}_id"%>').value = '<%= "#{@parcela.conta.centro.id}" %>'
+                $('parcela_nome_centro_<%= "#{elemento.first}"%>').value = '<%=h "#{@parcela.conta.centro.codigo_centro} - #{@parcela.conta.centro.nome}" %>'
+                }
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+
+      <% if @parcela.conta.is_a?(PagamentoDeConta) %>
+        <tr>
+          <td><b>Retenção</b></td>
+          <td><b>R$ <span id="retencao" ><%=h preco_formatado(@parcela.soma_impostos_da_parcela) %></span></b></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td><b>Total</b></td>
+        <td><b>R$ <span id="soma_total_da_parcela"><%=h preco_formatado(@parcela.valor) %></span></b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <span id="justificativa_outros" style="display:none"><b>Justificativa</b> <%= parcela.text_field :justificativa_para_outros, :disabled => @parcela.baixada ? true : false, :simple_tag => true %></span>
+  <%= hidden_field_tag 'valor_da_retencao', @parcela.soma_impostos_da_parcela / 100.0 %>
+  <%= hidden_field_tag 'valor_total_da_parcela', @parcela.preco_formatado_em_reais, :class => 'valores' %>
+  <%= hidden_field_tag 'unidade_centro', "#{@parcela.conta.unidade_organizacional_id}_#{@parcela.conta.nome_unidade_organizacional}_#{@parcela.conta.centro_id}_#{@parcela.conta.nome_centro}" %>
+  <br />
+  <% if @conta.is_a?(RecebimentoDeConta) && current_usuario.possui_permissao_para(Perfil::BaixaDr) %>
+    <span><%=  parcela.check_box 'baixa_pela_dr', :label => "", :disabled => @parcela.baixada ? true : false, :onClick => "$('span_senha_dr').toggle();" %><b><label for="parcela_baixa_pela_dr"> Baixa DR</label></b></span><br />
+    <% if !@parcela.baixada %>
+      <span id="span_senha_dr" <% if @parcela.baixa_pela_dr == nil || @parcela.baixa_pela_dr == false %> style="display: none" <% end %>><b>Senha DR </b><%= password_field_tag 'senha_dr', nil, :size => '30', :checked => false %> </span>
+    <% end %>
+  <% end %>
+  <br />
+  <br />
+  <span>
+    <% if !@parcela.baixada %>
+      <%= submit_tag "Salvar" %> |
+    <% end %>
+    <%= link_to 'Voltar', (@conta.is_a?(PagamentoDeConta) ? pagamento_de_conta_path(@conta.id) : recebimento_de_conta_path(@conta.id)) %>
+    <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) %>
+      <% if @conta.is_a?(RecebimentoDeConta) && !@conta.nao_permite_alteracao? %>
+        <% if @parcela.pode_estornar_parcela? %>
+          | <%= link_to_function 'Estornar Parcela' do |page| page << "Modalbox.show($('form_para_estornar_parcela_baixada'),{title: 'Estornar Parcela'});" end %>
+        <% end %>
+        <% if @parcela.forma_de_pagamento == Parcela::CARTAO && @parcela.cartoes.first.is_a?(Cartao) %>
+          <% if @parcela.cartoes.first.situacao == Cartao::BAIXADO %>
+            | <%#= link_to_remote 'Estornar Cartão', :url => { :action=>"estornar", :controller=>"cartoes", :cartoes=>{:ids=>[@parcela.cartoes.first.id]} }%>
+          <% elsif @parcela.cartoes.first.situacao == Cartao::GERADO %>
+            | <%= link_to 'Baixar Cartão', cartoes_path, :target => '_blank' %>
+          <% end %>
+        <% elsif @parcela.forma_de_pagamento == Parcela::CHEQUE && @parcela.cheques.first.is_a?(Cheque) %>
+          <% if @parcela.cheques.first.situacao == Cheque::BAIXADO %>
+             <%#= link_to_remote 'Estornar Cheque', :url => {:action => 'baixar_abandonar_devolver_estornar', :controller => 'cheques', :tipo => 'estornar', :cheques => {:ids => [@parcela.cheques.first.id]}} %>
+          <% elsif @parcela.cheques.first.situacao == Cheque::GERADO %>
+            | <%= link_to 'Baixar Cheque', cheques_path, :target => '_blank' %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <% if @parcela.pode_estornar_parcela? %>
+          | <%= link_to_function 'Estornar Parcela' do |page| page << "Modalbox.show($('form_para_estornar_parcela_baixada'),{title: 'Estornar Parcela'});" end %>
+        <% end %>  
+      <% end %>
+    <% end %>
+  </span>
+
+  <% javascript_tag do %>
+    valor_total();
+    mostra_elemento_justificativa();
+  <% end %>
+
+  <%= mascara_para_data('parcela_data_da_baixa') %>
+  <% if !@parcela.pode_estornar_parcela? %>
+    <%= mascara_para_data('parcela_cheques_attributes_0_data_para_deposito') %>
+  <% end %>
+<% end %>
+
+<div id='form_para_estornar_parcela_baixada' style='display:none;'>
+  <%= render :partial => 'estornar' %>
+</div>
+
+<% if @conta.is_a?(RecebimentoDeConta) && @parcela.baixada && [Parcela::CHEQUE, Parcela::CARTAO].include?(@parcela.forma_de_pagamento) %>
+  <% if (!@parcela.cartoes.blank? && @parcela.cartoes.first.situacao != Cartao::BAIXADO) || (!@parcela.cheques.blank? && @parcela.cheques.first.situacao != Cheque::BAIXADO)  %>
+    <div id='form_para_resgatar' style='display:none; height: 350px;'>
+      <%= render :partial => 'resgatar' %>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,7 @@
+pagamento_cheque:
+  descricao: Pagamento Cheque
+  entidade: senai
+
+pagamento_cartao:
+  descricao: Pagamento Cartão
+  entidade: senai

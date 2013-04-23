@@ -1,0 +1,34 @@
+<div style="text-align: center;width: auto; font-size: 12px;">
+
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="100%">
+  <tr>
+    <th style="text-align: left; padding-left: 4px">CPF/CNPJ</th>
+    <th style="text-align: left; padding-left: 4px">NOME/RAZÃO SOCIAL</th>
+    <th style="text-align: left; padding-left: 4px">ENDEREÇO</th>
+    <th style="text-align: left; padding-left: 4px">CIDADE/UF</th>
+    <th style="text-align: left; padding-left: 4px">TELEFONE</th>
+    <th style="text-align: left; padding-left: 4px">LIBERADO POR</th>
+    <th style="text-align: left; padding-left: 4px">DATA LIBERAÇÃO</th>
+  </tr>
+  <% @pessoas.each do |pessoa| %>
+    <tr>
+      <% if pessoa.fisica? %>
+        <td style="text-align: left; padding-left: 4px"><%=h pessoa.cpf %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h pessoa.nome %></td>
+      <% else %>
+        <td style="text-align: left; padding-left: 4px"><%=h pessoa.cnpj %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h pessoa.razao_social %></td>
+      <% end %>
+      <td style="text-align: left; padding-left: 4px"><%=h pessoa.endereco %></td>
+      <td style="text-align: left; padding-left: 4px"><%=h pessoa.localidade.nome rescue nil %> <%=h pessoa.localidade.blank? ? '' : " / #{pessoa.localidade.uf}" %></td>
+      <td style="text-align: left; padding-left: 4px"><%=h pessoa.telefone.join(' / ') %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h pessoa.liberado_por %></td>
+              <td style="text-align: left; padding-left: 4px"><%=h pessoa.data_hora_liberacao_dr.strftime("%d/%m/%Y %H:%M") rescue nil %></td>
+    <% end %>
+  </tr>
+</table>
+
+<br />

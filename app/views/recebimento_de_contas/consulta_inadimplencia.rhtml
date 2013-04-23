@@ -1,0 +1,18 @@
+<% content_for :titulo, "Consulta Inadimplência" %>
+
+<% remote_form_for 'busca', :url => { :action => :update_tabela_inadimplentes } do |form| %>
+  <table>
+    <%= campo_de_cadastro 'Pesquisa Por Cliente:', auto_complete_para_qualquer_campo(form, :cliente, auto_complete_for_clientes_recebimento_de_contas_path) %>
+    <%= campo_de_cadastro 'Data:', (campo_para_busca_por_faixa_de_data :periodo) %>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Pesquisar' %>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="tabela_lista_de_inadimplentes">
+  <%= render :partial => 'lista_de_inadimplentes' %>
+</div>

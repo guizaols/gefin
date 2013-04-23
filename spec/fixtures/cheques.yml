@@ -1,0 +1,56 @@
+vista:
+  parcela: primeira_parcela_recebida_cheque_a_vista
+  banco: banco_do_brasil
+  agencia: 0108-6
+  conta: 2716801-5
+  numero: "010203"
+  data_de_recebimento: 2009-06-05
+  data_para_deposito: 2009-06-05
+  nome_do_titular: João da Silva
+  situacao: 1
+  conta_contabil_transitoria: plano_de_contas_ativo_despesas
+  conta_contabil_devolucao: plano_de_contas_devolucao
+  prazo: <%= Cheque::VISTA %>
+
+prazo:
+  parcela: primeira_parcela_recebida_cheque_a_prazo
+  banco: banco_do_brasil
+  agencia: 0107-3
+  conta: 2718904-4
+  numero: "010508"
+  data_de_recebimento: 2009-06-05
+  data_para_deposito: 2009-06-10
+  nome_do_titular: Maria da Silva
+  situacao: 1
+  conta_contabil_transitoria: plano_de_contas_ativo_despesas
+  conta_contabil_devolucao: plano_de_contas_devolucao
+  prazo: <%= Cheque::PRAZO %>
+
+cheque_do_andre_primeira_parcela:
+  parcela: primeira_parcela_recebida_em_cheque_para_andre
+  banco: banco_do_brasil
+  agencia: 0108-6
+  conta: 2716801-5
+  numero: "010205"
+  data_de_recebimento: 2009-11-05
+  data_para_deposito: 2009-11-05
+  nome_do_titular: André Augusto
+  situacao: 1
+  conta_contabil_transitoria: plano_de_contas_ativo_despesas
+  conta_contabil_devolucao: plano_de_contas_devolucao
+  prazo: <%= Cheque::VISTA %>
+
+cheque_do_andre_segunda_parcela:
+  parcela: segunda_parcela_recebida_em_cheque_para_andre
+  banco: banco_do_brasil
+  agencia: 0108-6
+  conta: 2716801-5
+  numero: "010206"
+  data_de_recebimento: 2009-12-05
+  data_para_deposito: 2009-12-05
+  nome_do_titular: André Augusto
+  situacao: 1
+  conta_contabil_transitoria: plano_de_contas_ativo_despesas
+  conta_contabil_devolucao: plano_de_contas_devolucao
+  prazo: <%= Cheque::VISTA %>
+  

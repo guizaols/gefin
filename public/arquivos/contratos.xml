@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<contratos>
+	<recebimento_de_conta>
+		<tipo_de_documento>NFS</tipo_de_documento>
+		<numero_nota_fiscal>99999999</numero_nota_fiscal>
+		<data_inicio>2012-04-25</data_inicio>
+		<data_final>2012-06-01</data_final>
+		<data_inicio_servico>2012-08-15</data_inicio_servico>
+		<data_final_servico>2012-09-15</data_final_servico>
+		<data_venda>2012-04-15</data_venda>
+		<ano>2012</ano>
+		<dia_do_vencimento>10</dia_do_vencimento>
+		<valor_do_documento>1000</valor_do_documento>
+		<valor_original>1000</valor_original>
+		<numero_de_parcelas>1</numero_de_parcelas>
+		<vigencia>1</vigencia>
+		<rateio>1</rateio>
+		<provisao>1</provisao>
+		<multa_por_atraso>2</multa_por_atraso>
+		<juros_por_atraso>1</juros_por_atraso>
+		<origem>1</origem>
+		<historico>TESTANDO A IMPORTAÇÃO PARA O CONTRATO - SSSIN-OR04/120001</historico>
+		<cliente>
+			<cpf_cnpj>00979217938</cpf_cnpj>
+			<nome_razao>GUILHERME LAGES SANTOS</nome_razao>
+			<rg_ie>89829259</rg_ie>
+			<data_nascimento>1989-09-21</data_nascimento>
+			<contato>GUILHERME</contato>
+			<cep>123456-190</cep>
+			<endereco>RUA</endereco>
+			<numero>999</numero>
+			<bairro>SAUDE</bairro>
+			<cidade>CUIABA</cidade>
+			<uf>MT</uf>
+			<telefone>(65)9090-9009, (65)2432-2344</telefone>
+			<email>TESTE@TESTE.COM.BR, TESTE@TESTE.COM</email>
+			<industriario>NAO</industriario>
+		</cliente>
+		<dependente>
+			<nome>FILHO 1</nome>
+			<nome_mae>KARINA</nome_mae>
+			<nome_pai>PEDRO</nome_pai>
+			<data_nascimento>2000-01-03</data_nascimento>
+		</dependente>
+		<servico>ATIVIDADES EDUCATIVAS - LAZER</servico>
+		<conta_contabil_receita>
+			<ano>2012</ano>
+			<codigo>31010604005</codigo>
+		</conta_contabil_receita>
+		<unidade_organizacional>
+			<ano>2012</ano>
+			<codigo>1301090104</codigo>
+		</unidade_organizacional>
+		<centro>
+			<ano>2012</ano>
+			<codigo>30604040401</codigo>
+		</centro>
+		<vendedor>
+			<cpf>70349010153</cpf>
+		</vendedor>
+		<cobrador>
+			<cpf>80076050106</cpf>
+		</cobrador>
+	</recebimento_de_conta>
+	<recebimento_de_conta>
+		<tipo_de_documento>NFS</tipo_de_documento>
+		<numero_nota_fiscal>77777777</numero_nota_fiscal>
+		<data_inicio>2012-04-20</data_inicio>
+		<data_final>2012-08-01</data_final>
+		<data_inicio_servico>2012-08-15</data_inicio_servico>
+		<data_final_servico>2012-12-15</data_final_servico>
+		<data_venda>2012-04-10</data_venda>
+		<ano>2012</ano>
+		<dia_do_vencimento>5</dia_do_vencimento>
+		<valor_do_documento>1000</valor_do_documento>
+		<valor_original>1000</valor_original>
+		<numero_de_parcelas>3</numero_de_parcelas>
+		<vigencia>1</vigencia>
+		<rateio>1</rateio>
+		<provisao>1</provisao>
+		<multa_por_atraso>2</multa_por_atraso>
+		<juros_por_atraso>1</juros_por_atraso>
+		<origem>0</origem>
+		<historico>TESTANDO A IMPORTAÇÃO PARA O CONTRATO - SSSIN-OR04/120002</historico>
+		<cliente>
+			<cpf_cnpj>55369710000185</cpf_cnpj>
+			<nome_razao>EMPRESA NOVA</nome_razao>
+			<rg_ie>898292592133434</rg_ie>
+			<data_nascimento></data_nascimento>
+			<contato>CARLOS</contato>
+			<cep>53443553-190</cep>
+			<endereco>RUA X</endereco>
+			<numero>777</numero>
+			<bairro>SAUDE</bairro>
+			<cidade>CURITIBA</cidade>
+			<uf>PR</uf>
+			<telefone>(41)9690-9009, (41)2432-2344</telefone>
+			<email>TESTE@TESTE.NET, TESTE@TESTE.ORG</email>
+			<industriario>SIM</industriario>
+		</cliente>
+		<dependente>
+			<nome>FUNCIONARIO 1</nome>
+			<nome_mae></nome_mae>
+			<nome_pai></nome_pai>
+			<data_nascimento>1970-10-01</data_nascimento>
+		</dependente>
+		<servico>SERV. FINANCEIRO</servico>
+		<conta_contabil_receita>
+			<ano>2012</ano>
+			<codigo>11010201014</codigo>
+		</conta_contabil_receita>
+		<unidade_organizacional>
+			<ano>2012</ano>
+			<codigo>1301090104</codigo>
+		</unidade_organizacional>
+		<centro>
+			<ano>2012</ano>
+			<codigo>30704010101</codigo>
+		</centro>
+		<vendedor>
+			<cpf>59452765100</cpf>
+		</vendedor>
+		<cobrador>
+			<cpf>72741414149</cpf>
+		</cobrador>
+	</recebimento_de_conta>
+	<recebimento_de_conta>
+		<tipo_de_documento>NFS</tipo_de_documento>
+		<numero_nota_fiscal>77777777</numero_nota_fiscal>
+		<data_inicio>2012-04-20</data_inicio>
+		<data_final>2012-08-01</data_final>
+		<data_inicio_servico>2012-08-15</data_inicio_servico>
+		<data_final_servico>2012-12-15</data_final_servico>
+		<data_venda>2012-04-10</data_venda>
+		<ano>2012</ano>
+		<dia_do_vencimento>5</dia_do_vencimento>
+		<valor_do_documento>1000</valor_do_documento>
+		<valor_original>1000</valor_original>
+		<numero_de_parcelas>3</numero_de_parcelas>
+		<vigencia>1</vigencia>
+		<rateio>1</rateio>
+		<provisao>1</provisao>
+		<multa_por_atraso>2</multa_por_atraso>
+		<juros_por_atraso>1</juros_por_atraso>
+		<origem>0</origem>
+		<historico>TESTANDO A IMPORTAÇÃO PARA O CONTRATO - SSSIN-OR04/120002</historico>
+		<cliente>
+			<cpf_cnpj>16267132000114</cpf_cnpj>
+			<nome_razao>EMPRESA NOVA 2</nome_razao>
+			<rg_ie>5656775765</rg_ie>
+			<data_nascimento></data_nascimento>
+			<contato>TIAO</contato>
+			<cep>345653-190</cep>
+			<endereco>RUA Z</endereco>
+			<numero>555</numero>
+			<bairro>CIC</bairro>
+			<cidade>SAO PAULO</cidade>
+			<uf>SP</uf>
+			<telefone>(11)9690-9009, (11)2432-2344</telefone>
+			<email>TESTE@TESTE.NET, TESTE@TESTE.ORG</email>
+			<industriario>NAO</industriario>
+		</cliente>
+		<dependente>
+			<nome></nome>
+			<nome_mae></nome_mae>
+			<nome_pai></nome_pai>
+			<data_nascimento></data_nascimento>
+		</dependente>
+		<servico>SERV. FINANCEIRO</servico>
+		<conta_contabil_receita>
+			<ano>2012</ano>
+			<codigo>11010201014</codigo>
+		</conta_contabil_receita>
+		<unidade_organizacional>
+			<ano>2012</ano>
+			<codigo>1301090104</codigo>
+		</unidade_organizacional>
+		<centro>
+			<ano>2012</ano>
+			<codigo>30704010101</codigo>
+		</centro>
+		<vendedor>
+			<cpf>59452765100</cpf>
+		</vendedor>
+		<cobrador>
+			<cpf>72741414149</cpf>
+		</cobrador>
+	</recebimento_de_conta>
+</contratos>

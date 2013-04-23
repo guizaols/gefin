@@ -1,0 +1,14 @@
+historico_operacao_pagamento_cheque:
+    numero_carta_cobranca: 1
+    descricao: Histórico tipo 1 para pagamento de cheque
+    conta: pagamento_cheque
+    conta_type: PagamentoDeConta
+    usuario_id: 1
+    justificativa: Pagamento de conta em cheque referente a parcela vencida
+
+historico_operacao_recebimento_lancado:
+    descricao: Conta a Receber Lançada
+    conta: curso_de_tecnologia_do_paulo
+    conta_type: RecebimentoDeConta
+    usuario_id: 1
+

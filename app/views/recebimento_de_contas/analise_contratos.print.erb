@@ -1,0 +1,13 @@
+<% listagem_table :headers => ['Número de Controle', 'Cliente', 'Serviço', 'Início', 'Valor do Contrato', 'Parcelas', 'Situação'] do %>
+  <% for recebimento_de_conta in @recebimento_de_contas %>
+    <% listagem_tr do %>
+      <td><%=h recebimento_de_conta.numero_de_controle %></td>
+      <td><%=h recebimento_de_conta.pessoa.nome %></td>
+      <td><%=h recebimento_de_conta.servico.descricao %></td>
+      <td><%=h recebimento_de_conta.data_inicio_servico %></td>
+      <td><%=h preco_formatado(recebimento_de_conta.valor_do_documento) %></td>
+      <td><%=h recebimento_de_conta.numero_de_parcelas %></td>
+      <td><%=h recebimento_de_conta.situacao_verbose + " / " + recebimento_de_conta.situacao_fiemt_verbose %></td>
+    <% end %>
+  <% end %>
+<% end %>

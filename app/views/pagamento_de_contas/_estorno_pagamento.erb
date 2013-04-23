@@ -1,0 +1,15 @@
+<% form_remote_tag(:url => {:action => 'realizar_estorno_provisao_de_pagamento', :controller => 'parcelas', :parcela_id => @parcela.id, :pagamento_de_conta_id => @pagamento_de_conta.id}, :loading => "Element.show('loading_estorno_cont')", :success => "Element.hide('loading_estorno_cont')") do %>
+  <table>
+    <%= campo_de_cadastro 'Data do estorno', (text_field_tag :data_estorno, Date.today.to_s_br, :size => '10', :maxlength => '10') %>
+    <%= campo_de_cadastro 'Justificativa', (text_area_tag 'justificativa', nil, :size => '40x5') %>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Salvar' %>
+        <%= button_to_function 'Cancelar', 'Modalbox.hide()' %>
+        <%= loading_image 'estorno_cont' %>
+      </td>
+    </tr>
+  </table>
+  <%= mascara_para_data('data_estorno') %>
+<% end %>

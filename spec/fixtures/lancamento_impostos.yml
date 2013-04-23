@@ -1,0 +1,11 @@
+primeira:
+  parcela: primeira_parcela
+  imposto: iss
+  data_de_recolhimento: 2009-04-04
+  valor: 500
+
+segunda:
+  parcela: segunda_parcela
+  imposto: iss
+  data_de_recolhimento: 2009-04-04
+  valor: 500

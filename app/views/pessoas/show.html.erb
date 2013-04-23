@@ -1,0 +1,69 @@
+<table>
+  <%= show_unless_blank 'Razão Social', @pessoa.razao_social %>
+  <%= show_unless_blank @pessoa.label_nome_ou_nome_fantasia, @pessoa.nome %>
+  <%= show_unless_blank 'Inadimplência', @pessoa.dias_em_atraso %>
+  <%= show_unless_blank 'Contato', @pessoa.contato %>
+  <%= show_unless_blank @pessoa.label_do_campo_cpf_cnpj, @pessoa.fisica? ? @pessoa.cpf : @pessoa.cnpj %>
+  <%= show_unless_blank @pessoa.label_do_campo_rg_ie, @pessoa.rg_ie %>
+  <%= show_unless_blank 'Data de Nascimento', @pessoa.data_nascimento if @pessoa.fisica? %>
+  <%= show_unless_blank 'Categoria', @pessoa.categorias %>
+  <%= show_unless_blank 'Endereço',   [@pessoa.endereco, @pessoa.numero].reject(&:blank?).join(', ') %>
+  <%= show_unless_blank 'Localidade',   @pessoa.nome_localidade %>
+  <%= show_unless_blank 'Email',   @pessoa.email.join(",") %>
+  <%= show_unless_blank 'Telefone', @pessoa.telefone.join(",") %>
+  <% if @pessoa.fornecedor %>
+    <%= show_unless_blank 'Banco',   @pessoa.banco.descricao %>
+    <%= show_unless_blank 'Agência', @pessoa.nome_agencia %>
+    <%= show_unless_blank 'Conta',   @pessoa.conta %>
+  <% end %>
+  <%= show_unless_blank 'Observações', @pessoa.observacoes %>
+  <%= show_unless_blank 'Industriário', @pessoa.industriario ? "SIM" : "NÃO" %>
+  <% if current_usuario.possui_permissao_para(Perfil::LiberarNovoContratoParaInadimplente) && @pessoa.cliente %>
+    <tr>
+      <td><b>Contrato para Inadimplentes:</b></td>
+      <td>
+        <div id='situacao_dr'>
+          <%= link_to_remote(@pessoa.liberado_pelo_dr ? 'Clique aqui para Restringir esse Cliente' : 'Clique aqui para Liberar esse Cliente', :url => {:action => 'update_liberado_pelo_dr'}, :with => "'id=#{@pessoa.id}'") %>
+        </div>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<table>
+  <tr>
+    <td><%= link_to 'Alterar', edit_pessoa_path(@pessoa) %> | <%= link_to 'Voltar', pessoas_path %></td>
+    <% if @pessoa.funcionario %>
+      <% if @pessoa.busca_usuario_unidade(session[:unidade_id]).blank? %>
+        <td><%= "| " + link_to('Criar Usuário', new_usuario_path(:usuario => {:funcionario_id => @pessoa.id})) if current_usuario.possui_permissao_para(Perfil::ManipularDadosDosUsuarios) %></td>
+      <% else %>
+        <td><%= "| " + link_to('Dados do Usuário', usuario_path(@pessoa.usuarios.find_by_unidade_id(session[:unidade_id]))) if current_usuario.possui_permissao_para(Perfil::Usuarios) %></td>
+      <% end %>
+      <% if @pessoa.usuarios.include?(current_usuario) %>
+        <td><%= "| " + link_to('Alterar Senha', carrega_form_alterar_senha_usuario_path(:id => current_usuario.id)) %></td>
+      <% end %>
+    <% end %>
+  </tr>
+</table>
+
+<% if @pessoa.cliente %>
+  <h2><%= @pessoa.caption_dependente_beneficiario %>s</h2>
+  <% if @dependentes.length == 0 %>
+    <b>Não existem <%= @pessoa.caption_dependente_beneficiario.downcase %>s cadastrados para esta pessoa.</b>
+    <%= link_to "Novo #{ @pessoa.caption_dependente_beneficiario }", (new_pessoa_dependente_path(@pessoa.id)) %>
+  <% else %>
+    <% listagem_table :new => (new_pessoa_dependente_path(@pessoa.id) if @pessoa.cliente),
+      :headers => (@pessoa.fisica? ? ['Nome', 'Nome do Pai', 'Nome da Mãe', 'Data de Nascimento'] : ['Nome']), :style => 'width: 70%' do %>
+      <% @dependentes.each do |dependente| %>
+        <% listagem_tr :edit => edit_pessoa_dependente_path(@pessoa.id,dependente.id), :destroy => pessoa_dependente_path(@pessoa.id,dependente.id) do %>
+          <td><%= h(dependente.nome) %></td>
+          <% if @pessoa.fisica? %>
+            <td><%= h(dependente.nome_do_pai) %></td>
+            <td><%= h(dependente.nome_da_mae) %></td>
+            <td><%= h(dependente.data_de_nascimento) %></td>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

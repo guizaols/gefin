@@ -1,0 +1,20 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\fontsize{6pt}{12pt}\selectfont
+\begin{longtable}{|p{3.2cm}|p{7.0cm}|p{2.0cm}|p{5.0cm}|}
+\hline
+\textbf{Data} & \textbf{Descrição} & \textbf{Carta} & \textbf{Responsável}\\
+\hline
+<% @historico_operacoes.each do |followup|%>
+<%=hl followup.created_at.to_s_br %>&
+<%=hl followup.descricao %>&
+<%=hl followup.numero_carta_cobranca unless followup.numero_carta_cobranca.blank? %>&
+<%=hl followup.conta.pessoa.nome rescue 'Pessoa Excluída' %>\\
+\hline
+<% end %>
+\end{longtable}
+\end{center}

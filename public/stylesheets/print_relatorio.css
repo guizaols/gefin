@@ -1,0 +1,120 @@
+body {
+    font: 8pt Arial, Helvetica, sans-serif;
+    margin: 10px 0;
+    text-align: center;
+    background-color: #ffffff;;    
+}
+
+/*======Relatórios=======*/
+#conteudo {
+    margin: auto; 
+    padding: 10px 15px 0 15px;
+}
+
+table {
+    border-collapse: collapse;
+}
+table td,
+table th {
+    padding: 0;
+}
+
+.listagem {
+    border: 0;
+    background-color: white;
+    border-spacing: 0;
+    font-size: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.listagem tbody td {
+    border-bottom:1px dotted #888888;
+    padding:5px 10px;
+    text-align:left;
+    vertical-align: top;
+}
+
+.listagem tr.par {
+    background-color:#FFFFFF;
+}
+
+.listagem thead th {
+    background-color:#CCCCCC;
+    border-top:5px solid white;
+    color:#333333;
+    padding:8px 10px 7px;
+    text-align:left;
+    text-transform:uppercase;
+    vertical-align: top;
+}
+
+/*.listagem thead  {
+    background:url("/images/logo_print.png") no-repeat 0 6px;
+    border-color:#CCCCCC;
+    border-style:solid;
+    border-width:1px 0;
+    height:56px;
+    padding:5px;
+    vertical-align: top;
+}*/
+
+#conteudo {
+    padding-bottom:2px;
+}
+
+table.cabecalho {
+    width: 100%;
+    margin-bottom:8px;
+    border-bottom: 2px solid #666;
+}
+
+table.cabecalho td.logo{
+    width: 70px;
+}
+
+table.cabecalho td img{
+    width: 70px;
+    height: 66px;
+}
+
+table.cabecalho td{
+    padding: 0 10px 10px 10px;
+    line-height: 20px;
+    vertical-align: bottom;
+}
+
+table.cabecalho {
+    font-size: 12px;
+    text-align: left;
+}
+
+td.right{
+    text-align: right;
+}
+
+h1{
+    margin: 0px 0 20px;
+}
+
+h2{
+    margin: 0px 0px 0px 20px;
+}
+
+.icon_print{
+    background: url(/images/icon_print.png) no-repeat;
+    width: 32px;
+    height: 32px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+#rodape {
+    background: #ccc;
+    color: #666;
+}
+
+.page-break {
+    display:block;
+    page-break-after:always;
+}

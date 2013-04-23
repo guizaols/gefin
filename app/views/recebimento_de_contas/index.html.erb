@@ -1,0 +1,57 @@
+<% content_for :titulo, "Listando Contas a Receber" %>
+
+<% form_tag recebimento_de_contas_path, :method => :get do %>
+  <div class="div_explicativa">
+    <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+      <div id="explicacao_texto"></div>
+      <%= image_tag 'seta_tooltip.gif' %>
+    </div>
+    <br />
+    <b>Busca Ordenada:</b>
+    <%= select("opcoes", "situacao", @combo_para_situacao.collect {|s| [ s.first, s.last ] }) %>
+    <%= insere_campos_para_busca_de_contas([['Aluno', 'dependentes.nome'], ['Cliente', 'pessoas.nome'], ['Data Início', 'data_inicio'], ['Serviço', 'servicos.descricao'], ['Situação', 'situacao'], ['Valor', 'valor_do_documento']], "Você pode fazer uma busca digitando campos como CPF, CNPJ, Nome do cliente, Número de Controle do contrato, Nome do serviço, Nome de um dependentes do documento ou selecionar situações do contrato. A digitação para a busca dos dados pode ser parcial. Os campos para seleção na caixa ao lado como Aluno, Cliente, Data Início, Serviço e Valor servem como parâmetros de ordenação ascendente do resultado da pesquisa.") %>
+  </div>
+<% end %>
+
+<% listagem_table :new => new_recebimento_de_conta_path, :permissoes => Perfil::ManipularDadosDeRecebimentoDeContas, :headers => ['Número de Controle','Cliente','Serviço', 'Início', 'Valor do Contrato', 'Parcelas', 'Situação','Excluir'] + (current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas) ? ['Liberar'] : []) do %>
+  <% if @recebimento_de_contas.length > 0 %>
+    <% for recebimento_de_conta in @recebimento_de_contas %>
+      <% listagem_tr :edit => edit_recebimento_de_conta_path(recebimento_de_conta), :permissoes => Perfil::ManipularDadosDeRecebimentoDeContas do %>
+        <td><%= link_to h(recebimento_de_conta.numero_de_controle), recebimento_de_conta %></td>
+        <td><%= link_to h(recebimento_de_conta.pessoa.fisica? ? recebimento_de_conta.pessoa.nome : recebimento_de_conta.pessoa.razao_social), pessoa_path(recebimento_de_conta.pessoa), :permissoes => Perfil::Pessoas %></td>
+        <td><%=h recebimento_de_conta.servico.descricao %></td>
+        <td><%=h recebimento_de_conta.data_inicio %></td>
+        <td><%=h preco_formatado(recebimento_de_conta.valor_do_documento) %></td>
+        <td><%=h recebimento_de_conta.numero_de_parcelas %></td>
+        <td><%=h recebimento_de_conta.situacao_verbose + " / " + recebimento_de_conta.situacao_fiemt_verbose %></td>
+                <%if recebimento_de_conta.parcelas.length == 0%>
+        <td>
+           <%= link_to image_tag('layout/excluir.png'), recebimento_de_conta_path(recebimento_de_conta), :confirm => 'Deseja excluir este contrato', :method => 'delete' %>
+        </td>
+        <%else%>
+        <td></td>
+        <%end%>
+
+        <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas) %>
+          <%# if !recebimento_de_conta.travado_pela_situacao? %>
+          <%# if recebimento_de_conta.cancelado_pela_situacao_fiemt == true %>
+          <%#= link_to_remote 'Estornar<br />Contrato', :url => {:action => "estornar_contrato", :id => recebimento_de_conta.id} %>
+          <%# else %>
+          <%#= link_to_remote 'Inativar<br />Contrato', :url => {:action => "cancelar_contrato", :id => recebimento_de_conta.id} %>
+          <%# end %>
+          <%# end %>
+          <td><%= link_to 'Liberar<br />Contrato', {:action => "libera_recebimento_de_conta_fora_do_prazo", :id => recebimento_de_conta.id} %></td>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <br />
+    <b style="color: #FF0000">Faça uma pesquisa para visualizar os contratos!</b>
+  <% end %>
+<% end %>
+
+<%= javascript_tag "if($('busca_ordem').value == 'situacao') { $('busca_texto').hide(); $('opcoes_situacao').show(); $('opcoes_situacao').value=$('busca_texto').value; } else { $('busca_texto').show();  $('opcoes_situacao').hide(); } " %>
+<%= observe_field 'busca_ordem', :frequency => 1, :function => "if($('busca_ordem').value == 'situacao') { $('busca_texto').hide(); $('opcoes_situacao').show(); $('busca_texto').value=$('opcoes_situacao').value; } else { $('busca_texto').show();  $('opcoes_situacao').hide(); $('busca_texto').value=''; }" %>
+<%= observe_field 'opcoes_situacao', :frequency => 1, :on => 'change', :function => "$('busca_texto').value=$('opcoes_situacao').value;" %>
+
+<%= will_paginate @recebimento_de_contas %>

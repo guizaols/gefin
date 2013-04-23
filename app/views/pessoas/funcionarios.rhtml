@@ -1,0 +1,56 @@
+<% content_for :titulo, 'Funcionários' %>
+<%= link_to 'Pessoas', pessoas_path  %>
+    <div class="caixa_busca">
+      <% form_tag funcionarios_pessoas_path,{:method=>:get} do %>
+        <p><b>Tipo</b> </p>
+        <label for="busca_tipo_pessoa_juridica"><%= check_box_tag 'busca[tipo][pessoa_juridica]', 'pessoa_juridica',(params[:busca][:tipo][:pessoa_juridica] rescue nil) %>Pessoa Jurídica</label>
+        <label for="busca_tipo_pessoa_fisica"><%= check_box_tag 'busca[tipo][pessoa_fisica]', 'pessoa_fisica',(params[:busca][:tipo][:pessoa_fisica] rescue nil) %>Pessoa Física</label>
+        <div class="div_explicativa">
+          <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+            <div id="explicacao_texto"></div>
+            <%= image_tag 'seta_tooltip.gif' %>
+          </div>
+          <br />
+          <b>Busca por</b> <%= text_field_tag 'busca[conteudo]', (params[:busca][:conteudo] rescue nil), :onfocus => "exibir_explicacao_para_busca('exibir','Você pode fazer uma busca digitando campos como CPF, CNPJ, razão social, nome ou contato. A digitação dos mesmos pode ser parcial, pois a busca retornará os resultados de acordo com os dados digitados.')", :onblur => "exibir_explicacao_para_busca('ocultar','')" %> &nbsp; <%= submit_tag 'OK' %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @pessoas.first && @pessoas.first.length > 0 %>
+      <% listagem_table :new => new_pessoa_path, :permissoes => Perfil::ManipularDadosDasPessoas, :headers => ['CPF / CNPJ', 'Razão Social / Nome', 'Telefone', 'E-mail'], :ocultar_ultima_th => true do %>
+        <% for pessoa in @pessoas.first %>
+          <tr id="pessoa_<%=h pessoa.id %>" class="<%= pessoa.spc? ? cycle('fundo_vermelho','fundo_rosa') : cycle('impar','par') %>">
+            <% if pessoa.fisica? %>
+              <td><%= link_to h(pessoa.cpf), pessoa_path(pessoa.id) %></td>
+            <% else %>
+              <td><%= link_to h(pessoa.cnpj), pessoa_path(pessoa.id) %></td>
+            <% end %>
+
+            <% if pessoa.fisica? %>
+              <td><%= link_to h(pessoa.nome), pessoa_path(pessoa.id) %></td>
+            <% else %>
+              <td><%= link_to h(pessoa.razao_social), pessoa_path(pessoa.id) %></td>
+            <% end %>
+            <td><%= h pessoa.telefone.join(" / ") %></td>
+            <td><%= h pessoa.email.join(" / ") %></td>
+            <td>
+              <%= link_to image_tag('layout/alterar.png'), edit_pessoa_path(pessoa) if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasPessoas) %>
+              <%= link_to image_tag('layout/excluir.png'), pessoa_path(pessoa), :confirm => 'Deseja excluir esta pessoa?', :method => 'delete' if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasPessoas) %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    <% else %>
+      <br />
+      <%= mensagem_da_pesquisa(params['busca']['conteudo']) %><br />
+      <p><%= link_to 'Nova pessoa', new_pessoa_path if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasPessoas)%></p>
+    <% end %>
+<%= will_paginate @pessoas.first %>
+<% if @pessoas.last %>
+  <b>Legenda</b>
+  <ul>
+    <li class="sem_pontos"><span class="legenda">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> | <span class="legenda_spc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Pessoas Inadimplentes - SPC</li>
+  </ul>
+<% end %>
+
+<br />

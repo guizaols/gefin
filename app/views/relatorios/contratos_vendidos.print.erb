@@ -1,0 +1,43 @@
+<br />
+<div style="text-align: center; width: auto; font-size: 12px;">
+  <b>Período:<%=h params[:busca][:periodo_min] %>-<%=h params[:busca][:periodo_max] %><%#= session[:ano] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="1400px" cellpadding="2">
+  <tr align="center">
+    <th style="width: 150px">Número de Controle</th>
+    <th style="width: 150px">Data de Início</th>
+    <th style="width: 270px">Cliente</th>
+    <th style="width: 250px">Serviços</th>
+    <th style="width: 110px">Data Cancelamento</th>
+    <th style="width: 115px">Data Evasão</th>
+    <th style="width: 90px">Situação</th>
+    <th style="width: 100px">Valor - Contrato</th>
+   
+  </tr>
+ <%total_geral_contratos = 0 %>
+
+
+
+  <% @recebimentos.each do |conta| %>
+      <tr style="text-align: left; font-size: 10px">
+        <td style="padding-left: 4px"><%=h conta.numero_de_controle %></td>
+         <td style="padding-left: 4px"><%=h conta.data_inicio %></td>
+        <td style="padding-left: 4px"><%=h conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social %></td>
+        <td style="padding-left: 4px"><%=h conta.servico.descricao %></td>
+        <td style="text-align: center"><%=h conta.data_cancelamento %></td>
+        <td style="text-align: center"><%=h conta.data_evasao %></td>
+        <td style="text-align: center"><%=h conta.situacao_fiemt_verbose %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(conta.valor_do_documento) %></
+      </tr>
+       <% total_geral_contratos += conta.valor_do_documento %>
+  <% end %>
+
+
+  <tr style="font-weight: bold">
+    <td style="text-align: right; padding-right: 4px" colspan="7">Totalização</td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_geral_contratos) %></td>
+  </tr>
+</table>
+<br />

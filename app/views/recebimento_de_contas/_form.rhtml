@@ -1,0 +1,96 @@
+<% form_for @recebimento_de_conta, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <% @desabilitar_edicao = @recebimento_de_conta.travado_pela_situacao? %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Tipo de Documento</td>
+      <td><%= f.select :tipo_de_documento, RecebimentoDeConta::TIPOS_DE_DOCUMENTO, {:include_blank=>true}, :disabled=>@desabilitar_edicao %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Rateio</td><td><%= f.select :rateio, RecebimentoDeConta::OPCAO_PARA_SELECT, {:include_blank=>true}, :disabled=>@recebimento_de_conta.alguma_parcela_baixada? || @desabilitar_edicao %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Provisão</td><td><%= f.select :provisao, RecebimentoDeConta::OPCAO_PARA_SELECT, {:include_blank => true}, :disabled => @recebimento_de_conta.new_record? ? false : true %></td>
+    </tr>
+    <%= f.text_field :numero_nota_fiscal, :label => 'Número Nota Fiscal', :disabled => @desabilitar_edicao %>
+    <tr>
+      <td class="field_descriptor">Cliente</td><td>
+        <%= auto_complete_para_qualquer_campo(f, "pessoa", auto_complete_for_cliente_cpf_cnpj_pessoas_path, {:opcoes_para_text_field => {:disabled => @desabilitar_edicao, :size => '80px'},:complemento_do_after_update_element => "$('recebimento_de_conta_dependente_id').value = ''; $('recebimento_de_conta_nome_dependente').value = ''; "}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Dependente</td><td>
+        <%=auto_complete_para_qualquer_campo(f, "dependente", auto_complete_for_dependente_pessoas_path, {:opcoes_para_text_field => {:disabled => @desabilitar_edicao, :size => '80px'}, :complemento_dos_params => "+ '&cliente_id=' + $('recebimento_de_conta_pessoa_id').value"}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Serviço</td><td>
+        <%=auto_complete_para_qualquer_campo(f, "servico", auto_complete_for_servico_servicos_path, {:opcoes_para_text_field => {:disabled => @desabilitar_edicao, :size => '80px'}}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Data Inicial do Serviço</td>
+      <td><%=calendar_date_select_com_mascara(f, "data_inicio_servico") %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Data Final do Serviço</td>
+      <td><%=calendar_date_select_com_mascara(f, "data_final_servico") %></td>
+    </tr>
+    <%= f.text_field :numero_de_parcelas, :label => 'Número de parcelas', :disabled => @recebimento_de_conta.alguma_parcela_baixada? || @desabilitar_edicao, :size => '5px', :maxlength => '3' %>
+    <%= f.text_field :vigencia, :label => 'Vigência (em meses)', :disabled => @desabilitar_edicao, :size => '5px', :maxlength => '3' %>
+    <%= f.text_field :data_inicio, :disabled => @desabilitar_edicao, :size => '10px', :maxlength => '10' %>
+    <%= f.text_field :data_final, :disabled => true, :after => loading_image('data_final'), :size => '10px' %>
+    <tr>
+      <td class="field_descriptor">Dia do Vencimento</td><td>
+        <%= f.select :dia_do_vencimento, (1..31), {:include_blank => true}, :disabled => @desabilitar_edicao %>
+      </td>
+    </tr>
+    <%= f.text_field :valor_do_documento_em_reais, :label => 'Valor', :size => '20px', :disabled => @recebimento_de_conta.alguma_parcela_baixada? || @desabilitar_edicao, :onkeypress => "return(MascaraMoeda(recebimento_de_conta_valor_do_documento_em_reais, \".\",\",\", event))" %>
+    <%= render :partial => 'pagamento_de_contas/campo_historico', :locals => {:tipo => 'recebimento', :f => f, :after_update_element => "function(element, value) { $('historico').value = $('historico').value + ' - ' + $('recebimento_de_conta_numero_nota_fiscal').value + $('recebimento_de_conta_nome_pessoa').value.replace(/(([0-9]{3}).([0-9]{3}).([0-9]{3})-([0-9]{2}))|(([0-9]{2}).([0-9]{3}).([0-9]{3})\\/([0-9]{4})-([0-9]{2}))/,'') + ' - ' + $('recebimento_de_conta_nome_servico').value}"} %>
+    <tr>
+      <td class="field_descriptor">Conta Contábil Receita</td>
+      <td>
+        <%=auto_complete_para_qualquer_campo(f, 'conta_contabil_receita', auto_complete_for_conta_contabil_plano_de_contas_path, {:opcoes_para_text_field => {:disabled => @desabilitar_edicao, :size => '80px'}, :analisar_conta => true}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Unidade Organizacional</td>
+      <td>
+        <%#=h @recebimento_de_conta.unidade_organizacional_id.blank? ? 'CONFIGURE UMA UNIDADE ORGANIZACIONAL' : @recebimento_de_conta.unidade.unidade_organizacional.resumo %>
+        <%= auto_complete_para_qualquer_campo(f, 'unidade_organizacional', auto_complete_for_unidade_organizacional_unidades_organizacionais_path, {:opcoes_para_text_field => {:disabled => @desabilitar_edicao, :size => '80px'}}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Centro</td>
+      <td><%= auto_complete_para_qualquer_campo(f, 'centro', auto_complete_for_centro_centros_path, {:opcoes_para_text_field=>{:disabled=>@desabilitar_edicao, :size => '80px'},:complemento_dos_params => "+ '&unidade_organizacional_id=' + $('recebimento_de_conta_unidade_organizacional_id').value"}) %></td>
+    </tr>
+    <%= f.text_field :data_venda, :label => 'Data da Venda', :disabled => @desabilitar_edicao, :size => '10px', :maxlength => '10' %>
+    <tr>
+      <td class="field_descriptor">Origem</td>
+      <td><%= f.select :origem, [['Interna', RecebimentoDeConta::Interna], ['Externa', RecebimentoDeConta::Externa]], {:include_blank => true}, :disabled=>@desabilitar_edicao %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Vendedor</td><td>
+        <%=auto_complete_para_qualquer_campo(f,"vendedor",auto_complete_for_funcionario_pessoas_path,{:opcoes_para_text_field=>{:disabled=>@desabilitar_edicao, :size => '80px'}}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Cobrador</td><td>
+        <%=auto_complete_para_qualquer_campo(f,"cobrador",auto_complete_for_funcionario_pessoas_path,{:opcoes_para_text_field=>{:disabled=>@desabilitar_edicao, :size => '80px'}}) %>
+      </td>
+    </tr>
+    <%= f.text_field :multa_por_atraso, :label => 'Multa por atraso (%)', :disabled=>@desabilitar_edicao, :size => '5px' %>
+    <%= f.text_field :juros_por_atraso, :label => 'Juros por atraso (%)', :disabled=>@desabilitar_edicao, :size => '5px' %>
+    <tr>
+      <td></td>
+      <td>
+        <%= observe_field_para_calcular_data_final 'recebimento_de_conta_vigencia' %>
+        <%= observe_field_para_calcular_data_final 'recebimento_de_conta_data_inicio' %>
+        <%= f.submit "Salvar" %> | <%= link_to 'Voltar', recebimento_de_contas_path %>
+      </td>
+    </tr>
+  </table>
+  <%= mascara_para_data('recebimento_de_conta_data_inicio') %>
+  <%= mascara_para_data('recebimento_de_conta_data_final') %>
+  <%= mascara_para_data('recebimento_de_conta_data_venda') %>
+<% end %>

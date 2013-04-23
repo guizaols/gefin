@@ -1,0 +1,29 @@
+<% form_tag atualiza_valores_das_parcelas_pagamento_de_conta_path do %>
+  <%= error_messages_for :pagamento_de_conta %>
+  <table>
+    <tr>
+      <th>Data Vencimento</th>
+      <th>Valor</th>
+      <th>Situacão</th>
+    </tr>
+    <% soma_das_parcelas_pendentes = 0 %>
+    <% @pagamento_de_conta.dados_parcela.sort.each do |parcela| %>
+      <% if [Parcela::PENDENTE, Parcela::QUITADA].include?(parcela.last["situacao"]) %>
+        <%= render :partial => 'parcela', :locals => {:chave => parcela.first, :valor => format("%.2f", (parcela.last["valor"]/ 100.0)).to_s,
+          :data_vencimento => parcela.last["data_vencimento"], :situacao => parcela.last["situacao"], :situacao_verbose => parcela.last["situacao_verbose"]} %>
+        <% soma_das_parcelas_pendentes += parcela.last["valor"] %>
+      <% end %>
+    <% end %>
+  </table>
+  <p>
+    <b>Valor a ser recebido:</b> R$
+    <span id="valor_do_documento"><%= format("%.2f", soma_das_parcelas_pendentes/100.0) %></span>
+    <br />
+    <b>Soma das parcelas pendentes:</b> R$
+    <span id="soma_total_das_parcelas" > </span>
+  </p>
+  <p><%= submit_tag "Salvar" %> | <%= link_to 'Voltar', pagamento_de_conta_path(@pagamento_de_conta.id) %></p>
+<%  end %>
+<% javascript_tag do %>
+  valor_total_das_parcelas();
+<% end %>

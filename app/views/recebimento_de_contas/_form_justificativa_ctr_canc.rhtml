@@ -1,0 +1,15 @@
+<% form_remote_tag :url => {:controller => 'parcelas', :action => 'cancelar_para_ctr_canc', :id => @parcela.id, :recebimento_de_conta_id => @conta.id}, :loading => "Element.show('loading_ctr_canc')", :success => "Element.hide('loading_ctr_canc')" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Justificativa</td>
+      <td><%= text_area_tag :justificativa, nil, :size => '40x4' %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Salvar' %>
+        <%= button_to_function 'Cancelar', 'Modalbox.hide()' %><%= loading_image 'ctr_canc' %>
+      </td>
+    </tr>
+  </table>
+<% end %>

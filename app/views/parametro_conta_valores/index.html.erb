@@ -1,0 +1,12 @@
+<% content_for :titulo, "Parâmetros Conta/Valor" %>
+
+<% listagem_table :new => new_parametro_conta_valor_path,:permissoes => Perfil::ManipularDadosDeParametroContaValores, :headers => ['Tipo','Conta Contábil'] do %>
+
+  <% for parametro_conta_valor in @parametro_conta_valores %>
+    <% listagem_tr :edit => edit_parametro_conta_valor_path(parametro_conta_valor), :destroy => parametro_conta_valor,:permissoes => Perfil::ManipularDadosDeParametroContaValores do %>
+      <td><%=h parametro_conta_valor.tipo_de_parametro_verbose %></td>   
+      <td><%=h  Iconv.conv('iso-8859-15','utf-8',parametro_conta_valor.conta_contabil.retorna_codigo_contabil_e_descricao) %></td>
+    <% end %>
+  <% end %>
+<% end %>
+

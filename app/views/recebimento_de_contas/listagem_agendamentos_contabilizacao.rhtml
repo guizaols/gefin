@@ -1,0 +1,18 @@
+<% content_for :titulo, "Agendamentos de Contabilização" %>
+<br />
+
+<div id="listagem">
+    <% listagem_table :headers => ['Ano','Mês', 'Histórico', ''] do %>
+      <% @agendamentos.each do |a| %>
+        <% listagem_tr do %>
+         
+          <td><%=h a.ano %></td>
+          <td><%=h a.mes %></td>
+          <td><%=h a.historico %></td>
+          <td>
+           <%=link_to 'Excluir',cancelar_contabilizacao_recebimento_de_contas_path(:agendamento_id=>a.id),:confirm=>"Você tem certeza que deseja efetuar esta operação?"%>
+          </td>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>

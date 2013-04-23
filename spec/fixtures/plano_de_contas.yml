@@ -1,0 +1,108 @@
+plano_de_contas_ativo_contribuicoes:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 41010101008
+    nome: Contribuicoes Regul. oriundas do SENAI
+    nivel: 6
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2957
+
+plano_de_contas_ativo_contribuicoes_sesi:
+    ano: 2009
+    entidade: sesi
+    codigo_contabil: 42210101009
+    nome: Contribuicoes Regul. oriundas do SESI
+    nivel: 5
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2958
+
+plano_de_contas_ativo:
+    ano: 2009
+    entidade: sesi
+    codigo_contabil: 1
+    nome: ATIVO
+    nivel: 1
+    ativo: 1
+    tipo_da_conta: 0
+    codigo_reduzido: 0
+
+plano_de_contas_ativo_despesas:
+    ano: 2009
+    entidade: sesi
+    codigo_contabil: 41010101009
+    nome: Despesas do SESI
+    nivel: 6
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2959
+
+plano_de_contas_ativo_despesas_senai:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 45010101999
+    nome: Despesas do SENAI
+    nivel: 6
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2719
+
+plano_de_contas_passivo_a_pagar:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 21010101009
+    nome: Fornecedores a Pagar
+    nivel: 6
+    ativo: 1
+    tipo_da_conta: 1
+    codigo_reduzido: 2101
+
+plano_de_contas_ativo_caixa:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 11010101001
+    nome: Caixa
+    nivel: 6
+    ativo: 1
+    tipo_da_conta: 1
+
+plano_de_contas_ativo_conta_bancaria:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 11010102001
+    nome: Conta bancária no Banco do Brasil
+    nivel: 6
+    ativo: 1
+    tipo_da_conta: 1
+    codigo_reduzido: 1102
+
+plano_de_contas_passivo_impostos_pagar:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 3101123456
+    nome: Impostos a Pagar
+    nivel: 6
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2173
+
+plano_de_contas_devolucao:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 22343456
+    nome: Devolucoes do SENAI
+    nivel: 2
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2234
+
+plano_de_contas_para_boleto:
+    ano: 2009
+    entidade: senai
+    codigo_contabil: 22343456
+    nome: Conta Contábil SENAI Caixa
+    nivel: 6
+    ativo: 0
+    tipo_da_conta: 1
+    codigo_reduzido: 2513

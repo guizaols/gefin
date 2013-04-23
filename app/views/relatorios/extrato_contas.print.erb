@@ -1,0 +1,106 @@
+<br />
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:data_min] %> a <%=h params[:busca][:data_max] %></b>
+</div>
+
+<% conta_corrente = ContasCorrente.find(params[:busca][:conta_corrente_id]) %>
+<div style="text-align: center; width: auto; font-size: 12px;">
+  <b>Resumo da Conta Corrente:</b> <%=hl conta_corrente.resumo %>
+</div>
+<br /><br />
+
+<% contador = 1 %>
+<% @itens_movimentos.group_by {|item_movimento| item_movimento.movimento.data_lancamento}.each do |data, items| %>
+  <% saldo_anterior = conta_corrente.saldo_anterior(data, session[:unidade_id]) %>
+  <% saldo_dinheiro = 0; saldo_cheque = 0; saldo_atual = 0; entradas = 0; saidas = 0; dinheiro_entrada = 0 %>
+  <% dinheiro_saida = 0; cheque_entrada = 0; cheque_saida = 0; parcela = []; valor_aux = [] %>
+
+  <div align="center">
+    <table border="1px" style="font-size: 11px" width="800px">
+      <tr align="center" style="font-size: 12px">
+        <td colspan="7">
+          <b>Saldo inicial em:</b>&nbsp;&nbsp;&nbsp;
+          <%=h data %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <%=h preco_formatado(saldo_anterior) %>
+        </td>
+      </tr>
+      <tr align="center" style="font-size: 12px">
+        <th style="width: 100px">Item</th>
+        <th style="width: 130px">Número de Controle</th>
+        <th style="width: 300px">Fornecedores/Cliente/Outros</th>
+        <th style="width: 150px">Valor</th>
+        <th style="width: 150px">Saldo</th>
+      </tr>
+
+      <% items.each do |item| %>
+        <% parcela = item.movimento.conta.parcelas.find_by_id(item.movimento.parcela_id) rescue nil %>
+        <% item.tipo == 'D' ? entradas += item.valor : saidas += item.valor %>
+        <% saldo_atual = saldo_atual + (item.verifica_valor) %>
+        <tr>
+          <td style="text-align: left; padding-left: 4px"><%=h contador %></td>
+          <td style="text-align: left; padding-left: 4px"><%=h item.movimento.numero_de_controle %></td>
+          <td style="text-align: left; padding-left: 4px"><%=h item.movimento.pessoa.nome %></td>
+          <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(item.verifica_valor) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(saldo_atual) %></td>
+        </tr>
+
+        <% if (parcela.blank? ? '' : parcela.forma_de_pagamento == Parcela::DINHEIRO) || item.movimento.provisao == Movimento::SIMPLES %>
+          <% item.tipo == 'D' ? dinheiro_entrada += item.valor : dinheiro_saida += item.valor %>
+        <% elsif parcela.forma_de_pagamento == Parcela::CHEQUE %>
+          <% if item.tipo == 'D' %>
+            <% cheque_entrada += item.valor %>
+          <% else %>
+            <% cheque_saida += item.valor %>
+          <% end %>
+        <% end %>
+        <% contador += 1 %>
+      <% end %>
+
+      <% saldo_cheque = conta_corrente.saldo_anterior(data, session[:unidade_id], Parcela::CHEQUE) %>
+      <% saldo_dinheiro = saldo_anterior - saldo_cheque %>
+      <tr>
+        <td colspan="5" style="text-align: center; font-size: 12px"><b>Resumo em: <%=hl data %></b></td>
+      </tr>
+      <tr>
+        <th></th>
+        <th>Saldo Inicial</th>
+        <th>Entradas</th>
+        <th>Saídas</th>
+        <th>Saldo Final</th>
+      </tr>
+
+      <% if conta_corrente.identificador == ContasCorrente::CAIXA %>
+        <tr>
+          <td style="font-weight: bold; text-align: left; padding-left: 4px">Dinheiro</td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_dinheiro) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((dinheiro_entrada)) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((dinheiro_saida)) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_dinheiro + (dinheiro_entrada - dinheiro_saida)) %></td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold; text-align: left; padding-left: 4px">Cheque à vista</td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_cheque) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((cheque_entrada)) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((cheque_saida)) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_cheque + (cheque_entrada - cheque_saida)) %></td>
+        </tr>
+        <tr>
+          <td style="font-weight: bold; text-align: left; padding-left: 4px">Total</td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_anterior) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((dinheiro_entrada + cheque_entrada)) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((dinheiro_saida + cheque_saida)) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado((saldo_anterior + (dinheiro_entrada + cheque_entrada) - (dinheiro_saida + cheque_saida))) %></td>
+        </tr>
+      <% else %>
+        <tr>
+          <td style="font-weight: bold; text-align: left; padding-left: 4px">Total</td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_anterior) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(entradas) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saidas) %></td>
+          <td style="text-align: right; padding-right: 4px"><%=hl preco_formatado(saldo_anterior + (entradas - saidas)) %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <br /><br />
+<% end %>

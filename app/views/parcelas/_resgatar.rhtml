@@ -1,0 +1,105 @@
+<%# form_for [@conta, @parcela], :url => {:action => 'efetuar_resgate', :controller => 'parcelas', :id => @parcela.id}, :html => {:method => :post}, :builder => TableFormBuilder do |parcela| %>
+<%# form_tag({:action => 'resgatar_cheque_cartao', :controller => 'parcelas'}) do %>
+  <% remote_form_for :parcela, :url => {:action => 'efetuar_resgate', :controller => 'parcelas', :id => @parcela.id}, :loading => "Element.show('loading_resgate');", :success => "Element.hide('loading_resgate');", :builder => TableFormBuilder do |parcela| %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data da troca</td>
+      <td><%= text_field_tag :data_troca, Date.today.to_s_br, :size => 10, :maxlength => 10, :onkeyup => "AplicaMascara('XX/XX/XXXX', this)" %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Nova Forma de Pagamento</td>
+      <td>
+        <%= select_tag :forma_de_pagamento, options_for_select(formas_de_pagamento_resgate, {:include_blank => true}),
+          :onchange => "diferenciarFormaDePagamentoParaResgate('recebimento_de_contas', #{@conta.id}, #{@parcela.id})" %>
+      </td>
+    </tr>
+
+    <!--<tr id="dinheiro_data_vencimento">
+      <td class="field_descriptor">Data de Vencimento</td>
+      <td><%#= calendar_date_select_tag 'cheques[data_para_deposito]', nil, :maxlength => 10, :size => 10, :onkeyup => "AplicaMascara('XX/XX/XXXX', this)" %></td>
+    </tr>-->
+    
+    <tr id="banco_conta_corrente" style="display: none">
+      <td class="field_descriptor">Conta Corrente</td>
+      <td><%= select_tag 'banco[conta_corrente_id]', options_for_select(ContasCorrente.select_conta_corrent(@conta.unidade_id)), {:include_blank => true} %></td>
+    </tr>
+
+    <!-- CHEQUE -->
+  <%# parcela.fields_for :cheques do |obj_cheque| %>
+    <tr id="cheque_tipo_de_cheque" style="display: none">
+      <td class="field_descriptor">Tipo de Cheque</td>
+      <td>
+        <%= select_tag 'cheques[prazo]', options_for_select([['', ''], ['À Vista', Cheque::VISTA], ['A Prazo', Cheque::PRAZO]]),
+          :onchange => seleciona_conta_contabil_caixa_resgate(@parcela.unidade) %>
+      </td>
+    </tr>
+
+    <tr id="cheque_data_deposito" style="display: none">
+      <td class="field_descriptor">Data para Depósito </td>
+      <td><%= calendar_date_select_tag 'cheques[data_para_deposito]', nil, :maxlength => 10, :size => 10, :onkeyup => "AplicaMascara('XX/XX/XXXX', this)" %></td>
+    </tr>
+
+    <tr id="cheque_conta_transitoria" style="display: none">
+      <td class="field_descriptor" >Conta Contábil Transitória</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo_tag("cheques[conta_contabil_transitoria_id]", auto_complete_for_conta_contabil_plano_de_contas_path, nil, nil,
+          {:analisar_conta => true, :opcoes_para_text_field => {:size => 60}}) %>
+      </td>
+    </tr>
+
+    <tr id="cheque_nome_do_banco" style="display: none">
+      <td class="field_descriptor">Banco </td>
+      <td><%= select_tag 'cheques[banco_id]', options_for_select(Cheque.retorna_bancos_para_select, {:include_blank => true}) %></td>
+    </tr>
+
+    <tr id="cheque_nome_do_titular" style="display: none">
+      <td class="field_descriptor">Nome do Titular </td>
+      <td><%= text_field_tag 'cheques[nome_do_titular]', nil, :size => '60px' %></td>
+    </tr>
+
+    <tr id="cheque_nome_agencia" style="display: none">
+      <td class="field_descriptor">Agência </td>
+      <td><%= text_field_tag 'cheques[agencia]', nil %></td>
+    </tr>
+
+    <tr id="cheque_nome_conta" style="display: none">
+      <td class="field_descriptor">Conta do Cheque </td>
+      <td><%= text_field_tag 'cheques[conta]', nil %></td>
+    </tr>
+
+    <tr id="cheque_numero_do_cheque" style="display: none">
+      <td class="field_descriptor">Número do Cheque </td>
+      <td><%= text_field_tag 'cheques[numero]', nil %></td>
+    </tr>
+  <%# end %>
+    <!-- CHEQUE -->
+
+    <!-- CARTAO -->
+  <%# parcela.fields_for :cartoes do |obj_cartao| %>
+    <tr id="cartao_bandeira" style="display: none">
+      <td class="field_descriptor">Bandeira </td>
+      <td><%= select_tag 'cartoes[bandeira]', options_for_select(Cartao.retorna_bandeiras_para_select, {:include_blank => false}) %></td>
+    </tr>
+    <tr id="cartao_numero_do_cartao" style="display: none">
+      <td class="field_descriptor">Número do Cartão </td>
+      <td><%= text_field_tag 'cartoes[numero]', nil, :onkeyup => "this.value = this.value.replace(/[a-z]/g,'');" %></td>
+    </tr>
+    <tr id="cartao_validade_do_cartao" style="display: none">
+      <td class="field_descriptor">Validade do Cartão </td>
+      <td><%= text_field_tag 'cartoes[validade]', nil, :size => 7, :maxlength => 7, :onkeyup => "AplicaMascara('XX/XXXX', this)" %></td>
+    </tr>
+    <tr id="cartao_nome_do_titular_cartao" style="display: none">
+      <td class="field_descriptor">Nome do Titular </td>
+      <td><%= text_field_tag 'cartoes[nome_do_titular]', nil, :size => '60px' %></td>
+    </tr>
+  <%# end %>
+    <!-- CARTAO -->   
+
+    <tr>
+      <td></td><td>
+        <%= submit_tag 'Salvar' %>
+        <%= button_to_function 'Cancelar' do |page| page << "Modalbox.hide($('form_para_resgatar'));" end %><%= loading_image("resgate") %>
+      </td>
+    </tr>
+  </table>
+<% end %>

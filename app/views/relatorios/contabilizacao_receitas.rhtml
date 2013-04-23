@@ -1,0 +1,17 @@
+<% content_for :titulo, 'Contabilização das Receitas' %>
+
+<% form_remote_tag :url => contabilizacao_receitas_relatorios_path, :loading => "Element.show('loading_form_contabilizacao');", :success => "Element.hide('loading_form_contabilizacao');" do %>
+  <table>
+    <%= campo_de_cadastro "Mês", (select_tag "busca[mes]", meses_para_selecao) %>
+    <%= campo_de_cadastro "Ordenação", (select_tag "busca[ordenacao_1]", options_for_select(dados_para_ordenacao, dados_para_ordenacao[1])) %>
+    <%= campo_de_cadastro '', (select_tag "busca[ordenacao_2]", options_for_select(dados_para_ordenacao, dados_para_ordenacao[2])) %>
+    <%= campo_de_cadastro '', (select_tag "busca[ordenacao_3]", options_for_select(dados_para_ordenacao, dados_para_ordenacao[3])) %>
+    <%= campo_de_cadastro '', (select_tag "busca[ordenacao_4]", options_for_select(dados_para_ordenacao, dados_para_ordenacao[4])) %>
+    <%= campo_de_cadastro '', (select_tag "busca[ordenacao_5]", options_for_select(dados_para_ordenacao, dados_para_ordenacao.last)) %>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_form_contabilizacao", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>

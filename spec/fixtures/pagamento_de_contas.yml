@@ -1,0 +1,127 @@
+pagamento_cheque:
+  tipo_de_documento: DP
+  provisao: 1
+  rateio: 1
+  pessoa: inovare
+  conta_contabil_pessoa: plano_de_contas_ativo_contribuicoes
+  data_lancamento: 2009-03-31
+  data_emissao: 2009-03-31
+  valor_do_documento: 10001
+  numero_de_parcelas: 3
+  numero_nota_fiscal_string_string: 1
+  primeiro_vencimento: 2009-03-31
+  historico: Pagamento Cheque
+  conta_contabil_despesa: plano_de_contas_ativo_contribuicoes
+  unidade_organizacional: senai_unidade_organizacional
+  numero_de_controle: SENAI-VG - DP4/20053200
+  parcelas_geradas: true
+  centro: centro_forum_economico
+  ano: 2009
+  unidade: senaivarzeagrande
+
+#Esta fixture NÃO pode ter parcelas geradas
+pagamento_dinheiro:
+  tipo_de_documento: DP
+  provisao: 1
+  rateio: 1
+  pessoa: inovare
+  conta_contabil_pessoa: plano_de_contas_ativo_contribuicoes
+  data_lancamento: 2009-11-30
+  data_emissao: 2009-10-31
+  valor_do_documento: 12000
+  numero_de_parcelas: 3
+  numero_nota_fiscal_string: 1
+  primeiro_vencimento: 2009-11-30
+  historico: Pagamento Cheque
+  unidade_organizacional: senai_unidade_organizacional
+  numero_de_controle: 2005320011
+  conta_contabil_despesa: plano_de_contas_ativo_contribuicoes
+  parcelas_geradas: false
+  centro: centro_forum_economico
+  ano: 2009
+  unidade: senaivarzeagrande
+
+pagamento_dinheiro_outra_unidade_mesmo_ano:
+  tipo_de_documento: CPMF
+  provisao: 1
+  rateio: 1
+  pessoa: inovare
+  conta_contabil_pessoa: plano_de_contas_ativo_contribuicoes_sesi
+  data_lancamento: 2009-11-30
+  data_emissao: 2009-10-31
+  valor_do_documento: 12000
+  numero_de_parcelas: 3
+  numero_nota_fiscal_string: 1
+  primeiro_vencimento: 2009-11-30
+  historico: Pagamento Cartão
+  unidade_organizacional: sesi_colider_unidade_organizacional
+  numero_de_controle: 2005320011
+  conta_contabil_despesa: plano_de_contas_ativo_contribuicoes_sesi
+  parcelas_geradas: true
+  centro: centro_forum_social
+  ano: 2009
+  unidade: sesivarzeagrande
+
+pagamento_dinheiro_outra_unidade_outro_ano:
+  tipo_de_documento: CPMF
+  provisao: 1
+  rateio: 1
+  pessoa: inovare
+  conta_contabil_pessoa: plano_de_contas_ativo_contribuicoes_sesi
+  data_lancamento: 2008-10-30
+  data_emissao: 2008-10-31
+  valor_do_documento: 12000
+  numero_de_parcelas: 3
+  numero_nota_fiscal_string: 1
+  primeiro_vencimento: 2008-10-30
+  historico: Pagamento Cheque
+  unidade_organizacional: sesi_colider_unidade_organizacional
+  numero_de_controle: 20053200112
+  conta_contabil_despesa: plano_de_contas_ativo_contribuicoes_sesi
+  parcelas_geradas: false
+  centro: centro_forum_social
+  ano: 2009
+  unidade: sesivarzeagrande
+
+pagamento_banco_outra_unidade:
+  tipo_de_documento: CPMF
+  provisao: 1
+  rateio: 1
+  pessoa: inovare
+  conta_contabil_pessoa: plano_de_contas_ativo_contribuicoes_sesi
+  data_lancamento: 2009-10-02
+  data_emissao: 2009-10-01
+  valor_do_documento: 5000
+  numero_de_parcelas: 2
+  numero_nota_fiscal_string: 010101
+  primeiro_vencimento: 2009-10-10
+  historico: Pagamento Banco
+  numero_de_controle: SESI-VG-CPMF05/09010101
+  unidade_organizacional: sesi_colider_unidade_organizacional
+  conta_contabil_despesa: plano_de_contas_ativo_contribuicoes_sesi
+  parcelas_geradas: true
+  centro: centro_forum_social
+  ano: 2009
+  unidade: sesivarzeagrande
+
+pagamento_cheque_outra_unidade:
+  tipo_de_documento: CPMF
+  provisao: 1
+  rateio: 1
+  pessoa: inovare
+  conta_contabil_pessoa: plano_de_contas_ativo_contribuicoes_sesi
+  data_lancamento: 2009-05-30
+  data_emissao: 2009-05-30
+  valor_do_documento: 10001
+  numero_de_parcelas: 3
+  numero_nota_fiscal_string: 1
+  primeiro_vencimento: 2009-05-30
+  historico: Pagamento Cheque
+  conta_contabil_despesa: plano_de_contas_ativo_contribuicoes_sesi
+  unidade_organizacional: sesi_colider_unidade_organizacional
+  numero_de_controle: SESICLUBE-VG-CPMF05/20093299
+  parcelas_geradas: true
+  centro: centro_forum_social
+  ano: 2009
+  unidade: sesivarzeagrande
+

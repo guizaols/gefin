@@ -1,0 +1,31 @@
+<% content_for :titulo, 'Histórico de Renegociações' %>
+
+<% form_remote_tag :url => historico_renegociacoes_relatorios_path do %>
+  <table>
+    <%= campo_de_cadastro "Número de Controle", text_field_tag("busca[numero_de_controle]") + ' ' + (link_to_function "..." do |page| page.toggle "filtros_pesquisa_ordem" end)%>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','pdf',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag "Gerar Relatório" %></td></tr>
+  </table>
+<% end %>
+
+<div id="filtros_pesquisa_ordem" style="display:none;">
+  <h1>Consulta de Contas à Receber Renegociadas</h1>
+  <% form_remote_tag :url => pesquisa_historico_renegociacoes_relatorios_path do %>
+    <table>
+      <tr>
+        <td class="field_descriptor">Texto</td>
+        <td>
+          <div class="div_explicativa">
+            <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+              <div id="explicacao_texto"></div>
+              <%= image_tag 'seta_tooltip.gif' %>
+            </div>
+            <%= text_field_tag 'busca[texto]', nil, :onfocus => "exibir_explicacao_para_busca('exibir', 'Você pode fazer uma busca digitando campos como NOME DO CLIENTE ou CPF/CNPJ DO CLIENTE, NOME DO DEPENDENTE ou DESCRIÇÃO DO SERVICO. Será apenas listados os recebimentos de conta que já foram RENEGOCIADOS ao menos uma vez.')", :onblur => "exibir_explicacao_para_busca('ocultar','')" %>
+          </div>
+        </td>
+      </tr>
+      <tr><td></td><td><%= submit_tag "Buscar" %></td></tr>
+    </table>
+  <% end %>
+  <div id="resultados_pesquisa_ordem"></div>
+</div>

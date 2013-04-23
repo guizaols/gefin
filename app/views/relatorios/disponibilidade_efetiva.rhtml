@@ -1,0 +1,10 @@
+<h1>Contas Correntes - Disponibilidade Efetiva</h1>
+
+<% form_remote_tag :loading => "Element.show('loading_disp_efe');", :success => "Element.hide('loading_disp_efe');" do %>
+  <table>
+    <%= campo_de_cadastro 'Conta Corrente', auto_complete_tag_para_qualquer_campo(:conta_corrente, auto_complete_for_conta_corrente_contas_correntes_path) %>
+    <%= campo_de_cadastro 'Data de Referência', campo_para_busca_por_data('data_max') %>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','pdf',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %><%= loading_image('disp_efe') %></td></tr>
+  </table>
+<% end %>

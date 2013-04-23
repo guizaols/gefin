@@ -1,0 +1,58 @@
+\documentclass[landscape,a4paper,12pt]{article}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{a4wide}
+\usepackage{setspace}
+\usepackage{longtable}
+\usepackage{lastpage}
+\usepackage{multirow}
+%\usepackage{colortbl}
+
+<% if params[:action] == 'resumo' && params[:controller] == 'recebimento_de_contas' %>
+    <% margem = 0.2 %>
+<% else %>
+    <% margem = 1.0 %>
+<% end %>
+\usepackage[top=2.0cm, bottom=3.0cm, left=<%=hl margem %>cm, right=1cm]{geometry}
+\pagestyle{fancy}
+\fancyfoot{}
+\textheight = 400pt
+\headheight = <%=hl count_gera_filtros_dos_relatorios(params[:busca], params[:action]) %>pt
+\renewcommand{\familydefault}{\sfdefault}
+
+<% unless params[:action] == "contas_a_pagar_geral" %>
+    <% @unidade = Unidade.find(:all, :conditions => ['id = ?', session[:unidade_id]]).collect(&:nome) %>
+<% end %>
+
+%\chead{\flushleft{\begin{center}{\bf{<%=h @titulo %>}}\end{center}\vspace{13pt}
+%\it {\setlength{\parindent}{45pt{Sistema FIEMT \\ Gerenciador Financeiro - GEFIN \\
+%COFIN - Coordenadoria Financeira <% unless params[:action] == "contas_a_pagar_geral" %> {\qquad Unidade: <%=hl "#{@unidade}" %>} <% end %> }}}}}
+
+%\rhead{\it Página {\thepage} de {\pageref{LastPage}} \\ \today \\ {\textbf{\scriptsize Emissão: <%=hl monta_data_hora_emissao %>}}}
+
+%\lhead{\setlength{\parindent}{0pt\includegraphics[scale=0.23]{<%= RAILS_ROOT + "/public/images/logo.jpg" %>}}}
+
+\renewcommand{\headrulewidth}{0pt}
+\chead{
+    \flushleft{\begin{center}{\bf{<%=h @titulo %>}}\end{center}}
+    \begin{longtable}{p{1.3cm} p{7cm} p{14cm} p{3.5cm}}
+           \multirow{3}{*}{\includegraphics[scale=0.23]{<%= RAILS_ROOT + "/public/images/logo.jpg" %>}}
+                                    & \multicolumn{2}{l}{\it {\setlength{\parindent}{45pt{Sistema FIEMT}}}}                                           & \multicolumn{1}{r}{\it Página {\thepage} de {\pageref{LastPage}}} \\
+                                    &  \multicolumn{2}{l}{\it {\setlength{\parindent}{45pt{Gerenciador Financeiro - GEFIN}}}}                         & \multicolumn{1}{r}{\today}\\
+                                    &  \it {\setlength{\parindent}{45pt{COFIN - Coordenadoria Financeira}}} & <% unless params[:action] == "contas_a_pagar_geral" %> {Unidade: <%=hl "#{@unidade}" %>} <% end %>         & \multicolumn{1}{r}{{\textbf{\scriptsize Emissão: <%=hl monta_data_hora_emissao %>}}} \\
+           \multicolumn{4}{l}{\includegraphics[]{<%= RAILS_ROOT + "/public/images/linha_maior.jpg" %>}}
+    \end{longtable}
+    <%=h gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+}
+
+
+
+\begin{document}
+
+\setlength{\parindent}{-10pt}
+<%= yield %>
+
+\end{document}

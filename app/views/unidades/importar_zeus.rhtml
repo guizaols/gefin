@@ -1,0 +1,26 @@
+<% form_tag importar_zeus_unidades_path, :multipart => true do %>
+
+  <table>
+    <tr><td class="field_descriptor">Importação</td>
+      <td>
+        <label for="busca_tipo_unidade"><%= radio_button_tag 'busca[tipo]', (params[:busca][:tipo] = 'unidade'), true %><b>Unidade Organizacional</b></label>
+      </td>
+    </tr>
+
+    <tr><td></td><td>
+        <label for="busca_tipo_centro"><%= radio_button_tag 'busca[tipo]', (params[:busca][:tipo] = 'centro'), false %><b>Centro de Responsabilidade</b></label>
+    </td></tr>
+
+    <tr><td></td><td>
+        <label for="busca_tipo_unidade_centro"><%= radio_button_tag 'busca[tipo]', (params[:busca][:tipo] = 'unidade_centro'), false %><b>Unidade x Centro</b></label>
+    </td></tr>
+
+    <tr><td></td><td>
+        <label for="busca_tipo_planos"><%= radio_button_tag 'busca[tipo]', (params[:busca][:tipo] = 'planos'), false %><b>Planos de Conta</b></label>
+    </td></tr>
+
+    <%= campo_de_cadastro 'Arquivo', (file_field_tag 'busca[arquivo]') %>
+    <tr><td></td><td><%= submit_tag 'Enviar'%></td></tr>
+  </table>
+
+<% end %>

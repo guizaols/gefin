@@ -1,0 +1,18 @@
+<% form_remote_tag :url => {:action => 'estornar_parcela_baixada', :controller => 'parcelas', :id => @parcela.id, :recebimento_de_conta_id => @parcela.conta_id}, :loading => "Element.show('loading_est_parc')", :success => "Element.hide('loading_est_parc')" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data do Estorno</td>
+      <td><%= text_field_tag :data_estorno, Date.today.to_s_br, :size => 10, :maxlength => 10, :onkeyup => "$(AplicaMascara('XX/XX/XXXX', this));" %></td>
+    </tr>
+    <%= campo_de_cadastro 'Justificativa', (text_area_tag 'justificativa', nil, :size => '30x5') %>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Salvar' %>
+        <%= button_to_function 'Cancelar' do |page| page << "Modalbox.hide($('form_para_estornar_parcela_baixada'));" end %>
+        <%= loading_image 'est_parc' %>
+      </td>
+    </tr>
+  </table>
+<% end %>
+<%= mascara_para_data('data_estorno') %>

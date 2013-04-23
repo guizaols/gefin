@@ -1,0 +1,58 @@
+<% form_for @pagamento_de_conta, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Tipo de Documento</td><td><%= f.select :tipo_de_documento, PagamentoDeConta::TIPOS_DE_DOCUMENTO, {:include_blank=>true} %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Provisão</td><td><%= f.select :provisao, PagamentoDeConta::OPCAO_PARA_SELECT, {:include_blank => true}, :onchange => "verifica_se_existe_conta_contabil();", :disabled => @pagamento_de_conta.new_record? ? false : true %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Rateio</td><td><%= f.select :rateio, PagamentoDeConta::OPCAO_PARA_SELECT, {:include_blank => true}, :disabled => @pagamento_de_conta.alguma_parcela_baixada? %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Fornecedor</td><td>
+        <%= auto_complete_para_qualquer_campo(f, 'pessoa', auto_complete_for_fornecedor_cpf_cnpj_pessoas_path, {:opcoes_para_text_field => {:size => '80px'}}) %>
+      </td>
+    </tr>
+    <tr id="conta_contabil_pessoa">
+      <td class="field_descriptor">Conta Contábil Fornecedor</td>
+      <td>
+        <%= auto_complete_para_conta_contabil_parametrizada f, @pagamento_de_conta, :conta_contabil_pessoa %>
+      </td>
+    </tr>
+      <%= f.text_field :data_lancamento, :label => 'Data de Lançamento', :size => '10px', :readonly => true %>
+    <tr>
+      <td class="field_descriptor">Data Emissão</td><td><%= calendar_date_select_com_mascara(f, 'data_emissao') %></td>
+    </tr>
+    <%= f.text_field :valor_do_documento_em_reais, :label => 'Valor', :disabled => @pagamento_de_conta.alguma_parcela_baixada? ? true : false, :size => '20', :onkeypress => "return(MascaraMoeda(pagamento_de_conta_valor_do_documento_em_reais, \".\",\",\", event))" %>
+    <%= f.text_field :numero_de_parcelas, :label => 'Parcelas', :disabled => @pagamento_de_conta.alguma_parcela_baixada? ? true : false, :size => '5', :maxlength => '3' %>
+    <%= f.text_field :numero_nota_fiscal_string, :label => 'Número de Documento', :size => '60px' %>
+    <tr>
+      <td class="field_descriptor">Primeiro Vencimento</td><td><%= calendar_date_select_com_mascara(f, "primeiro_vencimento") %></td>
+    </tr>
+    <%= render :partial => 'campo_historico', :locals => {:tipo => 'pagamento', :f => f, :after_update_element => "function(element, value) { $('historico').value = $('historico').value + '- ' + $('pagamento_de_conta_numero_nota_fiscal_string').value + $('pagamento_de_conta_nome_pessoa').value.replace(/(([0-9]{3}).([0-9]{3}).([0-9]{3})-([0-9]{2}))|(([0-9]{2}).([0-9]{3}).([0-9]{3})\\/([0-9]{4})-([0-9]{2}))/,''); }"} %>
+    <tr>
+      <td class="field_descriptor">Conta Contábil Despesa</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f, 'conta_contabil_despesa', auto_complete_for_conta_contabil_plano_de_contas_path, {:analisar_conta => true, :opcoes_para_text_field => {:size => '80px'}}) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Unidade Organizacional</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f, 'unidade_organizacional', auto_complete_for_unidade_organizacional_unidades_organizacionais_path, {:opcoes_para_text_field => {:size => '80px'}}) %>
+        <%#=h @pagamento_de_conta.unidade_organizacional_id.blank? ? 'CONFIGURE UMA UNIDADE ORGANIZACIONAL' : @pagamento_de_conta.unidade.unidade_organizacional.resumo %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Centro</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f, 'centro', auto_complete_for_centro_centros_path, {:opcoes_para_text_field => {:size => '80px'}, :complemento_dos_params => "+ '&unidade_organizacional_id=' + $('pagamento_de_conta_unidade_organizacional_id').value"}) %>
+      </td>
+    </tr>
+    <tr><td></td><td><%= f.submit 'Salvar' %> | <%= link_to 'Voltar', pagamento_de_contas_path %></td></tr>
+  </table>
+  <%= javascript_tag "verifica_se_existe_conta_contabil();" %>
+<% end %>
+

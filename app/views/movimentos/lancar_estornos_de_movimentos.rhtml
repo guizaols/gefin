@@ -1,0 +1,23 @@
+<% content_for :titulo, 'Lançamentos de Estornos de Movimentos' %>
+
+<% form_remote_tag :url => lancar_estornos_de_movimentos_movimentos_path, :loading => "Element.show('loading_estorno');", :success => "Element.hide('loading_estorno');" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Número de Controle</td>
+      <td>
+        <div class="div_explicativa">
+          <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+            <div id="explicacao_texto"></div>
+            <%= image_tag 'seta_tooltip.gif' %>
+          </div>
+          <%= text_field_tag 'busca[controle]', params[:busca][:controle], :size => 30, :onfocus => "exibir_explicacao_para_busca('exibir','Você deve inserir o Número de Controle completo de um contrato (CP, CR ou Movimento Simples) para efetuar a busca')", :onblur => "exibir_explicacao_para_busca('ocultar','')"  %>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag 'Pesquisar' %><%= loading_image('estorno') %></td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="resultados_pesquisa_estorno"></div>

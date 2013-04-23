@@ -1,0 +1,20 @@
+<% content_for :titulo, "Detalhes" %>
+
+<table>
+  <%= show_unless_blank 'Número Conta', @contas_corrente.numero_conta %>
+  <%= show_unless_blank 'Dígito', @contas_corrente.digito_verificador %>
+  <%= show_unless_blank 'Agência', @contas_corrente.nome_agencia %>
+  <%= show_unless_blank 'Descrição', @contas_corrente.descricao %>
+  <%= show_unless_blank 'Unidade', @contas_corrente.unidade.nome %>
+  <%= show_unless_blank 'Conta Contábil', @contas_corrente.nome_conta_contabil %>
+  <%= show_unless_blank 'Idenificador', @contas_corrente.nome_identificador %>
+  <%= show_unless_blank 'Data de Abertura', data_formatada(@contas_corrente.data_abertura) %>
+  <%= show_unless_blank 'Data de Encerramento', data_formatada(@contas_corrente.data_encerramento) %>
+  <%= show_unless_blank 'Tipo', @contas_corrente.tipo %>
+  <tr>
+    <td><b>Ativo:</b></td><td><%= @contas_corrente.ativo ? "Sim" : "Não" %> </td>
+  </tr>
+</table>
+
+<%= link_to 'Alterar', edit_contas_corrente_path(@contas_corrente) %> |
+<%= link_to 'Voltar', contas_correntes_path %>

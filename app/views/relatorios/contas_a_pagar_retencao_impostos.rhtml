@@ -1,0 +1,15 @@
+<h1>Contas a Pagar - Retenção de Impostos</h1>
+
+<% form_remote_tag :url => contas_a_pagar_retencao_impostos_relatorios_path, :loading => "Element.show('loading_rel_imposto');", :success => "Element.hide('loading_rel_imposto');" do %>
+
+  <table>
+    <%#= campo_de_cadastro 'Imposto', select_tag('busca[impostos]', options_for_select([''] + Imposto.find(:all, :conditions => ['entidade_id = ?', Unidade.find_by_id(session[:unidade_id]).entidade_id]).collect{|c| [c.descricao, c.id.to_i]}.uniq.reject(&:blank?))) %>
+    <%= campo_de_cadastro 'Tipo de Pessoa', select_tag('busca[pessoa]', options_for_select([['Fisíca', Pessoa::FISICA], ['Jurídica', Pessoa::JURIDICA]])) %>
+    <%= campo_de_cadastro 'Fornecedor', auto_complete_tag_para_qualquer_campo(:fornecedor, auto_complete_for_fornecedor_cpf_cnpj_pessoas_path) %>
+    <%= campo_de_cadastro 'Vencimento/C', campo_para_busca_por_faixa_de_data(:recolhimento) %>
+    <%#= campo_de_cadastro 'Ordenar por', select_tag('busca[opcoes]', options_for_select([['Ordem Alfabética', LancamentoImposto::ALFABETICA], ['Data de Vencimento', LancamentoImposto::VENCIMENTO]])) %>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo', 'print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Gerar Relatório' %><%= loading_image('rel_imposto') %></td></tr>
+  </table>
+
+<% end %>

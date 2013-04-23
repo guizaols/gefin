@@ -1,0 +1,15 @@
+<%  content_for :titulo,"Contas a Receber  - Agendamentos"%>
+
+<% form_remote_tag :url => agendamentos_relatorios_path do %>
+  <table>
+    <%= campo_de_cadastro 'Cliente', auto_complete_tag_para_qualquer_campo(:cliente, auto_complete_for_cliente_pessoas_path) %>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Opção de Impressão:</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag "Pesquisar" %></td></tr>
+  </table>
+<% end %>

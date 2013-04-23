@@ -1,0 +1,38 @@
+<% content_for :titulo, 'Clientes' %>
+
+<% form_remote_tag :url => contas_a_receber_cliente_historico_relatorios_path, :loading => "Element.show('loading_form_clientes');", :success => "Element.hide('loading_form_clientes');" do %>
+  <table>
+    <%= campo_de_cadastro "Tipo de Cliente", select_tag("busca[tipo_pessoa]", options_for_select([['Ambos', 0], ['Física', 1], ['Jurídica', 2]]))  %>
+    <%= campo_de_cadastro 'Provisão', select_tag('busca[provisao]', options_for_select([['Ambos', ''], ['Sim', 1], ['Não', 2]])) %>
+    <%= campo_de_cadastro "Cliente", auto_complete_tag_para_qualquer_campo("cliente", auto_complete_for_cliente_pessoas_path) %>
+    <tr>
+      <td class="field_descriptor">Período</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Situações</td>
+      <td>
+        <label for="busca_vincenda"><%= check_box_tag "busca[situacao_das_parcelas][]", 'vincenda', false, :id => 'busca_vincenda' %>Vincenda</label>
+        <label for="busca_quitada"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::QUITADA, false, :id => 'busca_quitada' %>Quitada</label>
+        <label for="busca_baixa_dr"><%= check_box_tag "busca[situacao_baixa_dr][]", 'baixa_dr', false, :id => 'busca_baixa_dr' %>Quitada - Baixa DR</label>
+        <label for="busca_juridico"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::JURIDICO, false, :id => 'busca_juridico' %> Jurídico</label><br />
+        <label for="busca_atrasada"><%= check_box_tag "busca[situacao_das_parcelas][]", 'atrasada', false, :id => 'busca_atrasada' %>Em Atraso</label>
+        <label for="busca_renegociada"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::RENEGOCIADA, false, :id => 'busca_renegociada' %>Renegociada</label>
+        <label for="busca_cancelada"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::CANCELADA, false, :id => 'busca_cancelada' %>Cancelada</label>
+        <label for="busca_permuta"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::PERMUTA, false, :id => 'busca_permuta' %>Permuta</label><br />
+        <label for="busca_baixa_do_conselho"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::BAIXA_DO_CONSELHO, false, :id => 'busca_baixa_do_conselho' %>Baixa do Conselho</label>
+        <label for="busca_desconto_em_folha"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::DESCONTO_EM_FOLHA, false, :id => 'busca_desconto_em_folha' %>Desconto em Folha</label>
+        <label for="busca_evadida"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::EVADIDA, false, :id => 'busca_evadida' %>Evadida</label><br />
+        <label for="busca_enviado_ao_dr"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::ENVIADO_AO_DR, false, :id => 'busca_enviado_ao_dr' %>Enviada ao DR</label>
+        <label for="busca_devedores_duvidosos_ativos"><%= check_box_tag "busca[situacao_das_parcelas][]", Parcela::DEVEDORES_DUVIDOSOS_ATIVOS, false, :id => 'busca_devedores_duvidosos_ativos' %>Perdas no Recebimento de Creditos - Clientes</label>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo', 'xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print', true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Gerar Relatório" %><%= image_tag('loading.gif', :id => "loading_form_clientes", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>

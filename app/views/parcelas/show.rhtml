@@ -1,0 +1,51 @@
+<table>
+  <%=  show_unless_blank "Número da Parcela", @parcela.numero %>
+  <%=  show_unless_blank "Data Vencimento", @parcela.data_vencimento %>
+  <%=  show_unless_blank "Data da Baixa", @parcela.data_da_baixa %>
+</table>
+
+<% unless @parcela.data_da_baixa.blank? %>
+  <table>
+    <thead>
+      <tr>
+        <td></td>
+        <th>Unidade</th>
+        <th>Centro</th>
+        <th>Conta Contábil</th>
+        <th>Valor</th>
+      </tr>
+    </thead>
+    <tbody id="tbody_valores">
+      <tr>
+        <td><b>Desconto</b></td>
+        <td><%=h @parcela.nome_centro_desconto %></td>
+        <td><%=h @parcela.nome_unidade_organizacional_desconto %></td>
+        <td><%=h @parcela.nome_conta_contabil_desconto %></td>
+        <td><%=h preco_formatado(@parcela.valor_do_desconto_em_reais,"R$") %> </td>
+      </tr>
+      <tr>
+        <td><b>Multa</b></td>
+        <td><%=h @parcela.nome_centro_multa %></td>
+        <td><%=h @parcela.nome_unidade_organizacional_multa %></td>
+        <td><%=h @parcela.nome_conta_contabil_multa %></td>
+        <td><%=h preco_formatado(@parcela.valor_da_multa_em_reais,"R$") %> </td>
+      </tr>
+      <tr>
+        <td><b>Juros</b></td>
+        <td><%=h @parcela.nome_centro_juros %></td>
+        <td><%=h @parcela.nome_unidade_organizacional_juros %></td>
+        <td><%=h @parcela.nome_conta_contabil_juros %></td>
+        <td><%=h preco_formatado(@parcela.valor_dos_juros,"R$") %> </td>
+      </tr>
+      <tr>
+        <td><b>Outros</b></td>
+        <td><%=h @parcela.nome_centro_outros %></td>
+        <td><%=h @parcela.nome_unidade_organizacional_outros %></td>
+        <td><%=h @parcela.nome_conta_contabil_outros %></td>
+        <td><%=h preco_formatado(@parcela.outros_acrescimos,"R$") %> </td>
+      </tr>
+      <tr><td><b>Valor da Parcela:</b></td><td><%=h preco_formatado(@parcela.valor, "R$") %></td></tr>
+      <tr><td><b>Valor líquido:</b></td><td><%=h preco_formatado(@parcela.valor_liquido, "R$") %></td></tr>
+    </tbody>
+  <% end %>
+</table>

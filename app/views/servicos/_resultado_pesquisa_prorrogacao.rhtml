@@ -1,0 +1,40 @@
+<% form_remote_tag :url => gravar_dados_de_prorrogacao_de_contrato_servicos_path, :loading => "Element.show('loading_button');", :success => "Element.hide('loading_button');", :object => @recebimentos do %>
+
+  <div id="resultados_pesquisa_prorrogacao">
+    <% listagem_table :headers => ['Número de Controle', 'Cliente' , 'Serviço', 'Data de Início do Serviço', 'Data de Término do Serviço', 'Valor'], :ocultar_ultima_th => true do %>
+      <% @recebimentos.each do |conta| %>
+        <tr class="<%= cycle('impar', 'par') %>">
+          <td><%=h conta.numero_de_controle %></td>
+          <td><%=h conta.pessoa.nome %></td>
+          <td><%=h conta.servico.descricao %></td>
+          <td><%=h conta.data_inicio_servico %></td>
+          <td><%=h conta.data_final_servico %></td>
+          <td><%=h preco_formatado(conta.valor_do_documento, 'R$') %>
+              <%= hidden_field_tag('ids[]', conta.id) %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </div>
+
+  <table>
+    <tr>
+    <tr>
+      <td class="field_descriptor">Nova Data de Início do Serviço:</td>
+      <td>
+        <%= campo_para_busca_por_data(:nova_data_inicio) %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Nova Data de Término do Serviço:</td>
+      <td>
+        <%= campo_para_busca_por_data(:nova_data_final) %>
+      </td>
+    </tr>
+  </tr>
+  <tr>
+    <td></td>
+    <td><%= submit_tag "Prorrogar Contratos" %> <%= image_tag('loading.gif', :id => "loading_button", :style => "display:none") %></td>
+  </tr>
+  </table>
+<% end %>

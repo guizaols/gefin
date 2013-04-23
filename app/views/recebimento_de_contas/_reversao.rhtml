@@ -1,0 +1,19 @@
+<% form_remote_tag :url => {:action => 'efetuar_reversao'}, :loading => "Element.show('loading_rev')", :success => "Element.hide('loading_rev')" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data da Reversão</td>
+      <td><%= text_field_tag :data_reversao, Date.today.to_s_br, :size => 10, :maxlength => 10, :onkeyup => "$(AplicaMascara('XX/XX/XXXX', this));" %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Justificativa</td>
+      <td><%= text_area_tag :justificativa, nil, :size => '40x4' %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Salvar', :url => {:action => 'efetuar_reversao'} %>
+        <%= button_to_function 'Cancelar', 'Modalbox.hide()' %><%= loading_image 'rev' %>
+      </td>
+    </tr>
+  </table>
+<% end %>

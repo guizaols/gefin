@@ -1,0 +1,17 @@
+<% content_for :titulo, 'Alteração de Contas para contabilização' %>
+
+<% form_remote_tag :url => alteracao_contas_relatorios_path, :loading => "Element.show('loading_form_contabilizacao');", :success => "Element.hide('loading_form_contabilizacao');" do %>
+  <table>
+    <%= campo_de_cadastro "Ano", (select_tag "busca[ano]", anos_para_selecao) %>
+    <%= campo_de_cadastro "Mês", (select_tag "busca[mes]", meses_para_selecao) %>
+    <%= campo_de_cadastro 'Conta Contábil', auto_complete_tag_para_qualquer_campo(:conta_contabil, auto_complete_for_conta_contabil_ano_anterior_plano_de_contas_path) %>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_form_contabilizacao", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>
+<br />
+<div id="resultado_pesquisa">
+  
+</div>

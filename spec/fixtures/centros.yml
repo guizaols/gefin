@@ -1,0 +1,99 @@
+centro_forum_social_2008:
+    ano: 2008
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+    objeto_do_proximo_ano: centro_forum_social
+
+centro_forum_social:
+    ano: 2009
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+    objeto_do_proximo_ano: centro_forum_social_2010
+
+centro_forum_economico:
+    ano: 2009
+    entidade: senai
+    codigo_centro: 4567456344
+    nome: Forum Serviço Economico
+    codigo_reduzido: 00790
+    unidade_organizacionais: senai_unidade_organizacional
+
+centro_forum_financeiro:
+    ano: 2009
+    entidade: senai
+    codigo_centro: 124453343
+    nome: Forum Serviço Financeiro
+    codigo_reduzido: 03290
+    unidade_organizacionais: [senai_unidade_organizacional, senai_unidade_organizacional_nova]
+
+centro_empresa:
+    ano: 2009
+    entidade: senai
+    codigo_centro: 999999999
+    nome: CENTRO EMPRESA
+    codigo_reduzido: 99999
+    unidade_organizacionais: unidade_organizacional_empresa
+
+centro_forum_social_2010:
+    ano: 2010
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+    objeto_do_proximo_ano: centro_forum_social_2011
+
+centro_forum_social_2011:
+    ano: 2011
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+
+centro_forum_social_2012:
+    ano: 2012
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+
+centro_forum_social_2013:
+    ano: 2013
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+
+centro_forum_social_2014:
+    ano: 2014
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+
+centro_forum_social_2015:
+    ano: 2015
+    entidade: sesi
+    codigo_centro: 310010405
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional
+    objeto_do_proximo_ano: centro_forum_social_2016
+
+centro_forum_social_2016:
+    ano: 2016
+    entidade: sesi
+    codigo_centro: 3100104099
+    nome: Forum Serviço Social
+    codigo_reduzido: 00508
+    unidade_organizacionais: sesi_colider_unidade_organizacional

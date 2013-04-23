@@ -1,0 +1,28 @@
+<br />
+<br />
+<% listagem_table :headers => ['Número de Controle','Cliente','Serviço','Vigência - Início','Vigência - Final','Serviço - Início','Valor (R$)','Serviço - Término','Conta Contábil Antiga','Conta Contábil Nova','Unidade','Centro'] do %>
+
+<tbody>
+  <% @contratos.each_with_index do |contrato,index| %>
+
+<%listagem_tr do%>
+	<td><%=h contrato.numero_de_controle%></td>
+	<td><%=h contrato.pessoa.nome %></td>
+        <td><%=h contrato.servico.descricao %></td>
+        <td><%=h contrato.data_inicio %></td>
+        <td><%=h contrato.data_final %></td>
+        <td><%=h contrato.data_inicio_servico %></td>
+        <td><%=h contrato.data_final_servico %></td>
+        <td><%=h preco_formatado(contrato.valor_do_documento, 'R$') %></td>
+	<td><%=h "#{@contas_antigas[index].codigo_contabil rescue nil} - #{@contas_antigas[index].nome rescue nil}" %></td>
+        <td><%=h "#{contrato.conta_contabil_receita.codigo_contabil} - #{contrato.conta_contabil_receita.nome}" %></td>
+        <td><%=h "#{contrato.unidade_organizacional.codigo_da_unidade_organizacional} - #{contrato.unidade_organizacional.nome}" %></td>
+        <td><%=h "#{contrato.centro.codigo_centro} - #{contrato.centro.nome}" %></td>
+      <%end%>
+<%end%>
+</tbody>
+<tfoot></tfoot>
+<br />
+<%end%>
+
+<%=link_to 'Voltar',main_path%>

@@ -1,0 +1,72 @@
+<% content_for :titulo, "Alterando Configurações" %>
+
+<% form_for @unidade, :url => configuracao_path, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <p>Limite de dias para alteração de dados contábeis.</p>
+  <table>
+    <tr>
+      <td class="field_descriptor">Datas para lançamento de registros retroativos:</td>
+      <td>
+        <%= calendar_date_select_com_mascara(f, 'data_limite_minima') %> a
+        <%= calendar_date_select_com_mascara(f, 'data_limite_maxima') %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Unidade Organizacional:</td>
+      <td>
+        <%= auto_complete_para_qualquer_campo(f, 'unidade_organizacional', auto_complete_for_unidade_organizacional_unidades_organizacionais_path, {:opcoes_para_text_field => {:size => '80px'}}) %>
+      </td>
+    </tr>
+    <%= f.text_field :lancamentoscheques, :label => 'Lançamento de Cheques:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :lancamentoscartoes, :label => 'Lançamento de Cartões:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :lancamentoscontaspagar, :label => 'Lançamento de Contas a Pagar:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :lancamentoscontasreceber, :label => 'Lançamento de Contas a Receber:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :lancamentosmovimentofinanceiro, :label => 'Lançamento de Movimento Financeiro:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :limitediasparaestornodeparcelas,:label=>'Estorno de Parcelas Baixadas:',:size=>10, :disabled=> current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :numero_de_reajustes, :label => 'Número de Reajustes de Contas a Receber:', :size=>10, :disabled=> current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.password_field :senha_baixa_dr, :label => 'Senha Baixa DR:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :hora_execussao_calculos_pesados, :label => 'Horário de Execução de Cálculos Complexos:', :size => 10, :maxlength => 5, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <tr>
+      <td class="field_descriptor">Processo de contabilização de receitas agendado?</td>
+      <td>
+        <%= f.select :contabilizacao_agendada, [['NÃO', Unidade::NAO], ['SIM', Unidade::SIM]], :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true  %>
+      </td>
+    </tr>
+    
+    <tr>
+      <td colspan="9" style="background: #CFCFCF; font-weight: bold">Dados cadastrais do DR</td>
+    </tr>
+     <%= f.text_field :tempo_sessao, :label => 'Tempo Sessão:', :size => 70, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_nome, :label => 'Nome DR:', :size => 70, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_endereco, :label => 'Endereço DR:', :size => 70, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_complemento, :label => 'Complemento DR:', :size => 20, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_bairro, :label => 'Bairro DR:', :size => 50, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_cep, :label => 'CEP DR:', :size => 10, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_localidade, :label => 'Localidade DR:', :size => 70, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_uf, :label => 'Sigla UF DR:', :size => 50, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <%= f.text_field :dr_fax, :label => 'Fax DR:', :size => 20, :disabled => current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) ? false : true %>
+    <tr>
+      <td  class="field_descriptor">Telefones DR <%= link_to_function "+" do |page|
+          page.insert_html :bottom, "telefones_secundarios", :partial => 'telefone'
+        end
+      %>
+      </td>
+      <td>
+        <ul id="telefones_secundarios" style="list-style-type: none;">
+          <%= render :partial => 'telefone' if @unidade.dr_telefone.blank? %>
+          <%= render :partial => 'telefone', :object => 'dr_telefone', :collection => @unidade.dr_telefone   if @unidade.dr_telefone%>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDeConfiguracao) %>
+          <%= f.submit "Salvar" %> |
+        <%  end %>
+        <%= link_to 'Voltar', pessoas_path %>
+      </td>
+    </tr>
+  </table>
+
+<% end %>

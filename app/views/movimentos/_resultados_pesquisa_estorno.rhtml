@@ -1,0 +1,97 @@
+<% form_remote_tag :url => gravar_lancamento_de_estorno_movimentos_path, :loading => "Element.show('loading_conf_est');", :success => "Element.hide('loading_conf_est');", :object => @movimentos do %>
+  <br />
+  <div id="pesquisa_estorno">
+    <h1>Movimentos</h1>
+    <% @movimentos.each do |movimento| %>  
+      <table class="listagem">
+        <tr style="background: #CFCFCF">
+          <td colspan="5" style="font-weight: bold; font-size: 12px">
+            <label for=<%= "mov_#{movimento.id}" %>>Selecionar</label>
+            <%= radio_button_tag 'movimento_id', movimento.id, false, :id => "mov_#{movimento.id}" %>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5">Número da Parcela:
+            <% if !movimento.parcela_id.blank? %>
+              <%=h movimento.parcela.parcela_mae_id.blank? ? movimento.parcela.numero : movimento.parcela.numero_parcela_filha rescue nil %>
+            <% else %>
+              <%=h movimento.numero_da_parcela %>
+            <% end %>
+          </td>
+        </tr>
+        <tr align="left" style="border-bottom: 1px solid #FFF">
+          <td colspan="5">
+            Data do Lançamento: <%=h movimento.data_lancamento %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Documento: <%=h movimento.numero_de_controle %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Fornecedor/Cliente: <%=h movimento.pessoa.nome %>
+          </td>
+        </tr>
+        <tr align="left" style="border: 0px">
+          <td colspan="5">
+            Histórico:
+            <%=h movimento.historico %>
+          </td>
+        </tr>
+        <tr>
+          <th>D/C</th>
+          <th>Conta Contábil</th>
+          <th>Unidade Organizacional</th>
+          <th>Centro de Responsabilidade</th>
+          <th>Valor (R$)</th>
+        </tr>
+
+        <% total_debito = 0 %>
+        <% total_credito = 0 %>
+
+        <% movimento.itens_movimentos.each do |item| %>
+          <tr>
+            <td style="text-align: center"><%=h item.tipo_verbose %></td>
+            <td style="text-align: center"><%=h "#{item.plano_de_conta.codigo_contabil} - #{item.plano_de_conta.nome}" %></td>
+            <td style="text-align: center"><%=h "#{item.unidade_organizacional.codigo_da_unidade_organizacional} - #{item.unidade_organizacional.nome}" %></td>
+            <td style="text-align: center"><%=h "#{item.centro.codigo_centro} - #{item.centro.nome}" %></td>
+            <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(item.valor) %></td>
+            <% total_debito += item.valor if item.tipo == 'D' %>
+            <% total_credito += item.valor if item.tipo == 'C' %>
+          </tr>
+        <% end %>
+        <tr>
+          <td colspan="2" style="text-align: center; font-weight: bold">
+            Total Débito: <%=h preco_formatado(total_debito, 'R$') %>
+          </td>
+          <td colspan="1" style="text-align: center; font-weight: bold">
+            Total Crédito: <%=h preco_formatado(total_credito, 'R$') %>
+          </td>
+          <td colspan="2" style="text-align: center; font-weight: bold">
+            Diferença:  <%= h preco_formatado((total_debito - total_credito), 'R$') %>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+  </table>
+
+  <table>
+    <tr>
+      <td class="field_descriptor">Data do Estorno</td>
+      <td><%= text_field_tag :data_estorno, Date.today.to_s_br, :size => 10, :maxlength => 10, :onkeyup => "$(AplicaMascara('XX/XX/XXXX', this));" %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Justificativa</td>
+      <td><%= text_area_tag :justificativa, nil, :size => '40x4' %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Histórico</td>
+      <td>
+        <%= divs_para_explicar_auto_complete('conta_historico') %>
+        <%=  text_area_tag 'historico', nil, {:simple_tag=>true,:id=>"historico", :size => "70x2"}.merge(hash_com_opcoes_do_auto_complete('conta_historico')) %>
+        <div id="historico_auto_complete" class="auto_complete_para_conta"></div>
+        <%= auto_complete_field("historico",:url => auto_complete_for_historico_historicos_path, :indicator=>"loading_historico", :with=>"'argumento=' + $('historico').value") %>
+        <%= image_tag 'loading.gif', :id => "loading_historico", :style => "display:none" %>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag 'Estornar Movimento' %> <%= loading_image('conf_est') %></td>
+    </tr>
+  </table>
+<% end %>

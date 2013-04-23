@@ -1,0 +1,15 @@
+<% listagem_table :headers => ['Contrato', 'Cliente', 'CPF/CNPJ', 'Tipo de Documento', 'Parcelas em Atraso'] do %>
+  <% unless @inadimplentes.blank? %>
+    <% for inadimplente in @inadimplentes %>
+      <% listagem_tr do %>
+        <td><%=link_to h(inadimplente.numero_de_controle), recebimento_de_conta_path(inadimplente.id) %></td>
+        <td><%=link_to h(inadimplente.pessoa.nome), pessoa_path(inadimplente.pessoa.id) %></td>
+        <td><%=h inadimplente.pessoa.cpf || inadimplente.pessoa.cnpj %></td>
+        <td><%=h inadimplente.tipo_de_documento %></td>
+        <td><%=h preco_formatado(parcelas_em_atraso(inadimplente), 'R$') %></td>
+      <% end %>
+    <% end %>
+  <% else %>
+    <tr><td> Não existem lançamentos para o dia de hoje!</td></tr>
+  <% end %>
+<% end %>

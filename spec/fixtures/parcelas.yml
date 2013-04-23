@@ -1,0 +1,402 @@
+primeira_parcela:
+  numero: 1
+  data_vencimento: 2009-04-06
+  conta: pagamento_cheque_outra_unidade
+  conta_type: PagamentoDeConta
+  valor: 3333
+  centro_desconto: centro_forum_social
+  centro_multa: centro_forum_social
+  centro_juros: centro_forum_social
+  centro_outros: centro_forum_social
+  unidade_organizacional_desconto: sesi_colider_unidade_organizacional
+  unidade_organizacional_juros: sesi_colider_unidade_organizacional
+  unidade_organizacional_outros: sesi_colider_unidade_organizacional
+  unidade_organizacional_multa: sesi_colider_unidade_organizacional
+  conta_contabil_juros: plano_de_contas_ativo_contribuicoes_sesi
+  conta_contabil_multa: plano_de_contas_ativo_contribuicoes_sesi
+  conta_contabil_desconto: plano_de_contas_ativo_contribuicoes_sesi
+  conta_contabil_outros: plano_de_contas_ativo_contribuicoes_sesi
+  data_da_baixa: 2009-04-06
+  valor_dos_juros: 100
+  valor_do_desconto: 100
+  valor_da_multa: 100
+  outros_acrescimos: 100
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  valor_liquido: 3633
+  forma_de_pagamento: <%= Parcela::DINHEIRO %>
+  recibo_impresso: true
+  situacao: <%= Parcela::QUITADA %>
+
+#Esta fixture não pode estar baixada
+segunda_parcela:
+  numero: 2
+  data_vencimento: 2009-04-06
+  conta: pagamento_cheque_outra_unidade
+  conta_type: PagamentoDeConta
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  valor_da_multa: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  valor: 3334
+  forma_de_pagamento: <%= Parcela::DINHEIRO %>
+  recibo_impresso: true
+  situacao: <%= Parcela::PENDENTE %>
+
+terceira_parcela:
+  numero: 3
+  data_vencimento: <%= Date.today + 10 %>
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  valor_da_multa: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  conta: pagamento_cheque_outra_unidade
+  conta_type: PagamentoDeConta
+  valor: 3334
+  forma_de_pagamento: <%= Parcela::DINHEIRO %>
+  recibo_impresso: true
+  situacao: <%= Parcela::PENDENTE %>
+
+#Esta fixture NÃO pode estar baixada e deve estar ATRASADA
+primeira_parcela_sesi:
+  numero: 1
+  data_vencimento: 2009-04-06
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  valor_da_multa: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  conta: pagamento_dinheiro_outra_unidade_mesmo_ano
+  conta_type: PagamentoDeConta
+  valor: 4000
+  forma_de_pagamento: <%= Parcela::DINHEIRO %>
+  recibo_impresso: true
+  situacao: <%= Parcela::PENDENTE %>
+
+segunda_parcela_sesi:
+  numero: 2
+  data_vencimento: 2009-05-06
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  valor_da_multa: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  conta: pagamento_dinheiro_outra_unidade_mesmo_ano
+  conta_type: PagamentoDeConta
+  valor: 4000
+  valor_liquido: 4000
+  forma_de_pagamento: <%= Parcela::DINHEIRO %>
+  recibo_impresso: true
+  data_da_baixa: 2009-05-06
+  situacao: <%= Parcela::PENDENTE %>
+
+terceira_parcela_sesi:
+  numero: 3
+  data_vencimento: 2009-06-06
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  valor_da_multa: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  conta: pagamento_dinheiro_outra_unidade_mesmo_ano
+  conta_type: PagamentoDeConta
+  valor: 4000
+  valor_liquido: 4000
+  forma_de_pagamento: <%= Parcela::DINHEIRO %>
+  recibo_impresso: true
+  data_da_baixa: 2009-06-06
+  situacao: <%= Parcela::PENDENTE %>
+
+primeira_parcela_pagamento_banco:
+  numero: 1
+  data_vencimento: 2009-10-14
+  conta: pagamento_banco_outra_unidade
+  conta_type: PagamentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::BANCO %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-10-13
+  data_da_baixa: 2009-10-13
+  numero_do_comprovante: 101010
+  conta_corrente: primeira_conta
+  recibo_impresso: true
+  situacao: <%= Parcela::QUITADA %>
+
+segunda_parcela_pagamento_banco:
+  numero: 2
+  data_vencimento: 2009-10-15
+  conta: pagamento_banco_outra_unidade
+  conta_type: PagamentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::BANCO %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-10-14
+  numero_do_comprovante: 151515
+  data_da_baixa: 2009-10-14
+  numero_do_comprovante: 151515
+  conta_corrente: primeira_conta
+  recibo_impresso: true
+  situacao: <%= Parcela::QUITADA %>
+
+#Esta fixture não pode estar baixada
+#Esta fixture não pode ter nem juros e nem multas, pois eles serão calculados automaticamente em um teste
+primeira_parcela_recebimento:
+  numero: 1
+  data_vencimento: 2009-07-05
+  conta: curso_de_design_do_paulo
+  conta_type: RecebimentoDeConta
+  valor: 3000
+  valor_liquido: 3000
+  centro_honorarios: centro_forum_economico
+  centro_protesto: centro_forum_economico
+  centro_taxa_boleto: centro_forum_economico
+  unidade_organizacional_honorarios: senai_unidade_organizacional
+  unidade_organizacional_protesto: senai_unidade_organizacional
+  unidade_organizacional_taxa_boleto: senai_unidade_organizacional
+  conta_contabil_honorarios: plano_de_contas_ativo_despesas_senai
+  conta_contabil_protesto: plano_de_contas_ativo_despesas_senai
+  conta_contabil_taxa_boleto: plano_de_contas_ativo_despesas_senai
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 1
+  protesto: 2
+  taxa_boleto: 3
+  recibo_impresso: true
+  situacao: <%= Parcela::PENDENTE %>
+
+segunda_parcela_recebimento:
+  numero: 2
+  data_vencimento: 2009-08-05
+  conta: curso_de_design_do_paulo
+  conta_type: RecebimentoDeConta
+  valor: 3000
+  valor_liquido: 3000
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  recibo_impresso: true
+  situacao: <%= Parcela::PENDENTE %>
+
+primeira_parcela_recebida_cheque_a_vista:
+  numero: 1
+  data_vencimento: 2009-01-20
+  conta: curso_de_eletronica_do_paulo
+  conta_type: RecebimentoDeConta
+  valor: 5000
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::CHEQUE %>
+  valor_liquido: 5000
+  data_do_pagamento: 2009-01-20
+  numero_do_comprovante: 151515
+  data_da_baixa: 2009-01-20
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+
+primeira_parcela_recebida_cheque_a_prazo:
+  numero: 2
+  data_vencimento: 2009-02-20
+  conta: curso_de_eletronica_do_paulo
+  conta_type: RecebimentoDeConta
+  valor: 5000
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::CHEQUE %>
+  valor_liquido: 5000
+  data_do_pagamento: 2009-02-15
+  numero_do_comprovante: 151515
+  data_da_baixa: 2009-02-20
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+
+primeira_parcela_recebida_em_cartao:
+  numero: 1
+  data_vencimento: 2009-01-10
+  conta: curso_de_corel_do_paulo
+  conta_type: RecebimentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::CARTAO %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-01-10
+  numero_do_comprovante: 151617
+  data_da_baixa: 2009-01-10
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+  historico: Recebimento de pagamento da primeira parcela em cartão
+
+segunda_parcela_recebida_em_cartao:
+  numero: 2
+  data_vencimento: 2009-02-10
+  conta: curso_de_corel_do_paulo
+  conta_type: RecebimentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::CARTAO %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-02-05
+  numero_do_comprovante: 151718
+  data_da_baixa: 2009-02-10
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+  historico: Recebimento de pagamento da segunda parcela em cartão
+
+parcela_pagamento_cheque_para_movimento:
+  numero: 1
+  data_vencimento: 2009-07-05
+  conta: pagamento_cheque
+  conta_type: PagamentoDeConta
+  valor: 3000
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  recibo_impresso: true
+  situacao: <%= Parcela::PENDENTE %>
+
+primeira_parcela_recebida_em_cartao_para_andre:
+  numero: 1
+  data_vencimento: 2009-05-11
+  conta: curso_de_tecnologia_do_andre
+  conta_type: RecebimentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  forma_de_pagamento: <%= Parcela::CARTAO %>
+  valor_liquido: 2500
+  protesto: 0
+  taxa_boleto: 0
+  honorarios: 0
+  data_do_pagamento: 2009-01-10
+  numero_do_comprovante: 151617
+  data_da_baixa: 2009-01-10
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+  historico: Recebimento de pagamento da primeira parcela em cartão
+
+segunda_parcela_recebida_em_cartao_para_andre:
+  numero: 2
+  data_vencimento: 2009-06-11
+  conta: curso_de_tecnologia_do_andre
+  conta_type: RecebimentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  forma_de_pagamento: <%= Parcela::CARTAO %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-02-05
+  numero_do_comprovante: 151718
+  data_da_baixa: 2009-02-10
+  recibo_impresso: false
+  protesto: 0
+  taxa_boleto: 0
+  honorarios: 0
+  situacao: <%= Parcela::QUITADA %>
+  historico: Recebimento de pagamento da segunda parcela em cartão
+
+primeira_parcela_recebida_em_cheque_para_andre:
+  numero: 1
+  data_vencimento: 2009-05-11
+  conta: curso_de_tecnologia_do_andre
+  conta_type: RecebimentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  protesto: 0
+  taxa_boleto: 0
+  honorarios: 0
+  forma_de_pagamento: <%= Parcela::CHEQUE %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-01-10
+  numero_do_comprovante: 151617
+  data_da_baixa: 2009-01-10
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+  historico: Recebimento de pagamento da primeira parcela em cartão
+
+segunda_parcela_recebida_em_cheque_para_andre:
+  numero: 2
+  data_vencimento: 2009-06-11
+  conta: curso_de_tecnologia_do_andre
+  conta_type: RecebimentoDeConta
+  valor: 2500
+  valor_da_multa: 0
+  valor_dos_juros: 0
+  valor_do_desconto: 0
+  outros_acrescimos: 0
+  honorarios: 0
+  protesto: 0
+  taxa_boleto: 0
+  forma_de_pagamento: <%= Parcela::CHEQUE %>
+  valor_liquido: 2500
+  data_do_pagamento: 2009-02-05
+  numero_do_comprovante: 151718
+  data_da_baixa: 2009-02-10
+  recibo_impresso: false
+  situacao: <%= Parcela::QUITADA %>
+  historico: Recebimento de pagamento da segunda parcela em cartão
+

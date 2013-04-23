@@ -1,0 +1,24 @@
+<table id="abandonar_cheques" style="display:none">
+  <%= campo_de_cadastro 'Data do Depósito', (calendar_date_select_tag_com_mascara 'cheques[data_abandono]', data_abandono) %>
+  <%= campo_de_cadastro 'Tipo do Abandono',
+    (select_tag 'cheques[tipo_abandono]', options_for_select([['Baixa de transferência para o DR', Cheque::ENVIO_DR], ['Baixado', Cheque::RENEGOCIACAO]])) %>
+  <%= campo_de_cadastro 'Conta Contábil Débito',auto_complete_para_qualquer_campo_tag('conta_contabil_debito_id',
+    auto_complete_for_conta_contabil_plano_de_contas_path, (conta_contabil_debito_id rescue nil), (nome_conta_contabil_debito rescue nil),
+    {:analisar_conta => true, :complemento_do_after_update_element => "   $('cheques_conta_contabil_debito_nome').value = $('conta_contabil_debito_nome').value ;
+      $('cheques_conta_contabil_debito_id').value = $('conta_contabil_debito_id').value;",:opcoes_para_text_field => {:size => 70}} ) %>
+  <%= campo_de_cadastro 'Conta Contábil Crédito',auto_complete_para_qualquer_campo_tag('conta_contabil_credito_id',
+    auto_complete_for_conta_contabil_plano_de_contas_path, (conta_contabil_credito_id rescue nil), (nome_conta_contabil_credito rescue nil),
+    {:analisar_conta => true, :complemento_do_after_update_element =>"   $('cheques_conta_contabil_credito_nome').value = $('conta_contabil_credito_nome').value ;
+      $('cheques_conta_contabil_credito_id').value = $('conta_contabil_credito_id').value;",:opcoes_para_text_field => {:size => 70}} ) %>
+  <tr>
+    <td>
+      <%= hidden_field_tag 'cheques[conta_contabil_debito_id]', (conta_contabil_debito_id rescue nil) %>
+      <%= hidden_field_tag 'cheques[conta_contabil_credito_id]', (conta_contabil_credito_id rescue nil) %>
+      <%= hidden_field_tag 'cheques[conta_contabil_debito_nome]', (conta_contabil_debito_nome rescue nil) %>
+      <%= hidden_field_tag 'cheques[conta_contabil_credito_nome]', (conta_contabil_credito_nome rescue nil) %>
+    </td>
+  </tr>
+  <%= campo_de_cadastro 'Histórico', (text_field_tag 'cheques[historico]', (historico rescue nil),
+    :id => 'cheques_historico_abandono', :size => 100) %>
+  <tr><td></td><td><%= submit_tag 'Enviar' unless @cheques.blank? %></td></tr>
+</table>

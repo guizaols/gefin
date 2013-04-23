@@ -1,0 +1,15 @@
+<% form_for @localidade, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %><br />
+  <table>
+    <%= f.text_field :nome, :label => 'Nome' %>
+    <tr>
+      <td class="field_descriptor">UF</td>
+      <td><%= f.select :uf, Localidade.retorna_estados_como_array,  { :include_blank => true } %></td>
+    </tr>
+    <tr>
+      <td></td><td><%= f.submit "Salvar" %></td>
+    </tr>
+  </table>
+<% end %>
+
+<%= link_to 'Voltar', localidades_path %>

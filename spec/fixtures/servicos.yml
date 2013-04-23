@@ -1,0 +1,34 @@
+curso_de_tecnologia:
+  unidade: senaivarzeagrande
+  descricao: Curso de Ruby on Rails
+  ativo: true
+  modalidade: Ensino
+  codigo_do_servico_sigat: 700
+
+curso_de_design:
+  unidade: senaivarzeagrande
+  descricao: Curso de Flex
+  ativo: true
+  modalidade: Ensino
+  codigo_do_servico_sigat: 850
+
+curso_de_eletronica:
+  unidade: senaivarzeagrande
+  descricao: Curso de Eletronica Digital
+  ativo: true
+  modalidade: Ensino
+  codigo_do_servico_sigat: 850
+
+curso_de_corel:
+  unidade: senaivarzeagrande
+  descricao: Curso de Corel Draw
+  ativo: true
+  modalidade: Ensino
+  codigo_do_servico_sigat: 850
+
+curso_de_corel_do_sesi:
+  unidade: sesivarzeagrande
+  descricao: Curso de Corel
+  ativo: true
+  modalidade: Ensino
+  codigo_do_servico_sigat: 851

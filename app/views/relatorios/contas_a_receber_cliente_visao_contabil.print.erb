@@ -1,0 +1,151 @@
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:periodo_min] %> a <%=h params[:busca][:periodo_max]%></b>
+</div>
+<br /><br />
+
+<% if params[:busca][:relatorio] == 'simplificado' %>
+  <table border="1px" style="font-size: 11px;" width="1000px">
+    <tr align="center" style="font-size: 12px;">
+      <th style="width: 80px">Documento</th>
+      <th style="width: 170px">Número de Controle</th>
+      <th style="width: 300px">Cliente</th>
+      <th style="width: 100px">Valor do Contrato</th>
+      <th style="width: 100px">Valor Recebido</th>
+      <th style="width: 100px">Valor a Receber</th>
+      <th style="width: 100px">Situação</th>
+      <th style="width: 100px">Data Cancelamento</th>
+      <th style="width: 100px">Data Evasão</th>
+      
+    </tr>
+
+    <% total_documentos = 0; total_valores_recebidos = 0; total_saldo = 0 %>
+    <% @parcelas.each do |conta, parcelas| %>
+      <% saldo = 0 %>
+      <% valor_recebido = conta.parcelas.collect{|parc| parc.situacao == Parcela::QUITADA && parc.data_da_baixa.to_date <= params[:busca][:periodo_max].to_date ? parc.valor : 0}.sum %>
+        <% movimento = Movimento.find_by_conta_id_and_conta_type_and_tipo_lancamento_and_provisao(conta.id,'RecebimentoDeConta','S','1') rescue 0%>    
+      <%if conta.valor_original != conta.valor_do_documento && conta.situacao_fiemt != RecebimentoDeConta::Cancelado && !conta.parcelas.any?{|p| p.situacao == Parcela::RENEGOCIADA }%>
+  
+      <%# saldo = (conta.valor_do_documento - valor_recebido) %>
+       <% saldo = (movimento.valor_total - valor_recebido) rescue 0 %>
+      <%else%>
+
+          <% #saldo = (conta.valor_original - valor_recebido) %>
+           <% saldo = (movimento.valor_total - valor_recebido) rescue 0 %>
+      <%end%>
+
+
+      <tr align="left" style="font-size: 12px">
+        <td style="text-align: left; padding-left: 4px"><%=h conta.numero_nota_fiscal %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h conta.numero_de_controle %></td>
+        <td style="text-align: left; padding-left: 4px"><%=h conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social %></td>
+       
+  <%#if conta.valor_original != conta.valor_do_documento && conta.situacao_fiemt != 2 && !conta.parcelas.any?{|p| p.situacao == Parcela::RENEGOCIADA }%>
+
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(movimento.valor_total
+        ) rescue 0%></td>
+       
+<%#else%>
+<%#end%>
+
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(valor_recebido) %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(saldo) %></td>
+            <td style="text-align: right; padding-right: 4px"><%=h conta.situacao_fiemt_verbose %></td>
+             <td style="text-align: right; padding-right: 4px"><%=h conta.data_cancelamento %></td>
+             <td style="text-align: right; padding-right: 4px"><%=h conta.data_evasao %></td>
+      </tr>
+      
+
+  <%#if conta.valor_original != conta.valor_do_documento && conta.situacao_fiemt != 2 && !conta.parcelas.any?{|p| p.situacao == Parcela::RENEGOCIADA }%>
+
+
+      <% total_documentos += movimento.valor_total rescue 0 %>
+<%##else%>
+  <%# total_documentos += conta.valor_original %>
+<%#end%>
+
+
+      <% total_valores_recebidos += valor_recebido %>
+      <% total_saldo += saldo %>
+    <% end %>
+    <tr align="left" style="font-size: 12px; font-weight: bold">
+      <td colspan="3"></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_documentos) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_valores_recebidos) %></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_saldo) %></td>
+
+    </tr>
+  </table>
+<% else %>
+  <% total_documentos = 0; total_valores_recebidos = 0; total_saldo = 0 %>
+  <% @parcelas.each do |conta, parcelas| %>
+    <% saldo = 0 %>
+    <% valor_recebido = conta.parcelas.collect{|parc| parc.situacao == Parcela::QUITADA && parc.data_da_baixa.to_date <= params[:busca][:periodo_max].to_date && parc.data_da_baixa.to_date >= params[:busca][:periodo_min].to_date ? parc.valor : 0}.sum %>
+    <% saldo = (conta.valor_original - valor_recebido) %>
+    <% total_documentos += conta.valor_original %>
+    <% total_valores_recebidos += valor_recebido %>
+    <% total_saldo += saldo %>
+    <table rules="cols" frame="box" border="1px" style="font-size: 11px; margin-top: 5px" width="1000px">
+      <tr align="center" style="font-size: 12px">
+        <th style="width: 80px">Documento</th>
+        <th style="width: 150px">Número de Controle</th>
+        <th style="width: 300px">Cliente</th>
+        <th style="width: 100px">Valor do Contrato</th>
+        <th style="width: 100px">Valor Recebido</th>
+        <th style="width: 100px">Saldo</th>
+      </tr>
+      <tr align="left" style="font-size: 12px">
+        <td style="text-align: center; padding-left: 4px"><%=h conta.numero_nota_fiscal %></td>
+        <td style="text-align: center"><%=h conta.numero_de_controle %></td>
+        <td style="text-align: center; padding-left: 4px"><%=h conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social %></td>
+        <td style="text-align: center; padding-right: 4px"><%=h preco_formatado(conta.valor_original) %></td>
+        <td style="text-align: center; padding-right: 4px"><%=h preco_formatado(valor_recebido) %></td>
+        <td style="text-align: center; padding-right: 4px"><%=h preco_formatado(saldo) %></td>
+      </tr>
+    </table>
+    <div style="margin-left: 250px">
+      <table frame="vsides" style="font-size: 11px" width="500px">
+        <tr align="center" style="font-size: 12px">
+          <td colspan="6" style="font-weight: bold">PARCELAS</td>
+        </tr>
+      </table>
+      <table border="1px" style="font-size: 11px" width="500px">
+        <tr align="center" style="font-size: 12px;">
+          <th style="width: 60px">Número</th>
+          <th style="width: 130px">Data de Vencimento</th>
+          <th style="width: 100px">Valor</th>
+          <th style="width: 100px">Data da Baixa</th>
+        </tr>
+        <% parcelas.each do |parcela| %>
+          <%# valor_liquido_parcela = parcela.valor + parcela.valor_dos_juros + parcela.valor_da_multa + parcela.valores_novos_recebimentos + parcela.outros_acrescimos - parcela.soma_impostos_da_parcela - parcela.valor_do_desconto %>
+          <tr align="left" style="font-size: 12px">
+            <td style="text-align: center"><%=h parcela.parcela_mae_id.blank? ? parcela.numero : parcela.numero_parcela_filha %></td>
+            <td style="text-align: center"><%=h parcela.data_vencimento %></td>
+            <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(parcela.valor) %></td>
+            <% if !parcela.data_da_baixa.blank? && Date.today >= parcela.data_da_baixa.to_date %>
+              <td style="text-align: center"><%=h parcela.data_da_baixa %></td>
+            <% else %>
+              <td style="text-align: center"></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  <% end %>
+  <br /><br />
+  <div style="margin-left: 250px">
+    <table border="1px" style="font-size: 11px" width="500px">
+      <tr align="center" style="font-size: 12px">
+        <th style="width: 100px">Total Valores Contratos</th>
+        <th style="width: 100px">Total Valores Recebidos</th>
+        <th style="width: 100px">Saldo Total</th>
+      </tr>
+      <tr align="left" style="font-size: 12px; font-weight: bold">
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_documentos) %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_valores_recebidos) %></td>
+        <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(total_saldo) %></td>
+      </tr>
+    </table>
+  </div>
+<% end %>
+
+<br />

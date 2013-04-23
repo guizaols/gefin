@@ -1,0 +1,17 @@
+<% form_remote_tag :url => {:action => "efetua_cancelamento", :id => @recebimento_de_conta.id} do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data do Cancelamento</td>
+      <td><%= text_field_tag :data_cancelamento, Date.today.to_s_br, :size => 10 %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Justificativa</td>
+      <td><%= text_area_tag :justificativa %></td>
+    </tr>
+    <%= submit_tag "Salvar" %>
+    <%= button_to_function 'Cancelar', 'Modalbox.hide()' %>
+  </table>
+
+  <%= mascara_para_data('data_cancelamento') %>
+
+<% end %>

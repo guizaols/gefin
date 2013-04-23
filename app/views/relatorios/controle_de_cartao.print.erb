@@ -1,0 +1,50 @@
+<% valor_total = 0 %>
+
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:data_de_recebimento_min].blank? ? '' : params[:busca][:data_de_recebimento_min] %> a <%=h params[:busca][:data_de_recebimento_max].blank? ? '' : params[:busca][:data_de_recebimento_max] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="1000px">
+  <tr align="center" style="font-size: 12px;">
+    <th style="width: 140px">Número de Controle</th>
+    <th style="width: 300px">Cliente</th>
+    <th style="width: 200px">Serviço</th>
+    <th style="width: 110px">Data Receb. Cliente</th>
+    <th style="width: 100px">Data de Depósito</th>
+    <th style="width: 110px">Valor</th>
+  </tr>
+
+  <% @cartoes.group_by(&:bandeira_verbose).each_pair do |k, v| %>
+    <tr align="center" style="font-size: 12px; background-color: #E8E8E8">
+      <td colspan="6" style="text-align: center"><b>Operadora: </b><%= k %></td>
+    </tr>
+
+    <% valor_total_cartao = 0 %>
+    <% v.each do |cartao| %>
+      <tr>
+	<td style="text-align: left; padding-left: 4px"><%=h cartao.parcela.conta.numero_de_controle %></td>
+	<td style="text-align: left; padding-left: 4px"><%=h cartao.parcela.conta.pessoa.nome %></td>
+	<td style="text-align: left; padding-left: 4px"><%=h cartao.parcela.servico %></td>
+	<td align="center"><%=h cartao.parcela.data_da_baixa %></td>
+        <td align="center"><%=h cartao.situacao == Cartao::BAIXADO ? cartao.data_do_deposito : '' %></td>
+	<td style="text-align: right; padding-right: 4px"><%=h preco_formatado(cartao.parcela.valor_liquido) %></td>
+      </tr>
+      <% valor_total_cartao += cartao.parcela.valor_liquido %>
+    <% end %>
+
+    <% valor_total += valor_total_cartao %>
+
+      <tr style="font-size: 12px">
+      <td colspan="5" style="text-align: right; padding-right: 4px">Total ==></td>
+      <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(valor_total_cartao) %></td>
+    </tr>
+  <% end %>
+
+  <tr style="font-weight: bold; font-size: 12px">
+    <td colspan="5" style="text-align: right; padding-right: 4px">Total ==></td>
+    <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(valor_total) %></td>
+  </tr>
+</table>
+
+<br />

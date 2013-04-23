@@ -1,0 +1,70 @@
+quentin:
+  id:                        1
+  login:                     quentin
+  salt:                      356a192b7913b04c54574d18c28d46e6395428ab # SHA1('0')
+  crypted_password:          8991aefbd8b1b5f79e189c19ea31b0e3c3aa3565 # 'monkey'
+  created_at:                <%= 5.days.ago.to_s :db  %>
+  remember_token_expires_at: <%= 1.days.from_now.to_s  :db %>
+  remember_token:            77de68daecd823babbb58edb1c8e14d7106e83bb
+  unidade: senaivarzeagrande
+  perfil_id: 1
+  funcionario: felipe
+
+aaron:
+  id:                        2
+  login:                     aaron
+  salt:                      da4b9237bacccdf19c0760cab7aec4a8359010b0 # SHA1('1')
+  crypted_password:          96fac7dd17bf8a75506416485c76fc7508abcb38 # 'monkey'
+  created_at:                <%= 1.days.ago.to_s :db %>
+  remember_token_expires_at: 
+  remember_token:   
+  unidade: senaivarzeagrande
+  perfil_id: 2
+  funcionario: juan
+
+old_password_holder:
+  id:                        3
+  login:                     old_password_holder
+  salt:                      da4b9237bacccdf19c0760cab7aec4a8359010b0 # SHA1('1')
+  crypted_password:          96fac7dd17bf8a75506416485c76fc7508abcb38 # 'monkey'
+  created_at:                <%= 1.days.ago.to_s :db %>
+  unidade: sesivarzeagrande
+  perfil_id: 3
+  funcionario: fabio
+
+admin:
+  id:                        4
+  login:                     admin
+  salt:                      "d3ac642191e57ccf0d3c33849262d08e15b07133" # SHA1('0')
+  crypted_password:          "1fb938f84e8fb4984ce9b909c7b34f50a1512ffb" # 'password'
+  created_at:                <%= 5.days.ago.to_s :db  %>
+  remember_token_expires_at: <%= 1.days.from_now.to_s :db %>
+  remember_token:            77de68daecd823babbb58edb1c8e14d7106e83bb
+  unidade: sesivarzeagrande
+  perfil_id: 4
+  funcionario: guilherme
+
+juvenal:
+  id:                        5
+  login:                     juvenal
+  salt:                      da4b9237bacccdf19c0760cab7aec4a8359010b0 # SHA1('1')
+  crypted_password:          96fac7dd17bf8a75506416485c76fc7508abcb38 # 'monkey'
+  created_at:                <%= 1.days.ago.to_s :db %>
+  remember_token_expires_at: 
+  remember_token:   
+  unidade: senaivarzeagrande
+  perfil_id: 6
+  funcionario: rafael
+
+juliano:
+  id:                        6
+  login:                     juliano
+  salt:                      da4b9237bacccdf19c0760cab7aec4a8359010b0 # SHA1('1')
+  crypted_password:          96fac7dd17bf8a75506416485c76fc7508abcb38 # 'monkey'
+  created_at:                <%= 1.days.ago.to_s :db %>
+  remember_token_expires_at: 
+  remember_token:   
+  unidade: sesivarzeagrande
+  perfil_id: 1
+  funcionario: julio
+  

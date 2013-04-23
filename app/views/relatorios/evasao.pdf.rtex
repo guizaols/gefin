@@ -1,0 +1,48 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max]) %>}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|p{2.0cm}|p{1.5cm}|p{2.0cm}|p{1.6cm}|p{1.5cm}|p{2.2cm}|p{2.5cm}|p{1.5cm}|p{1.8cm}|p{2.9cm}|p{3.0cm}|p{4.0cm}|p{4.0cm}|p{4.0cm}|}
+\hline
+\textbf{Valor Contrato} & \textbf{Qtde. Parc} & \textbf{Valor Parcela} & \textbf{Vcto. Parc.} & \textbf{Dias atraso} &
+\textbf{Vigência - Início} & \textbf{Vigência - Término} & \textbf{Situação} & \textbf{Data Evasão} & \textbf{Data Registro Evasão} &
+\textbf{Justificativa} & \textbf{Conta Contábil} & \textbf{Unidade Organizacional} & \textbf{Centro} \\
+\hline
+
+<% @parcelas.each do |grupo_cliente, parcelas| %>
+    <% total_parcelas = 0 %>
+
+    \multicolumn{6}{|l}{\textbf{Nome:} <%=hl grupo_cliente %>}
+    \multicolumn{9}{l|}{\textbf{Serviço:} <%=hl parcelas.first.conta.servico.descricao %>}
+    \hline
+    <% parcelas.each do |parcela| %>
+        <%=hl preco_formatado(parcela.conta.valor_do_documento, 'R$') %> &
+        <%=hl "#{parcela.parcela_mae_id.blank? ? parcela.numero : parcela.numero_parcela_filha} / #{parcela.conta.numero_de_parcelas}" %> &
+        <%=hl preco_formatado(parcela.valor, 'R$') %> &
+        <%=hl parcela.data_vencimento %> &
+        <%=hl parcela.data_vencimento.to_date >= Date.today ? 0 : parcela.dias_em_atraso %> &
+        <%=hl parcela.conta.data_inicio %> &
+        <%=hl parcela.conta.data_final %> &
+        <%=hl parcela.situacao_verbose %> &
+        <%=hl parcela.conta.data_evasao %> &
+        <%=hl parcela.conta.data_registro_evasao %> &
+        <%=hl parcela.conta.justificativa_evasao %> &
+        <%=hl "#{parcela.conta.conta_contabil_receita.codigo_contabil} - #{parcela.conta.conta_contabil_receita.nome}" %> &
+        <%=hl "#{parcela.conta.unidade_organizacional.codigo_da_unidade_organizacional} - #{parcela.conta.unidade_organizacional.nome}" %> &
+        <%=hl "#{parcela.conta.centro.codigo_centro} - #{parcela.conta.centro.nome}" %> \\
+        \hline
+
+        <% total_parcelas += parcela.valor %>
+    <% end %>
+        & &
+        \textbf{<%=hl preco_formatado(total_parcelas, 'R$') %>} &
+        \multicolumn{11}{r|}{} \\
+        \hline
+<% end %>
+
+
+\end{longtable}
+\end{center}

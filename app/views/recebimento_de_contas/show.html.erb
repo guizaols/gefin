@@ -1,0 +1,170 @@
+<% content_for :titulo, "Detalhes" %>
+<table>
+  <%= show_unless_blank 'Número de Controle', @recebimento_de_conta.numero_de_controle %>
+  <tr>
+    <td><b>Situação:</b></td>
+    <td><%=h @recebimento_de_conta.situacoes %></td>
+  </tr>
+<%# if !@recebimento_de_conta.nao_permite_alteracao? %>
+<%# if (@recebimento_de_conta.servico_iniciado? && [RecebimentoDeConta::Normal].include?(@recebimento_de_conta.situacao) || [RecebimentoDeConta::Normal, RecebimentoDeConta::Juridico, RecebimentoDeConta::Renegociado, RecebimentoDeConta::Inativo, RecebimentoDeConta::Permuta, RecebimentoDeConta::Baixa_do_conselho, RecebimentoDeConta::Desconto_em_folha].include?(@recebimento_de_conta.situacao_verbose) && !@recebimento_de_conta.contrato_evadido?) && current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas) %>
+          <!--<span id="submit_situacao"><%#= submit_tag 'Alterar', :onclick => "$('submit_situacao').style.display = 'none'; $('select_situacao').style.display = ''" %></span>
+          <span id="select_situacao" style="display:none"><%#= select_tag "situacao_fiemt", options_for_select(RecebimentoDeConta::OPCOES_SITUACAO_PARA_COMBO_ALTERAR_STATUS, :selected => @recebimento_de_conta.situacao_fiemt), {:onchange => remote_function(:url => { :action => :altera_situacao_fiemt}, :with => "'argumento=' + $('situacao_fiemt').value", :after_element_update => "$('select_situacao').style.display = 'none'; $('submit_situacao').style.display = 'inline'", :loading => "Element.show('loading_situacao');", :success => "Element.hide('loading_situacao');")} %></span>-->
+<%#= image_tag('loading.gif', :id => "loading_situacao", :style => "display:none") %>
+<%# end %>
+<%# end %>
+  <%= show_unless_blank 'Data Cancelamento', @recebimento_de_conta.data_cancelamento %>
+  <%= show_unless_blank 'Data da Evasão', @recebimento_de_conta.data_evasao if @recebimento_de_conta.contrato_evadido? %>
+  <%= show_unless_blank 'Tipo de Documento', @recebimento_de_conta.tipo_de_documento %>
+  <%= show_unless_blank 'Rateio', @recebimento_de_conta.rateio == 1 ? "SIM" : "NÃO" %>
+  <%= show_unless_blank 'Provisão', @recebimento_de_conta.provisao == 1 ? "SIM" : "NÃO" %>
+  <tr><td><b>Cliente:</b></td><td><%= link_to h(@recebimento_de_conta.pessoa.fisica? ? @recebimento_de_conta.pessoa.nome : @recebimento_de_conta.pessoa.razao_social), @recebimento_de_conta.pessoa, :permissoes => Perfil::Pessoas %><%= render :partial => 'situacao_spc' %></td></tr>
+  <%= show_unless_blank 'Serviço', @recebimento_de_conta.servico.try(:descricao) %>
+  <%= show_unless_blank 'Data Inicial do Serviço', @recebimento_de_conta.data_inicio_servico %>
+  <%= show_unless_blank 'Data Final do Serviço', @recebimento_de_conta.data_final_servico %>
+
+  <tr>
+    <td><b>Serviço Iniciado:</b></td>
+    <td>
+      <%= @recebimento_de_conta.servico_iniciado_verbose %>
+      <% if !@recebimento_de_conta.nao_permite_alteracao? %>
+        <% unless [RecebimentoDeConta::Cancelado, RecebimentoDeConta::Inativo].include?(@recebimento_de_conta.situacao) %>
+          <% unless @recebimento_de_conta.servico_iniciado? %>
+            <%= button_to_remote "Iniciar Serviço", :url => {:action => "iniciar_servico", :id => @recebimento_de_conta.id}, :loading => "$('loading_start_service').show()", :complete => "$('loading_start_service').hide()" %>
+            <%= image_tag 'loading.gif', :id => "loading_start_service", :style => "display:none" %>
+          <% else %>
+            <% if current_usuario.possui_permissao_para(Perfil::PararServico) %>
+              <% if @recebimento_de_conta.provisao == RecebimentoDeConta::NAO || (@recebimento_de_conta.provisao == RecebimentoDeConta::SIM && !@recebimento_de_conta.contrato_ja_contabilizado?) %>
+                <%= button_to_remote "Parar Serviço", :url => {:action => "parar_servico", :id => @recebimento_de_conta.id}, :loading => "$('loading_stop_service').show()", :complete => "$('loading_stop_service').hide()" %>
+              <% end %>
+              <%= image_tag 'loading.gif', :id => "loading_stop_service", :style => "display:none" %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </td>
+  </tr>
+  <%= show_unless_blank 'Dependente', @recebimento_de_conta.dependente.try(:nome) %>
+  <%= show_unless_blank 'Valor do Documento', preco_formatado(@recebimento_de_conta.valor_do_documento) %>
+  <%= show_unless_blank 'Valor Original do Contrato', preco_formatado(@recebimento_de_conta.valor_original) %>
+  <%= show_unless_blank 'Número de Parcelas', @recebimento_de_conta.numero_de_parcelas %>
+  <%= show_unless_blank 'Vigência (meses)', @recebimento_de_conta.vigencia %>
+  <%= show_unless_blank 'Data de Início', @recebimento_de_conta.data_inicio %>
+  <%= show_unless_blank 'Data Final', @recebimento_de_conta.data_final %>
+  <%= show_unless_blank 'Dia do Vencimento', @recebimento_de_conta.dia_do_vencimento %>
+  <%= show_unless_blank 'Número Nota Fiscal', @recebimento_de_conta.numero_nota_fiscal %>
+  <%= show_unless_blank 'Histórico', @recebimento_de_conta.historico %>
+  <%= show_unless_blank 'Conta Contábil Receita', @recebimento_de_conta.conta_contabil_receita.codigo_contabil + ' - ' +Iconv.conv('iso-8859-15','utf-8',@recebimento_de_conta.conta_contabil_receita.nome) %>
+  <%= show_unless_blank 'Unidade Organizacional', @recebimento_de_conta.unidade_organizacional.codigo_da_unidade_organizacional + ' - ' + Iconv.conv('iso-8859-15','utf-8',@recebimento_de_conta.unidade_organizacional.nome) %>
+  <%= show_unless_blank 'Centro de Responsabilidade', @recebimento_de_conta.centro.codigo_centro + ' - ' + Iconv.conv('iso-8859-15','utf-8',@recebimento_de_conta.centro.nome) %>
+  <%= show_unless_blank 'Data da Venda', @recebimento_de_conta.data_venda %>
+  <%= show_unless_blank 'Origem', @recebimento_de_conta.origem_verbose %>
+  <%= show_unless_blank 'Vendedor', @recebimento_de_conta.vendedor.try(:nome) %>
+  <%= show_unless_blank 'Cobrador', @recebimento_de_conta.cobrador.try(:nome) %>
+  <%= show_unless_blank 'Multa por atraso', "#{@recebimento_de_conta.multa_por_atraso} %" %>
+  <%= show_unless_blank 'Juros por atraso', "#{@recebimento_de_conta.juros_por_atraso} %" %>
+</table>
+
+<p>
+  <%= link_to_remote 'Imprimir', :url => {:action => 'resumo', :id => params[:id]} if current_usuario.possui_permissao_para(Perfil::RecebimentoDeContas) %>
+  <% if current_usuario.possui_permissao_para(Perfil::ConsultarFollowUpAReceber) %>
+    | <%= link_to 'Follow-Up', recebimento_de_conta_historico_operacoes_path(@recebimento_de_conta.id) %>
+  <% end %>
+  <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas) %>
+    <% if !@recebimento_de_conta.nao_permite_alteracao? %>
+      <% if @recebimento_de_conta.cancelado_pela_situacao_fiemt == true %>
+        | <%= link_to_remote 'Estornar Contrato', :url => {:action => "estornar_contrato", :id => @recebimento_de_conta.id} %>
+      <% end %>
+    <% end %>
+
+    <% if !@recebimento_de_conta.nao_permite_alteracao? %>
+      <% if @recebimento_de_conta.pode_ser_modificado? %>
+        <% if @recebimento_de_conta.servico_nao_iniciado? %>
+          | <%= link_to 'Alterar', edit_recebimento_de_conta_path(@recebimento_de_conta) %>
+        <% end %>
+
+        <% if @recebimento_de_conta.servico_iniciado? %>
+          | <%= link_to 'Projeções', recebimento_de_conta_projecao_path(@recebimento_de_conta.id) %>
+        <% end %>
+
+        <% unless @recebimento_de_conta.contrato_evadido? %>
+          <% if @recebimento_de_conta.servico_iniciado? && @recebimento_de_conta.situacao_fiemt != RecebimentoDeConta::Cancelado && @recebimento_de_conta.situacao != RecebimentoDeConta::Cancelado %>
+             <%if @recebimento_de_conta.pode_cancelar?%>
+            | <%= link_to_remote 'Cancelar Contrato', :url => {:action => 'abdicar'}, :confirm => "Você deseja cancelar o contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_abdicacao').show()", :complete => "$('loading_abdicacao').hide()" %><%= image_tag 'loading.gif', :id => "loading_abdicacao", :style => "display:none" %>
+            <%end%>
+          <% end %>
+        <% end %>
+
+        <% unless @recebimento_de_conta.contrato_evadido? %>
+          <% if @recebimento_de_conta.servico_iniciado? && @recebimento_de_conta.situacao_fiemt != RecebimentoDeConta::Cancelado &&@recebimento_de_conta.situacao != RecebimentoDeConta::Cancelado %>
+               <%if @recebimento_de_conta. pode_cancelar?%>
+            | <%= link_to_remote 'Evadir Contrato', :url => {:action => 'evadir'}, :confirm => "Você deseja evadir o contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_evasao').show()", :complete => "$('loading_evasao').hide()" %><%= image_tag 'loading.gif', :id => "loading_evasao", :style => "display:none" %>
+            <%end%>
+          <% end %>
+        <% end %>
+
+        <% unless @recebimento_de_conta.contrato_evadido? %>
+          <% if @recebimento_de_conta.servico_nao_iniciado? && @recebimento_de_conta.situacao_fiemt != RecebimentoDeConta::Cancelado %>
+            | <%= link_to_remote 'Cancelar Contrato', :url => {:action => 'abdicar'}, :confirm => "Você deseja cancelar o contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_cancelar').show()", :complete => "$('loading_cancelar').hide()" %><%= image_tag 'loading.gif', :id => "loading_cancelar", :style => "display:none" %>
+          <% end %>
+        <% end %>
+
+        <% unless @recebimento_de_conta.contrato_evadido? %>
+          <% if @recebimento_de_conta.servico_iniciado? && @recebimento_de_conta.situacao_fiemt != RecebimentoDeConta::Cancelado && @recebimento_de_conta.reajustes.length < @recebimento_de_conta.unidade.numero_de_reajustes %>
+            | <%= link_to_remote 'Reajustar Contrato', :url => {:action => 'reajustar'}, :confirm => "Você deseja reajustar o contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_reajuste').show()", :complete => "$('loading_reajuste').hide()" %><%= loading_image 'reajuste' %>
+          <% end %>
+        <% end %>
+
+        <% if current_usuario.possui_permissao_para(Perfil::ReversaoDeContratos) %>
+          <% unless @recebimento_de_conta.contrato_evadido? %>
+            <% if @recebimento_de_conta.situacao_fiemt == RecebimentoDeConta::Cancelado && @recebimento_de_conta.data_reversao.blank? %>
+              | <%= link_to_remote 'Reversão de Cancelamento', :url => {:action => 'reverter_cancelamentos'}, :confirm => "Você deseja reverter o cancelamento do contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_reverter').show()", :complete => "$('loading_reverter').hide()" %><%= loading_image 'reverter' %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <% if current_usuario.possui_permissao_para(Perfil::ReversaoDeContratos) %>
+          <% if @recebimento_de_conta.contrato_evadido? %>
+            <% if @recebimento_de_conta.situacao_fiemt == RecebimentoDeConta::Evadido && @recebimento_de_conta.data_reversao_evasao.blank? %>
+              | <%= link_to_remote 'Reversão de Evasão', :url => {:action => 'reverter_evasao'}, :confirm => "Você deseja reverter a evasão do contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_reverter_evasao').show()", :complete => "$('loading_reverter_evasao').hide()" %><%= loading_image 'reverter_evasao' %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <% unless @recebimento_de_conta.contrato_evadido? %>
+          <% if @recebimento_de_conta.numero_de_renegociacoes > 0 %>
+            | <%= link_to_remote 'Estornar Renegociação', :url => {:action => 'estornar_renegociacao'}, :confirm => "Você deseja estornar a renegociação do contrato #{@recebimento_de_conta.numero_de_controle}?", :loading => "$('loading_est_reneg').show()", :complete => "$('loading_est_reneg').hide()" %><%= image_tag 'loading.gif', :id => 'loading_est_reneg', :style => 'display:none' %>
+          <% end %>
+        <% end %>
+
+      <% end %>
+    <% end %>
+  <% end %>
+</p>
+
+<%= render :partial => 'parcelas/index', :object => @conta = @recebimento_de_conta %>
+
+<p><%= link_to 'Voltar', recebimento_de_contas_path %> <% unless @conta.parcelas.que_estao_baixadas.empty? %> | <%= link_to 'Recibo', listar_recibos_recebimento_de_conta_parcelas_path(@conta.id), :target => "_blank" %><% end %></p>
+
+<div id="formulario_de_abdicacao" style="display:none">
+</div>
+
+<div id="formulario_de_evasao" style="display:none">
+</div>
+
+<div id="formulario_de_nova_parcela" style="display:none">
+</div>
+
+<div id="formulario_de_cancelamento" style="display:none">
+</div>
+
+<div id="formulario_de_reajuste" style="display:none">
+</div>
+
+<div id="formulario_de_reversao" style="display: none">
+</div>
+
+<div id="formulario_de_reversao_evasao" style="display: none">
+</div>
+
+<div id="formulario_de_estorno_renegociacao" style="display: none">
+</div>

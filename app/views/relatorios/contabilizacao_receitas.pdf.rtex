@@ -1,0 +1,66 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|p{4.0cm}|p{4.0cm}|p{2.3cm}|p{2.5cm}|p{1.8cm}|p{2.2cm}|p{2.7cm}|p{2.4cm}|p{3.7cm}|p{3.7cm}|p{3.7cm}|p{2.0cm}|}
+\hline
+\textbf{Cliente} & \textbf{Serviço} & \textbf{Vigencia - Início} & \textbf{Vigencia - Término} &
+\textbf{Início Serviço} & \textbf{Término Serviço} & \textbf{Valor - Contrato} &
+\textbf{Valor - Parcela} & \textbf{Conta Contábil} & \textbf{Unidade} & \textbf{Centro} & \textbf{Executado (\%)} \\
+\hline
+
+<% total_geral_contratos = 0 %>
+<% total_geral_parcelas = 0 %>
+<% total_geral_executado = 0 %>
+
+<% @recebimentos.each do |grupo_servico, contas| %>
+    <% total_contrato = 0 %>
+    <% total_parcela = 0 %>
+    <% total_executado = 0 %>
+
+    <% contas.each do |conta| %>
+        <%=hl conta.pessoa.nome rescue 'Pessoa Excluída' %> &
+        <%=hl conta.servico.descricao %> &
+        <%=hl conta.data_inicio %> &
+        <%=hl conta.data_final %> &
+        <%=hl conta.data_inicio_servico %> &
+        <%=hl conta.data_final_servico %> &
+        <%=hl preco_formatado(conta.valor_do_documento, 'R$') %> &
+
+        <% array_valor_movimento = conta.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.month == params["busca"]["mes"].to_i && !movimento.lancamento_inicial}.compact %>
+        <% valor_movimento = array_valor_movimento.max == 0 ? 0 : array_valor_movimento.max %>
+        <% porcentagem = valor_movimento == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params["busca"]["mes"].to_i) %>
+
+        <%=hl preco_formatado(valor_movimento, 'R$') %> &
+        <%=hl "#{conta.conta_contabil_receita.codigo_contabil} - #{conta.conta_contabil_receita.nome}" %> &
+        <%=hl "#{conta.unidade_organizacional.codigo_da_unidade_organizacional} - #{conta.unidade_organizacional.nome}" %> &
+        <%=hl "#{conta.centro.codigo_centro} - #{conta.centro.nome}" %> &
+        <%=hl porcentagem %>
+        \hline
+
+        <% total_contrato += conta.valor_do_documento %>
+        <% total_parcela += valor_movimento %>
+    <% end %>
+
+    <% total_executado = (total_parcela * 100.0) / total_contrato %>
+
+    & & \textbf{Totalização} & & & &
+    \textbf{<%=hl preco_formatado(total_contrato , 'R$') %>} & \textbf{<%=hl preco_formatado(total_parcela , 'R$') %>}
+    & & & & \textbf{<%=hl format("%.2f", total_executado) %>}
+    \hline
+
+    <% total_geral_contratos += total_contrato %>
+    <% total_geral_parcelas += total_parcela %>
+<% end %>
+
+    <% total_geral_executado = (total_geral_parcelas * 100.0) / total_geral_contratos %>
+
+    & & \textbf{Total Geral} & & & &
+    \textbf{<%=hl preco_formatado(total_geral_contratos, 'R$') %>} & \textbf{<%=hl preco_formatado(total_geral_parcelas, 'R$') %>}
+    & & & & \textbf{<%=hl format("%.2f", total_geral_executado) %>}
+    \hline
+
+\end{longtable}
+\end{center}

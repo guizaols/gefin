@@ -1,0 +1,57 @@
+<h1>De-para do orçamento - <%=h formata_titulo_de_para(params[:id]) %></h1>
+
+<% form_remote_tag :url => alterar_de_para_path(params[:id]) do %>
+  <table width="100%" style="text-align: center">
+    <tr>
+      <td>
+        <div id="ano_passado">
+          <p><b><%= session[:ano].to_i - 1 %></b></p>
+          <%= select_tag :objeto_do_ano_passado_id, options_for_select(@objetos_do_ano_passado.collect{|obj| [obj.resumo, obj.id]}), :size => 15, :onchange => 'destacar_objeto_do_proximo_ano()' %>
+        </div>
+      </td>
+      <td>
+        <%= submit_tag 'Confirmar', :disabled => true, :confirm => 'Confirma o vínculo entre estes objetos?', :id => 'confirmar' %>
+        <br />
+        <br />
+        <%= submit_tag 'Cancelar', :disabled => true, :confirm => 'Confirma a exclusão do vínculo entre estes objetos?', :id => 'cancelar' %>
+      </td>
+      <td>
+        <div id="ano_corrente">
+          <p><b><%= session[:ano] %></b></p>
+          <%= select_tag :objeto_deste_ano_id, options_for_select([''] + @objetos_deste_ano.collect{|obj| [obj.resumo, obj.id]}), :size => 15, :onchange => 'verificar_se_pode_vincular_objetos()' %>
+        </div>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<% javascript_tag do %>
+  var associacoes = new Array();
+  <% @objetos_do_ano_passado.select(&:objeto_do_proximo_ano).each do |objeto| %>
+    associacoes[<%= objeto.id %>] = <%= objeto.objeto_do_proximo_ano_id %>;
+  <% end %>
+
+  function destacar_objeto_do_proximo_ano() {
+    var id_do_ano_passado = associacoes[$('objeto_do_ano_passado_id').value];
+    if (id_do_ano_passado) {
+      $('objeto_deste_ano_id').value = id_do_ano_passado;
+      $('cancelar').disabled = false;
+    } else {
+      $('objeto_deste_ano_id').value = '';
+      $('cancelar').disabled = true;
+    }
+    $('confirmar').disabled = true;
+  }
+
+  function verificar_se_pode_vincular_objetos() {
+    var id_deste_ano = $('objeto_deste_ano_id').value;
+    var id_do_ano_passado = $('objeto_do_ano_passado_id').value;
+    if (id_deste_ano && id_do_ano_passado) {
+      $('confirmar').disabled = false;
+    } else {
+      $('confirmar').disabled = true;
+    }
+    $('cancelar').disabled = true;
+  }
+
+<% end %>

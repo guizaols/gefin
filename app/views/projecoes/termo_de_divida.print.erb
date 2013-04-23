@@ -1,0 +1,213 @@
+<b style="text-align: center; font-size: 14px">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA</b>
+<br />
+<b style="text-align: center; font-size: 14px">E COMPOSIÇÃO AMIGÁVEL POR MÚTUO ACORDO</b>
+<br /><br /><br />
+
+<table border="1px solid" style="font-size: 12px" width="790px;" cellpadding="2">
+  <tr style="text-align: center">
+    <td style="width: 100px" rowspan="5"><b>CREDOR</b></td>
+  </tr>
+  <tr style="text-align: left">
+    <td>Nome: <%=h @unidade.nome %></td>
+    <td>CNPJ: <%=h @unidade.cnpj %></td>
+  </tr>
+  <tr style="text-align: left">
+    <td>Endereço: <%=h @unidade.endereco %></td>
+  </tr>
+  <tr style="text-align: left">
+        <td>Cidade/Estado: <%=h @unidade.localidade ? @unidade.localidade.nome : "Sem localidade cadastrada".upcase %> - <%=h @unidade.localidade ? @unidade.localidade.uf.upcase : "Sem UF cadastrada".upcase %></td>
+    <td>CEP: <%=h @unidade.cep %></td>
+  </tr>
+  <tr style="text-align: left">
+    <td>Representante legal: <%=h @unidade.responsavel ? @unidade.responsavel : 'Sem representante legal cadastrado'.upcase %></td>
+    <td>CPF:  <%=h @unidade.responsavel_cpf ? @unidade.responsavel_cpf : 'Sem documento do representante legal cadastrado'.upcase %></td>
+  </tr>
+</table>
+
+<table border="1px solid" style="font-size: 12px" width="790px" cellpadding="2">
+  <tr style="text-align: center">
+    <td style="width: 100px" rowspan="6"><b>DEVEDOR</b></td>
+  </tr>
+  <tr style="text-align: left">
+    <td colspan="6">Nome: <%=h @conta.pessoa.fisica? ? @conta.pessoa.nome : @conta.pessoa.razao_social %></td>
+  </tr>
+  <tr style="text-align: left">
+    <td colspan="6">CPF/CNPJ: <%=h @conta.pessoa.fisica? ? @conta.pessoa.cpf : @conta.pessoa.cnpj %></td>
+  </tr>
+  <tr style="text-align: left">
+    <td colspan="6">Endereço: <%=h @conta.pessoa.endereco %>, <%=h @conta.pessoa.numero %></td>
+  </tr>
+  <tr style="text-align: left">
+    <td>Cidade/Estado: <%=h @conta.pessoa.localidade ? @conta.pessoa.localidade.nome : "Sem localidade cadastrada".upcase %> - <%=h @conta.pessoa.localidade ? @conta.pessoa.localidade.uf.upcase : "Sem UF cadastrada".upcase %></td>
+    <td>CEP: <%=h @conta.pessoa.cep ? @conta.pessoa.cep : 'Sem CEP cadastrado' %></td>
+  </tr>
+  <tr style="text-align: left">
+    <td>Representante legal:</td>
+    <td>CPF:</td>
+  </tr>
+</table>
+<br />
+
+<%# valor_total = 0 %>
+<%# @parcelas.each do |parcela| %>
+    <%# parcela.calcular_juros_e_multas!(Date.today, parcela.data_vencimento)%>
+    <%# valor_total += parcela.calcula_valor_total_da_parcela(true).to_i %>
+<%# end %>
+
+<div style="text-align: justify;; font-size: 12px">
+  I - Pelo presente Instrumento particular o DEVEDOR reconhece a dívida da(s) parcela(s) devida(s) abaixo por parte do DEVEDOR, em razão do curso <%=h @conta.servico.descricao %> o débito de <%=h @parcelas_renegociadas.length %> parcela(s), devidamente acrescida(s) das penalidades contratuais:
+</div>
+<br />
+
+<% total = 0 %>
+<%i =0 %>
+<% multa = 0 %>
+<% juros = 0 %>
+<% multa_juros = 0 %>
+<% percentual = 0 %>
+<% valor_desconto = 0 %>
+<% valor_a_receber = 0 %>
+<table border="1px solid" style="font-size: 12px" width="330px" cellpadding="15">
+  <tr style="background-color: #CFCFCF">
+    <th style="text-align: center;">PARC</th>
+     <th style="text-align: center">VENCIMENTO</th>
+     <th style="text-align: center;">VALOR</th>
+     <th style="text-align: center;">MULTA</th>
+     <th style="text-align: center">JUROS</th>
+     <th style="text-align: center" cellpadding="20">MULTA + JUROS</th>
+     <th style="text-align: center">PERCENTUAL DESCONTO</th>
+     <th style="text-align: center">VALOR DESCONTO</th>
+     <th style="text-align: center">VALOR A RECEBER</th>
+   
+    <% @parcelas_renegociadas.sort_by(&:data_vencimento).each_with_index do |parcela, index| %>
+      <% parcela.calcula_desconto_em_juros_e_multas! %>
+      <tr style="text-align: center;">
+	       <td><%=h parcela.numero %></td>
+         <td><%=h parcela.data_vencimento %></td>
+         <td nowrap="true"><%=h preco_formatado(parcela.valor, 'R$') %></td>
+         <td nowrap="true"><%=h preco_formatado(parcela.valor_da_multa, 'R$') %></td>
+          <td nowrap="true"><%=h preco_formatado(parcela.valor_dos_juros, 'R$')%></td>
+          <td nowrap="true"><%=h preco_formatado(parcela.valor_da_multa+parcela.valor_dos_juros, 'R$') %></td>
+          <td nowrap="true"><%=h $GAMBIARRA_MONSTRA[parcela.id.to_s]["desconto_em_porcentagem"]%>%</td>
+          <td nowrap="true"><%=h preco_formatado((parcela.valor_da_multa+parcela.valor_dos_juros)*($GAMBIARRA_MONSTRA[parcela.id.to_s]["desconto_em_porcentagem"].to_f/100.0), "R$")%>
+          <td nowrap="true"><%=h preco_formatado(((parcela.valor_da_multa+parcela.valor_dos_juros-(parcela.valor_da_multa+parcela.valor_dos_juros)*($GAMBIARRA_MONSTRA[parcela.id.to_s]["desconto_em_porcentagem"].to_f/100.0))+parcela.valor).round(2), 'R$') %></td>
+        <%#=h preco_formatado(parcela.calcula_valor_total_da_parcela(true).to_i, 'R$') %>
+	<%i+=1%>
+      </tr>
+      <%# total += parcela.calcula_valor_total_da_parcela(true).to_i %>
+      <% total += parcela.valor %>
+      <% multa += parcela.valor_da_multa%>
+      <%juros += parcela.valor_dos_juros%>
+      <% multa_juros += parcela.valor_da_multa+parcela.valor_dos_juros %>
+      <%valor_desconto += (parcela.valor_da_multa+parcela.valor_dos_juros)*($GAMBIARRA_MONSTRA[parcela.id.to_s]["desconto_em_porcentagem"].to_f/100.0)%>
+      <%#valor_a_receber += total+juros+multa%>
+      <%valor_a_receber +=((parcela.valor_da_multa+parcela.valor_dos_juros-(parcela.valor_da_multa+parcela.valor_dos_juros)*($GAMBIARRA_MONSTRA[parcela.id.to_s]["desconto_em_porcentagem"].to_f/100.0))+parcela.valor).round(2)%>
+      <%percentual += $GAMBIARRA_MONSTRA[parcela.id.to_s]["desconto_em_porcentagem"].to_f%>
+    <% end %>
+    <tr style="text-align: center" cellpadding="20">
+      <td colspan="2" ><b>Total:</b></td>
+      <td nowrap="true"><b><%=h preco_formatado(total, 'R$') %></b></td>
+       <td nowrap="true"><b><%=h preco_formatado(multa, 'R$') %></b></td>
+       <td nowrap="true"><b><%=h preco_formatado(juros, 'R$') %></b></td>
+       <td nowrap="true"><b><%=h preco_formatado(multa_juros, 'R$') %></b></td>
+       <td nowrap="true"><b><%=h percentual/i %>%</b></td>
+       <td nowrap="true"><b><%=h preco_formatado(valor_desconto, 'R$') %></b></td>
+       <td nowrap="true"><b><%=h preco_formatado(valor_a_receber, 'R$') %></b></td>
+    </tr>
+  </tr>
+</table>
+
+<br />
+<div style="text-align: justify; font-size: 12px">
+Firmando assim o presente acordo, comprometendo-se ao pagamento conforme a seguir exposto:
+</div>
+<br />
+<% total = 0 %>
+<table border="1px solid" style="font-size: 12px" width="330" cellpadding="2">
+  <tr style="background-color: #CFCFCF">
+    <th style="text-align: left">Parcela(s) do Acordo</th>
+    <th style="text-align: left">Valor</th>
+    <th style="text-align: left">Vencimento</th>
+
+    <% @parcelas_selecionadas.sort_by(&:numero).each_with_index do |parcela, index| %>
+      <tr style="text-align: left">
+        <td><%=h index == 0 ? (parcela.numero + ' (Entrada)') : parcela.numero %></td>
+        <td><%=h preco_formatado(parcela.calcula_valor_total_da_parcela(true).to_i, 'R$') %></td>
+        <td><%=h parcela.data_vencimento %></td>
+      </tr>
+      <% total += parcela.calcula_valor_total_da_parcela(true).to_i %>
+    <% end %>
+    <tr style="text-align: left">
+      <td><b>Total:</b></td>
+      <td><b><%=h preco_formatado(total, 'R$') %></b></td>
+    </tr>
+  </tr>
+</table>
+<br /><br />
+
+<div style="text-align: justify; font-size: 12px">
+  II – O CREDOR procederá à liberação da restrição junto ao SPC e Serasa após o pagamento da primeira ou única parcela do presente acordo, no prazo máximo de 05 (cinco) dias úteis.
+</div>
+<br />
+
+<div style="text-align: justify; font-size: 12px">
+  III- Havendo atraso na(s) parcela(s) decorrente(s) deste acordo, com prazo superior a 10 (dez) dias, implicará em nova negativação junto aos órgãos de proteção ao crédito.
+</div>
+<br />
+
+<div style="text-align: justify; font-size: 12px">
+  IV- Fica ajustado que qualquer atraso no pagamento da(s) prestação(es) ora pactuada(s) importará no vencimento antecipado das demais independentemente de interpelação, quando for o caso, notificação ou mesmo simples aviso, podendo o CREDOR, desde logo, efetuar a cobrança judicial do saldo devedor, acrescido de multa no importe de 2% e juros moratórios à taxa de 0,0333% ao dia, a contar da data do acordo no caso de não adimplemento de nenhuma parcela, ou do vencimento da última prestação paga, bem como poderá ainda cobrar honorários advocatícios no valor de 20% sobre o débito em aberto e demais cominações legais, saldo esse cuja liquidez e certeza, extensivos aos acessórios, o (a) DEVEDOR(A) reconhece, para o fim de ser cobrado, com os acréscimos, por via de execução, perante o juízo competente.
+</div>
+<br />
+
+<div style="text-align: justify; font-size: 12px">
+  V- O presente instrumento particular de confissão de dívida e composição amigável por mútuo acordo é lavrado nos termos da legislação vigente pertinente à espécie.
+</div>
+<br />
+
+<div style="text-align: justify; font-size: 12px">
+  VI- Fica eleito como competente para dirimir eventuais dúvidas decorrentes do presente contrato, o foro de Cuiabá-MT, com a exclusão de qualquer outro, por mais privilegiado que seja.
+</div>
+<br />
+
+<div style="text-align: justify; font-size: 12px">
+<b> VII - Considerando que os boletos pertinentes a esta negociação mencionam, resumidamente, as condições do presente contrato, na hipótese de haver compensação da primeira parcela, fica dispensado a coleta de assinatura, resguardando os diretos das partes.</b>
+ </div>
+<br /><br />
+
+<div style="text-align: justify; font-size: 12px">
+  <b><%=h @unidade.localidade.nome %>/<%=h @unidade.localidade.uf.upcase %>, <%= Date.today.strftime("%d de %B de %Y")%>.</b>
+</div>
+<br /><br />
+
+<table style="font-size: 12px" width="800px">
+  <tr style="text-align: left">
+    <td>PELO CREDOR:</td><td colspan="4"></td><td>PELO DEVEDOR:</td>
+  </tr>
+  <tr style="text-align: left; height: 50px">
+    <td>__________________________________________________</td><td colspan="4"></td><td>__________________________________________________</td>
+  </tr>
+  <tr style="text-align: left;">
+    <td><%=h @unidade.responsavel ? @unidade.responsavel : 'Sem representante legal cadastrado'.upcase %></td><td colspan="4"></td><td><%=hl @conta.pessoa.nome.upcase %></td>
+  </tr>
+  <tr style="text-align: left;">
+    <td><%=h @unidade.responsavel_cpf ? @unidade.responsavel_cpf : 'Sem documento do representante legal cadastrado'.upcase %></td><td colspan="4"></td><td><%=hl @conta.pessoa.tipo_pessoa == 1 ? @conta.pessoa.cpf : @conta.pessoa.cnpj %></td>
+  </tr>
+</table>
+<br /><br />
+
+<div style="text-align: justify; font-size: 12px">
+Testemunhas:
+</div>
+<br />
+
+<div style="text-align: justify; font-size: 12px">
+  Nome: ________________________________________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nome: ________________________________________________
+</div>
+<br /><br />
+
+<div style="text-align: justify; font-size: 12px">
+  CPF: &nbsp;&nbsp;&nbsp;_______________________&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  CPF: &nbsp;&nbsp;&nbsp;_______________________
+</div>
+<br />

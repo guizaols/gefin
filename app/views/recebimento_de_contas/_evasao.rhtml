@@ -1,0 +1,23 @@
+<% form_remote_tag :url => {:action => "efetuar_evasao"}, :loading => "Element.show('loading_evasao');", :success => "Element.hide('loading_evasao');" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data da Evasão</td>
+      <td><%= text_field_tag :data_evasao, Date.today.to_s_br, :size => 10 %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Justificativa</td>
+      <td><%= text_area_tag :justificativa, nil, :size => '40x4' %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag "Salvar", :url => {:action => "efetuar_evasao"} %>
+        <%= button_to_function 'Cancelar', 'Modalbox.hide()' %>
+        <%= image_tag('loading.gif', :id => "loading_evasao", :style => "display:none") %>
+      </td>
+    </tr>
+  </table>
+
+  <%= mascara_para_data('data_evasao') %>
+
+<% end %>

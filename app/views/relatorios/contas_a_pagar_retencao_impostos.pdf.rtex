@@ -1,0 +1,26 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:recolhimento_min], params[:busca][:recolhimento_max]) %>}
+\fontsize{7pt}{12pt}\selectfont
+\begin{longtable}{|p{6.0cm}|p{2.5cm}|p{3.0cm}|p{2.0cm}|p{2.7cm}|p{3.0cm}|p{2.0cm}|p{3.5cm}|}
+\hline
+\textbf{Fornecedor} & \textbf{CPF/CNPJ} & \textbf{Nota Fiscal} & \textbf{Valor Bruto} & \textbf{INSS 11\%} & \textbf{INSS 20\%} & \textbf{IRRF 7.5\%} & \textbf{IRRF 27.5%} \\
+\hline
+
+<% @lancamentos.each do |lancamento| %>
+   <%= hl lancamento.parcela.conta.pessoa.nome %> &
+   <%= hl lancamento.parcela.conta.pessoa.fisica? ? lancamento.parcela.conta.pessoa.cpf : lancamento.parcela.conta.pessoa.cnpj %> &
+   <%= hl lancamento.parcela.conta.numero_nota_fiscal_string %> &
+   <%= hl preco_formatado(lancamento.parcela.conta.valor_do_documento, 'R$') %> &
+   <%= hl lancamento.data_de_recolhimento %> &
+   <%= hl preco_formatado(lancamento.valor, 'R$') %> &
+   <%= hl lancamento.parcela.conta.numero_de_controle %> \\
+   \hline
+<% end %>
+
+\hline
+
+\end{longtable}
+\end{center}

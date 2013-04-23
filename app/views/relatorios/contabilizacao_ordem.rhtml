@@ -1,0 +1,43 @@
+<% content_for :titulo, 'Contabilização da Ordem' %>
+
+<% form_remote_tag :url => contabilizacao_ordem_relatorios_path, :loading => "Element.show('loading_cont');", :success => "Element.hide('loading_cont');" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Tipo</td>
+      <td><%= select_tag "movimento[tipo]", options_for_select([["Provisionados", 1], ["Pagos/Baixados", 0], ["Todos", 2]], 1) %></td>
+    </tr>
+    <tr><td class="field_descriptor">Data Inicial</td><td><%= calendar_date_select_tag_com_mascara "movimento[data_inicial]" %></td></tr>
+    <tr><td class="field_descriptor">Data Final</td><td><%= calendar_date_select_tag_com_mascara "movimento[data_final]" %></td></tr>
+    <tr>
+      <td class="field_descriptor">Ordem</td>
+      <td>
+        <div class="div_explicativa">
+          <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+            <div id="explicacao_texto"></div>
+            <%= image_tag 'seta_tooltip.gif' %>
+          </div>
+          <%= text_field_tag "movimento[ordem]",nil,:onfocus => "exibir_explicacao_para_busca('exibir','Caso o campo ordem esteja em branco o sistema irá procurar as contabilizações diárias, senão irá buscar as contabilizações em cima de uma ordem. ')",:onblur=>"exibir_explicacao_para_busca('ocultar','')" %> <%= link_to_function "..." do |page| page.toggle "filtros_pesquisa_ordem" end %>
+        </div>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag "Gerar Relatório" %><%= image_tag('loading.gif', :id => "loading_cont", :style => "display:none") %></td></tr>
+  </table>
+<% end %>
+
+<div id="filtros_pesquisa_ordem" style="display:none;">
+  <h1>Consulta de Ordens Contabilizadas</h1>
+  <% form_remote_tag :url => pesquisa_para_ordem_relatorios_path, :id => "form_pesquisa_de_ordens", :loading => "Element.show('loading_form_2');", :success => "Element.hide('loading_form_2');" do %>
+    <table>
+      <tr><td class="field_descriptor">Cliente/Fornecedor</td><td><%= text_field_tag "conta[nome_fornecedor]" %></td></tr>
+      <tr><td class="field_descriptor">Número de Controle</td><td><%= text_field_tag "conta[numero_controle]" %></td></tr>
+      <tr><td class="field_descriptor">Data de Lançamento</td><td><%= calendar_date_select_tag "conta[data_lancamento]" %></td></tr>
+      <tr><td class="field_descriptor">Valor</td><td><%= text_field_tag "conta[valor]" %></td></tr>
+      <tr>
+        <td></td>
+      <td><%= submit_tag "Pesquisar" %> <%= image_tag('loading.gif', :id => "loading_form_2", :style => "display:none") %></td></tr>
+    </table>
+  <% end %>
+  <div id="resultados_pesquisa_ordem"></div>
+</div>
+<%= mascara_para_valor('conta_valor') %>

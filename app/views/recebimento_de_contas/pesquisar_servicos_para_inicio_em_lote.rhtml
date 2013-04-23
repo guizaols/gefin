@@ -1,0 +1,47 @@
+<% content_for :titulo, 'Iniciar Serviços em Lote' %>
+
+<% form_tag pesquisar_servicos_para_inicio_em_lote_recebimento_de_contas_path, :method => :get do %>
+  <table>
+    <%= campo_de_cadastro "Serviço", auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+    <%= campo_de_cadastro "Mês", (select_tag "busca[mes]", meses_para_selecao(params[:busca][:mes].to_i)) %>
+    <tr>
+      <td></td>
+      <td><%= submit_tag 'Pesquisar' %></td>
+    </tr>
+  </table>
+<% end %>
+
+<% form_remote_tag :url => iniciar_servicos_em_lote_recebimento_de_contas_path, :loading => "Element.show('loading_inicio');", :success => "Element.hide('loading_inicio');" do %>
+  <% if @contratos.length > 0 %>
+    <% listagem_table :headers => ['Sel', 'Nº de Controle', 'Nome do Cliente', 'Serviço', 'Início do Contrato', 'Fim do Contrato', 'Valor do Documento', 'Nº de Parcelas'] do %>
+      <% for contrato in @contratos %>
+        <tr class="<%= cycle 'impar', 'par' %>">
+          <td>
+            <%= check_box_tag 'contratos[ids][]', contrato.id, false,
+              :id => "contrato_#{contrato.id}", :class => 'selecionaveis', :lang => contrato.valor_do_documento %>
+          </td>
+          <td><%= link_to h(contrato.numero_de_controle), contrato %></td>
+          <td><%=h contrato.pessoa.nome %></td>
+          <td><%=h contrato.servico.descricao %></td>
+          <td><%=h contrato.data_inicio %></td>
+          <td><%=h contrato.data_final %></td>
+          <td><%=h preco_formatado(contrato.valor_do_documento, 'R$') %></td>
+          <td><%=h contrato.numero_de_parcelas %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>
+          <%= link_to_function 'Todos' do |page| page << "selecionaTodasAsContas(true);" end %>
+          <br />
+          <%= link_to_function 'Nenhum' do |page| page << "selecionaTodasAsContas(false);" end %>
+        </td>
+      </tr>
+    <% end %>
+    <%= submit_tag "Iniciar #{@contratos.length == 1 ? 'Serviço' : 'Serviços'}" %> <%= image_tag 'loading.gif', :id => "loading_inicio", :style => "display:none" %>
+  <% elsif !@inicio %>
+    <p><%= mensagem_da_pesquisa(params[:busca]) %></p>
+  <% elsif @inicio %>
+    <p><b>Você pode utilizar os filtros acima para pesquisar os contratos. Caso seja realizada uma busca com os
+        filtros em branco, serão retornados todos os contratos que não estejam com seus serviços iniciados.</b></p>
+  <% end %>
+<% end %>

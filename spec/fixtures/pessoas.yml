@@ -1,0 +1,266 @@
+paulo:
+  nome: Paulo Vitor Zeferino
+  rg_ie: 82348776
+  cpf: 065.124.249-56
+  cliente: true
+  funcionario: false
+  fornecedor: false
+  tipo_pessoa: 1
+  endereco: Alcebiades Plaisant
+  bairro: Água Verde
+  complemento: Casa
+  email: 
+         - pv_cmt@hotmail.com
+  telefone: 
+            - 33425712
+            - 88499627
+  observacoes: O cliente se mostra interessado para serviços na área de web.
+  spc: true
+  localidade: primeira
+  entidade: senai
+  data_nascimento: 1987-10-31
+  liberado_pelo_dr: false
+  industriario: false
+  numero: 946
+  unidade: senaivarzeagrande
+
+felipe:
+  nome: Felipe Giotto
+  rg_ie: 823476544
+  cpf: 031.464.089-45
+  cliente: false
+  funcionario: true
+  fornecedor: false
+  cargo: Analista de Sistemas
+  tipo_pessoa: 1
+  endereco: Avenida Iguaçu,889
+  bairro: Centro
+  complemento: Casa, próximo ao Banco X
+  email: 
+           - felipe@inovare.net
+  telefone: 
+            - 99695432
+  observacoes: Funcionario com facilidade de aprendizado
+  spc: false
+  entidade: senai
+  data_nascimento: 1984-03-09
+  liberado_pelo_dr: false
+  funcionario_ativo: true
+  industriario: false
+  unidade: senaivarzeagrande
+
+inovare:
+  razao_social: Inovare
+  nome: FTG Tecnologia
+  rg_ie: 123456
+  cnpj: 08.916.988/0001-45
+  cliente: false
+  funcionario: false
+  fornecedor: true
+  contato: Rafael Felipe
+  tipo_pessoa: 2
+  endereco: Avenida Sete de Setembro
+  bairro: Centro
+  complemento: Conjunto Comercial Batel Work
+  email: 
+           - felipe@inovare.net
+  telefone: 
+            - 99695432
+  observacoes: Empresa trabalha com tecnologia Ruby on Rails e Java
+  banco: banco_do_brasil
+  agencia: centro
+  conta: 000003568
+  spc: false
+  entidade: senai
+  liberado_pelo_dr: false
+  industriario: false
+  unidade: senaivarzeagrande
+
+juan:
+  nome: Juan Vitor Zeferino
+  rg_ie: 8232248776
+  cpf: 069.868.929-18
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Gerente Geral
+  endereco: Avenida Silva Jardim,887
+  bairro: Centro
+  complemento: Apartamento 88a
+  email: 
+         - pv_cmt@gmail.com
+  telefone: 
+            - 91311140
+            - 88567788
+  observacoes: Cliente quer que desconte os servicos direto do salario
+  spc: false
+  entidade: senai
+  data_nascimento: 1985-01-31
+  liberado_pelo_dr: false
+  funcionario_ativo: true
+  industriario: false
+  unidade: senaivarzeagrande
+
+guilherme:
+  nome: Guilherme Santos
+  rg_ie: 8232248776
+  cpf: 00979217938
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Gerente Financeiro
+  endereco: Avenida Silva Jardim, 887
+  bairro: Centro
+  complemento: Apartamento 99
+  email:
+         - guizaols@gmail.com
+  telefone:
+            - 91311140
+            - 88567788
+  observacoes: Cliente quer que desconte os servicos direto do salario
+  spc: false
+  entidade: senai
+  data_nascimento: 1989-09-21
+  liberado_pelo_dr: false
+  funcionario_ativo: true
+  industriario: false
+  unidade: senaivarzeagrande
+
+rafael:
+  nome: Rafael Koch
+  rg_ie: 8232248776
+  cpf: 10643719903
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Analista de Sistemas
+  endereco: Rua Brigadeiro Franco, 53
+  bairro: Centro
+  complemento: Apartamento 50
+  email:
+         - rafaelz89@gmail.com
+  telefone:
+            - 91311140
+            - 88567788
+  observacoes: Cliente quer que desconte os servicos direto do salario
+  spc: false
+  entidade: senai
+  data_nascimento: 1989-03-01
+  liberado_pelo_dr: false
+  funcionario_ativo: true
+  industriario: false
+  unidade: senaivarzeagrande
+
+julio:
+  nome: Julio Pinheiro
+  rg_ie: 8232248776
+  cpf: 55057918915
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Design
+  endereco: Av. Sete de Setembro, 5123
+  bairro: Centro
+  complemento: Apartamento 342
+  email:
+         - julio.zomb1e@gmail.com
+  telefone:
+            - 91311140
+            - 88567788
+  observacoes: Cliente quer que desconte os servicos direto do salario
+  spc: false
+  entidade: senai
+  liberado_pelo_dr: false
+  funcionario_ativo: true
+  industriario: false
+  unidade: senaivarzeagrande
+
+fabio:
+  nome: Fabio Krugger
+  rg_ie: 8232248776
+  cpf: 81308655991
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Programador
+  endereco: Av. Sete de Setembro, 4343
+  bairro: Centro
+  complemento: Apartamento 12
+  email:
+         - fabio@gmail.com
+  telefone:
+            - 91311140
+            - 88567788
+  observacoes: Cliente quer que desconte os servicos direto do salario
+  spc: false
+  entidade: sesi
+  liberado_pelo_dr: false
+  funcionario_ativo: true
+  industriario: false
+  unidade: sesivarzeagrande
+
+jansen:
+  nome: Jansen Nunes
+  rg_ie: 834232342
+  cpf: 39768330104
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Programador
+  endereco: Av. Republica Argentina, 4343
+  bairro: Portão
+  complemento: Apartamento 34
+  email:
+         - nunes@gmail.com
+  telefone:
+            - 323234240
+            - 88524248
+  observacoes: Cliente quer que desconte os servicos direto do salario
+  spc: false
+  entidade: senai
+  liberado_pelo_dr: false
+  industriario: false
+  unidade: senaivarzeagrande
+
+andre:
+  nome: André Tissot
+  rg_ie: 986532215
+  cpf: 85761557290
+  cliente: true
+  funcionario: true
+  fornecedor: false
+  tipo_pessoa: 1
+  cargo: Analista de Sistemas
+  endereco: Av. Sete de Setembro, 4343
+  bairro: Centro
+  complemento: Apartamento 12
+  email:
+       - fabio@gmail.com
+  telefone:
+          - 91311140
+          - 88567788
+  spc: false
+  entidade: senai
+  liberado_pelo_dr: false
+  unidade: senaivarzeagrande
+
+fornecedor:
+    nome: "Curitiba Talhadeiras S.A."
+    fornecedor: true
+    razao_social: Talhadeiras Motorizadas
+    tipo_pessoa: 2
+    endereco: "Dos tabagés"
+    spc: false
+    Funcionario_ativo: false
+    cnpj: "68.558.935/0001-21"
+    numero: "1312"
+    entidade: sesi
+    agencia: prainha
+    banco: banco_caixa
+    unidade: sesivarzeagrande

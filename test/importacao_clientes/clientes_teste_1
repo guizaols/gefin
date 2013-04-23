@@ -1,0 +1,28 @@
+5222203	VILA BOA	GO
+5222302	VILA PROPICIO	GO
+5300108	BRASILIA	DF
+1111111	SANTO ANTONIO DO LESTE	MT
+0000000	S�O PAULO	SP
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+COPY cliente (codcli, idcli, identcli, emailpes, endres, bairrores, compres, codcidres, cepres, telres, telcel, endcom, bairrocom, compcom, codcidcom, cepcom, telcom, emailcom, nomcont, telcont, emailcont, tipocli, atraso, spc, fantasia) FROM stdin;
+19264	389.711.359-72    	ELIZABETH ANHOLETO		AV. PRES. ARTHUR BERNARDES, QD-15	AP-A02JD. AEROPORTO		\N	        	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19265	453.114.041-91    	LUIZ RODRIGUES SOUZA		AV. HI, Q. 6, C. 3	LOTEAM. HELIO P. ARRUDA		\N	78155530	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19266	240.817.011-72    	BENEDITO GONCALVES DE SOUZA		R. MOURITE, 120	PEDREGAL		\N	78000000	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19267	469.185.401-06    	VANILDO DE MELLO FILHO		R. DR. JONAS DA COSTA, 387	VERDAO		\N	78030510	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+19268	346.389.701-68    	ORCINO XAVIER DA COSTA		R. MARAJO, 179	PEDREGAL		\N	        	                	                				\N	        	                		\N	\N	\N	F	0	N	\N
+\.
+
+
+--
+-- TOC entry 2548 (class 0 OID 37576)
+-- Dependencies: 1569
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: admin
+--

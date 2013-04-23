@@ -1,0 +1,18 @@
+<% content_for :titulo, 'Contas a Receber - Evasão' %>
+
+<% form_remote_tag :url => evasao_relatorios_path do %>
+  <table>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Serviço', auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','pdf',true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Pesquisar" %> <%= image_tag('loading.gif', :id => "loading_form", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>

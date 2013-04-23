@@ -1,0 +1,66 @@
+<% remote_form_for :recebimento_de_conta, :url => {:action => 'efetuar_renegociacao', :controller => 'projecoes', :recebimento_de_conta_id => @conta.id}, :loading => "Element.show('loading_reneg');$('recebimento_de_conta_submit').disable();", :success => "Element.hide('loading_reneg');$('recebimento_de_conta_submit').enable();", :builder => TableFormBuilder do |f| %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Número de Parcelas</td><td>
+        <%= text_field_tag :numero_de_parcelas, nil, :size => '3px', :maxlength => '3' %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Vencimento</td><td>
+        <%= f.select :dia_do_vencimento, (1..30), :include_blank => true %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Entrada</td><td>
+        <%= text_field_tag :valor_da_entrada, nil, :size => '30px', :onkeypress => "return(MascaraMoeda(valor_da_entrada, \".\",\",\", event))" %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Data da entrada </td>
+      <td>
+        <label for="data_entrada_hoje"><%= radio_button_tag 'data_entrada', (params[:data_entrada] = 'hoje'), true %><b>Hoje</b></label>
+        <label for="data_entrada_amanha"><%= radio_button_tag 'data_entrada', (params[:data_entrada] = 'amanha'), false %><b>Amanhã</b></label>
+      </td>
+    </tr>
+
+  <%#= f.text_field :valor_do_documento_em_reais, :label => "Valor", :onkeypress => "return(MascaraMoeda(recebimento_de_conta_valor_do_documento_em_reais, \".\",\",\", event))" %>
+    <tr>
+      <td class="field_descriptor">Valor parcelas selecionadas</td><td>
+        <%= text_field_tag :valor_parcelas_selec, (@valor_parcelas.real.to_f / 100.0).real.to_s, :size => '30px', :onkeypress => "return(MascaraMoeda(valor_parcelas_selec, \".\",\",\", event))" %>
+      </td>
+    </tr>
+
+  <%#= render :partial => 'pagamento_de_contas/campo_historico', :locals => {:tipo => 'recebimento', :f => f, :after_update_element => "function(element, value) { $('historico').value = $('historico').value + ' - ' + $('recebimento_de_conta_numero_nota_fiscal').value + ' - ' + $('recebimento_de_conta_nome_pessoa').value.split(' - ').last() + ' - ' + $('recebimento_de_conta_nome_servico').value}"} %>
+
+    <tr>
+      <td class="field_descriptor">Histórico</td>
+      <td>
+        <%= divs_para_explicar_auto_complete('conta_historico_renegociacao') %>
+        <%= text_area_tag :historico_renegociacao, h(@historico), {:simple_tag => true, :id => "historico_renegociacao", :size => "60x4"}.merge(hash_com_opcoes_do_auto_complete('conta_historico_renegociacao')) %>
+        <div id="historico_renegociacao_auto_complete" class="auto_complete_para_conta"></div>
+        <%= auto_complete_field('historico_renegociacao', :url => auto_complete_for_historico_historicos_path, :indicator => "loading_historico_reneg", :with => "'argumento=' + $('historico_renegociacao').value") %>
+        <%= image_tag 'loading.gif', :id => "loading_historico_reneg", :style => "display:none" %>
+      </td>
+    </tr>
+
+
+    <tr id="tr_para_senha" style="display: none">
+      <td class="field_descriptor">Senha para Liberação</td>
+      <td>
+        <%= password_field_tag :senha, nil, :size => 15 %>
+        <% @parcela_para_renegociar.each do |parc_id| %>
+          <%= hidden_field_tag 'parcelas_id[]', parc_id %>
+        <% end %>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <%= f.submit "Salvar" %>
+        <%= button_to_function 'Cancelar', 'Modalbox.hide()' %><%= image_tag('loading.gif', :id => "loading_reneg", :style => "display:none") %>
+      </td>
+    </tr>
+  </table>
+<% end %>

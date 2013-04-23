@@ -1,0 +1,44 @@
+<% content_for :titulo, 'Contas a Receber - Cheques' %>
+<% form_remote_tag :url => contabilizacao_de_cheques_relatorios_path do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Filtro</td>
+      <td>
+        <%= select_tag "busca[filtro]", options_for_select([['À vista',1],['Pré-datados',2], ['Devolvidos', 3],['Cheques Baixados',4]])  %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Situação </td>
+      <td>
+        <%= select_tag "busca[situacao]", options_for_select([['',''],['Pendente', Cheque::GERADO], ['Baixado', Cheque::BAIXADO]])  %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Ordenação </td>
+      <td>
+        <%= select_tag "busca[ordenacao]", options_for_select([['Data Vencimento', 'parcelas.data_vencimento'], ['Ordem Alfabética', 'cheques.nome_do_titular']])  %>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="field_descriptor">Período </td>
+      <td>
+        <label for="busca_periodo_recebimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'recebimento'), true %><b>Recebimento</b></label>
+        <label for="busca_periodo_vencimento"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'vencimento'), false %><b>Vencimento</b></label>
+        <label for="busca_periodo_baixa"><%= radio_button_tag 'busca[periodo]', (params[:busca][:periodo] = 'baixa'), false %><b>Baixa</b></label>
+      </td>
+    </tr>
+    <tr id="tr_datas">
+      <td class="field_descriptor">De</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Tipo de Relatório</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','pdf',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag "Pesquisar" %></td></tr>
+  </table>
+<% end %>
+<% javascript_tag do %>
+  mostrar_pesquisa_por_tipo_situacao();
+<% end %>

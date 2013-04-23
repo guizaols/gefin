@@ -1,0 +1,14 @@
+<% listagem_table :new => new_compromisso_path+'?tipo=1', :permissoes => Perfil::ManipularControleDeCompromissos,:headers => ['Contrato', 'Cliente', 'Descrição', 'Data'] do %>
+  <% unless @compromissos.blank? %>
+    <% for compromisso in @compromissos %>
+      <% listagem_tr :edit => edit_compromisso_path(compromisso), :permissoes => Perfil::ManipularControleDeCompromissos, :destroy => compromisso do %>
+        <td><%=link_to h(compromisso.conta.numero_de_controle), recebimento_de_conta_path(compromisso.conta.id) %></td>
+        <td><%=link_to h(compromisso.conta.pessoa.nome), pessoa_path(compromisso.conta.pessoa.id) %></td>
+        <td><%=h compromisso.descricao %></td>
+        <td><%=h compromisso.data_agendada %></td>
+      <% end %>
+    <% end %>
+  <% else %>
+    <tr><td> Não existem lançamentos para o dia de hoje!</td></tr>
+  <% end %>
+<% end %>

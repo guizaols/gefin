@@ -1,0 +1,50 @@
+primeira_conta:
+  unidade: senaivarzeagrande
+  agencia: centro
+  numero_conta: 2345
+  digito_verificador: 3
+  identificador: <%= ContasCorrente::BANCO %>
+  descricao: Conta do Senai Várzea Grande
+  ativo: true
+  data_abertura: <%= Date.today - 150 %>
+  data_encerramento: <%= Date.today - 5 %>
+  saldo_inicial: 1000
+  saldo_atual: 5000
+  tipo: 1
+  conta_contabil: plano_de_contas_ativo_contribuicoes
+
+segunda_conta:
+  unidade: sesivarzeagrande
+  agencia: prainha
+  numero_conta: 5433
+  digito_verificador: 0
+  identificador: <%= ContasCorrente::CAIXA %>
+  descricao: Conta do Sesi Várzea Grande
+  ativo: false
+  data_abertura: <%= Date.today - 15 %>
+  saldo_inicial: 100
+  saldo_atual: 10000
+  tipo: 1
+  conta_contabil: plano_de_contas_ativo_despesas
+
+conta_caixa:
+  unidade: senaivarzeagrande
+  descricao: Conta Caixa do Senai Várzea Grande
+  ativo: true
+  identificador: <%= ContasCorrente::CAIXA %>
+  data_abertura: <%= Date.today - 10 %>
+  saldo_inicial: 100
+  saldo_atual: 50000
+  tipo: 1
+  conta_contabil: plano_de_contas_ativo_despesas_senai
+
+#Esta fixture deve ter o mínimo possível de dados
+conta_vazia:
+  identificador: <%= ContasCorrente::BANCO %>
+  unidade: senaivarzeagrande
+  descricao: Conta Caixa - SENAI-VG
+  conta_contabil: plano_de_contas_passivo_a_pagar
+  agencia: prainha
+  numero_conta: 34445
+  digito_verificador: 1
+  

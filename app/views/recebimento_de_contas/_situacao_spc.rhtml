@@ -1,0 +1,9 @@
+<span id='situacao_spc' style='color:red;'>
+  <% if @recebimento_de_conta.pessoa.spc == false %> 
+    <%= button_to_remote("Incluir no SPC", :url => {:action => :situacao_spc}, :loading => "$('loading_change_situation').show()", :complete => "$('loading_change_situation').hide()") if current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas) %>
+    <%= image_tag 'loading.gif', :id => "loading_change_situation", :style => "display:none" %>
+  <% else %>
+    <%= button_to_remote("Excluir do SPC", :url => {:action => :situacao_spc}, :loading => "$('loading_change_situation').show()", :complete => "$('loading_change_situation').hide()") if current_usuario.possui_permissao_para(Perfil::ManipularDadosDeRecebimentoDeContas)%> Cliente no SPC
+    <%= image_tag 'loading.gif', :id => "loading_change_situation", :style => "display:none" %>
+  <% end %>
+</span>

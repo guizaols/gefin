@@ -1,0 +1,105 @@
+<% content_for :titulo, 'Controle de Cartões' %>
+
+<% form_tag cartoes_path, :method => :get do %>
+  <table>
+    <%= campo_de_cadastro 'Busca Ordenada', (text_field_tag 'busca[texto]', params[:busca][:texto]) %>
+    <%= campo_de_cadastro 'Cartão/Operadora', (select_tag 'busca[bandeira]', options_for_select(Cartao.retorna_bandeiras_para_select,
+      :selected => (params[:busca][:bandeira].to_i rescue ''))) %>
+    <%= campo_de_cadastro 'Data de Recebimento', (campo_para_busca_por_faixa_de_data 'data_de_recebimento') %>
+    <%= campo_de_cadastro 'Situação', (select_tag 'busca[situacao]', options_for_select([['Pendente', Cartao::GERADO], ['Baixado', Cartao::BAIXADO]],
+        :selected => (params[:busca][:situacao].to_i rescue Cartao::GERADO)), :onchange => "mostraOuEscondeElementosEmCheques();") %>
+    <tr id="tr_datas" style="<%= (params[:busca][:situacao].to_i rescue Cartao::GERADO) != Cartao::BAIXADO ? 'display:none' : '' %>">
+      <td class="field_descriptor">Data do Depósito</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'data_do_deposito' %>
+      </td>
+    </tr>
+    <tr><td></td><td><%= submit_tag 'Pesquisar' %></td></tr>
+  </table>
+<% end %>
+
+<% form_remote_tag :url => (params[:busca][:situacao] == Cartao::BAIXADO.to_s ? estornar_cartoes_path : baixar_cartoes_path), :loading => "Element.show('loading_form_teste');", :success => "Element.hide('loading_form_teste');" do %>
+  <% if @cartoes.length > 0 %>
+    <% listagem_table :headers => ['Sel', 'Recebimento', 'Controle', 'Cliente', 'Titular', 'Bandeira', 'Situação', 'Valor'] do %>
+      <% for cartao in @cartoes %>
+        <tr class="<%= cycle 'impar', 'par' %>" title="<%=h cartao.data_do_deposito? ? "Esta transação foi baixada em #{cartao.data_do_deposito}." : "Esta transação ainda não baixada." %>">
+          <td>
+            <%= check_box_tag 'cartoes[ids][]', cartao.id, false,
+              :id => "cb_#{cartao.id}", :class => 'selecionados', :lang => cartao.parcela.valor_liquido, :onchange => "somaValorEmCheques('total_valores', this.id);"  %>
+          </td>
+          <td><%=h data_formatada(cartao.parcela.data_da_baixa) %></td>
+          <td><%=h cartao.parcela.conta.numero_de_controle %></td>
+          <td><%=h cartao.parcela.conta.nome_pessoa %></td>
+          <td><%=h cartao.nome_do_titular %></td>
+          <td><%=h cartao.bandeira_verbose %></td>
+          <td><%=h cartao.situacao_verbose %></td>
+          <td><%=h preco_formatado(cartao.parcela.valor_liquido, 'R$') %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>
+          <%= link_to_function 'Todos' do |page| page << "somaTodosEmCheques('total_valores', true);" end %>
+          <br />
+          <%= link_to_function 'Nenhum' do |page| page << "somaTodosEmCheques('total_valores', false);" end %>
+        </td>
+        <td colspan="5" align="right"><b>Total de valores selecionados em R$:</b></td><td><%= text_field_tag 'total_valores', 0, :disabled => true, :size => 10 %></td>
+      </tr>
+    <% end %>
+
+    <% if current_usuario.possui_permissao_para(Perfil::ManipularControleDeCartoes) %>
+      <%= (link_to_function 'Baixar', :id => :link_baixar do |page| page.toggle 'table_baixa'; end) if params[:busca][:situacao] == Cartao::GERADO.to_s %>
+      <% if params[:busca][:situacao] == Cartao::BAIXADO.to_s %>
+        <%= (link_to_function 'Estornar', :id => :link_estornar do |page| page.toggle 'estornar_cartoes'; end) if params[:busca][:situacao] == Cartao::BAIXADO.to_s %>
+      <% end %>
+      <%= image_tag('loading.gif', :id => "loading_form_teste", :style => "display:none") %>
+    <% end %>
+
+  <% else %>
+    <p><%= mensagem_da_pesquisa(params[:busca]) %></p>
+  <% end %>
+
+  <% if params[:busca][:situacao] == Cartao::GERADO.to_s %>
+    <table id="table_baixa" style="display:none;">
+      <%= campo_de_cadastro 'Data do Depósito', (calendar_date_select_tag_com_mascara 'cartoes[data_do_deposito]', Date.today.to_s_br, :onchange => "$('cartoes_historico').value = 'VLR REF RECEBTO FATURA DE CARTÃO DATA ' + this.value;") %>
+      <%= campo_de_cadastro 'Conta Corrente da Unidade',
+        auto_complete_para_qualquer_campo_tag('conta_corrente_id', auto_complete_for_conta_corrente_contas_correntes_path,
+        (params[:conta_corrente_id] rescue nil), (params[:conta_corrente_nome] rescue nil),
+        {:complemento_do_after_update_element => "$('cartoes_conta_contabil_nome').value = value.getAttribute('lang').split('_')[1];
+          $('cartoes_conta_contabil_id').value = value.getAttribute('lang').split('_')[0];
+          Element.show('tr_de_conta_contabil_da_conta_corrente');
+          Element.highlight('tr_de_conta_contabil_da_conta_corrente');",
+          :opcoes_para_text_field => {:size => 50}}) %>
+      <tr id="tr_de_conta_contabil_da_conta_corrente" style="display:none">
+        <td class="field_descriptor">Conta Contábil</td>
+        <td>
+          <%= hidden_field_tag 'cartoes[conta_contabil_id]', (params[:cartoes][:conta_contabil_id] rescue nil) %>
+          <%= text_field_tag 'cartoes[conta_contabil_nome]', (params[:cartoes][:conta_contabil_nome] rescue nil), :size => 50, :readonly => true %>
+        </td>
+      </tr>
+      <%= campo_de_cadastro 'Histórico', (text_area_tag 'cartoes[historico]', "VLR REF RECEBTO FATURA DE CARTÃO DATA #{Date.today.to_s_br}", :id => 'cartoes_historico', :size => '30x5') %>
+      <tr><td></td><td><%= submit_tag 'Baixar' %></td></tr>
+    </table>
+  <% end %>
+
+  <% if params[:busca][:situacao] == Cartao::BAIXADO.to_s %>
+    <div id="estornar_cartoes" style="display:none">
+      <table>
+        <tr>
+          <td class="field_descriptor">Data do Estorno</td>
+          <td><%= text_field_tag :data_estorno, Date.today.to_s_br, :size => 10, :maxlength => 10, :onkeyup => "$(AplicaMascara('XX/XX/XXXX', this));" %></td>
+        </tr>
+        <%= campo_de_cadastro 'Justificativa', (text_area_tag 'justificativa', nil, :size => '30x5') %>
+          <tr>
+            <td></td>
+            <td>
+              <%= submit_tag 'Salvar' %>
+              <%= button_to_function 'Cancelar', "$('estornar_cheques').hide(); " %>
+            </td>
+          </tr>
+      </table>
+    </div>
+  <% end %>
+<% end %>
+
+<%= javascript_tag "mostraOuEscondeElementosEmCheques();" %>
+<%= mascara_para_valor('total_valores') %>

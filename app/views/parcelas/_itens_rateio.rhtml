@@ -1,0 +1,25 @@
+<tr class="item_rateio" >
+  <td>
+    <%= auto_complete_para_qualquer_campo_tag("dados_do_rateio[#{indice.blank? ? 'index': indice}][conta_contabil_id]",auto_complete_for_conta_contabil_plano_de_contas_path,(conta_contabil_id rescue nil),(nome_conta_contabil rescue nil),{:analisar_conta=>true,:opcoes_para_text_field=>{:size => 30}}) %>
+  </td>
+  <td>
+    <%= auto_complete_para_qualquer_campo_tag("dados_do_rateio[#{indice.blank? ? 'index': indice}][unidade_organizacional_id]",auto_complete_for_unidade_organizacional_unidades_organizacionais_path,(unidade_organizacional_id rescue nil), (nome_unidade_organizacional rescue nil), {:opcoes_para_text_field => {:size => 30}}) %>
+  </td>
+  <td>
+    <%= auto_complete_para_qualquer_campo_tag("dados_do_rateio[#{indice.blank? ? 'index': indice}][centro_id]", auto_complete_for_centro_centros_path, (centro_id rescue nil), (nome_centro rescue nil), {:complemento_dos_params => "+ '&unidade_organizacional_id=' + $('dados_do_rateio_#{indice.blank? ? 'index': indice}_unidade_organizacional_id').value", :opcoes_para_text_field => {:size => 30}}) %>
+  </td>
+  <td>
+    <%= text_field_tag "dados_do_rateio[#{indice.blank? ? 'index': indice}][valor]", (valor.real.to_s rescue nil), :size => 10, :class => "valores", :onblur => "valor_total_do_rateio();", :onkeypress => "return(MascaraMoeda(dados_do_rateio_#{indice.blank? ? 'index': indice}_valor, \'.\',\',\', event))" %>
+  </td>
+  <td>
+    <%= (link_to_function 'Excluir' do |page|
+        page << ""
+        page << "var resultado_confirmacao = confirm('Tem certeza que excluir este item?');"
+        page << "if (resultado_confirmacao == true) {"
+        page << "$(this).up('.item_rateio').remove();"
+        page << "if ($('tbody_itens_do_rateio').empty()) { Element.hide('itens_rateio'); }"
+        page << "}"
+        page << "valor_total_do_rateio();"
+      end) if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && !@parcela.baixada && @parcela.situacao != Parcela::ESTORNADA %>
+  </td>
+</tr>

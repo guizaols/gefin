@@ -1,0 +1,17 @@
+<% form_for(@historico) do |f| %>
+  <%= error_messages_for :historico, :object_name => 'este histórico padrão' %>
+
+  <table>
+    <tr>
+      <th>Descrição</th>
+      <td>
+        <p><%= f.text_field :descricao %></p>
+      </td>
+    </tr>
+    <tr>
+      <td><p><%= f.submit "Salvar" %></p></td>
+    </tr>
+  </table>
+
+<% end %>
+<%= link_to 'Voltar', historicos_path %>

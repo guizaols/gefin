@@ -1,0 +1,19 @@
+<% form_for [@pessoa,@dependente], :builder => TableFormBuilder do |f| %>
+  <%= error_messages_for :dependente, :object_name => 'este ' + @pessoa.caption_dependente_beneficiario.downcase %>
+  <table>
+    <%= f.text_field :nome %>
+    <% if @pessoa.fisica? %>
+      <%= f.text_field :nome_do_pai %>
+      <%= f.text_field :nome_da_mae, :label => 'Nome da mãe' %>
+    <% end %>
+
+    <tr>
+      <td class="field_descriptor">Data de nascimento</td>
+      <td><%= calendar_date_select_com_mascara(f, "data_de_nascimento") %></td>
+    </tr>
+
+    <tr><td></td><td><p><%= f.submit "Salvar" %> | <%=link_to 'Voltar', pessoa_path(@pessoa.id) %></p> </td></tr>
+  </table>
+
+<% end %>
+

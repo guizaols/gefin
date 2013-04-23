@@ -1,0 +1,76 @@
+<% total_geral = 0 %>
+
+<div style="text-align: center;width: auto; font-size: 12px;">
+  <b>Período: <%=h params[:busca][:vendido_min].blank? ? '' : params[:busca][:vendido_min] %> a <%=h params[:busca][:vendido_max].blank? ? '' : params[:busca][:vendido_max] %></b>
+</div>
+<br /><br />
+
+<table border="1px" style="font-size: 11px;" width="100%">
+  <tr align="center" style="font-size: 12px;">
+    <th style="width: 350px">Cliente</th>
+    <th style="width: 250px">Contrato</th>
+    <th style="width: 80px">Data Venda</th>
+    <th style="width: 80px">Dia Vcto</th>
+    <th style="width: 80px">Inclusão</th>
+    <th style="width: 80px">N° Parcelas</th>
+    <th style="width: 150px">Valor</th>
+    <th style="width: 300px">Vendedor</th>
+  </tr>
+
+  <% @parcelas.each do |grupo, parcelas| %>
+    <% contas = [] %>
+    <% total_grupo = 0 %>
+
+    <tr align="left" style="font-size: 12px;">
+      <td colspan="13">
+	<b>Entidade:</b>
+        <%=h parcelas.first.unidade.entidade.nome %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b>Unidade:</b>
+        <%=h parcelas.first.unidade.nome %>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <b>Serviço:</b>
+        <%=h grupo %>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<b>Modalidade:</b>
+        <%=h parcelas.first.conta.servico.modalidade %>
+      </td>
+    </tr>
+
+    <% parcelas.each do |parcela| %>
+        <% contas << parcela.conta %>
+    <% end %>
+
+    <% contas.uniq.each do |conta| %>
+      <tr>
+	<td style="text-align: left"><%=h conta.pessoa.nome %></td>
+        <td style="text-align: left"><%=h conta.numero_de_controle %></td>
+        <td style="text-align: center"><%=h conta.data_venda %></td>
+        <td style="text-align: center"><%=h conta.dia_do_vencimento %></td>
+        <td style="text-align: center"><%=h conta.data_venda  %></td>
+        <td style="text-align: center"><%=h conta.numero_de_parcelas %></td>
+        <td style="text-align: center"><%=h preco_formatado(conta.valor_do_documento, 'R$') %></td>
+        <td style="text-align: left"><%=h conta.nome_vendedor %></td>
+      </tr>
+      <% total_grupo += conta.valor_do_documento if conta.valor_do_documento %>
+    <% end %>
+
+    <tr style="font-size: 12px">
+      <td colspan="3"></td>
+      <td colspan="2" style="text-align: center"><b>Total Atividade ==></b></td>
+      <td colspan="2"><b><%=h preco_formatado(total_grupo, 'R$') %></b></td>
+      <td></td>
+    </tr>
+
+    <% total_geral += total_grupo %>
+  <% end %>
+
+  <tr style="font-size: 12px">
+    <td colspan="3"></td>
+    <td colspan="2" style="text-align: center"><b>Total Geral ==></b></td>
+    <td colspan="2"><b><%=h preco_formatado(total_geral, 'R$') %></b></td>
+    <td></td>
+  </tr>
+
+</table>
+<br />

@@ -1,0 +1,14 @@
+<% content_for :titulo, 'Convênios' %>
+
+<% listagem_table :new => new_convenio_path, :permissoes => Perfil::ManipularDadosDosConvenios, :headers => ['Tipo de Convênio', 'Número', 'Tipo de Serviço', 'Conta Corrente','Quantidade de Trasmissão'] do %>
+
+  <% for convenio in @convenios %>
+    <% listagem_tr :edit => edit_convenio_path(convenio), :destroy => convenio, :permissoes => Perfil::ManipularDadosDosConvenios do %>
+      <td><%=h convenio.tipo_convenio_verbose %></td>
+      <td><%=h convenio.numero %></td>
+      <td><%=h convenio.tipo_de_servico %></td>
+      <td><%=h convenio.contas_corrente.descricao rescue nil %></td>
+      <td><%=h convenio.quantidade_de_trasmissao %></td>
+    <% end %>
+  <% end %>
+<% end %>

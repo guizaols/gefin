@@ -1,0 +1,22 @@
+<% content_for :titulo, 'Operações em Parcelas' %>
+
+<% form_remote_tag :url => pesquisa_para_parcelas_operacoes_recebimento_de_contas_path, :id => "form_pesquisa_para_envio_parcelas_dr", :loading => "Element.show('loading_envio_dr');", :success => "Element.hide('loading_envio_dr');" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Data Inicial</td>
+      <td><%= calendar_date_select_tag_com_mascara "data_inicial", params["data_inicial"].to_s_br %></td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Data Final</td>
+      <td><%= calendar_date_select_tag_com_mascara "data_final", params["data_final"].to_s_br %></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_envio_dr", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>
+
+<% form_remote_tag :url => efetua_parcelas_operacoes_recebimento_de_contas_path, :loading => "Element.show('loading_envio_dr_action');", :success => "Element.hide('loading_envio_dr_action');" do %>
+  <div id="pesquisa_para_envio_parcelas_dr"></div>
+<% end %>

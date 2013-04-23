@@ -1,0 +1,48 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:data_de_recebimento_min], params[:busca][:data_de_recebimento_max]) %>}
+\fontsize{7pt}{12pt}\selectfont
+\begin{longtable}{|p{3.0cm}|p{3.0cm}|p{3.0cm}|p{3.5cm}|p{2.0cm}|p{2.0cm}|}
+\hline
+
+\textbf{Número de Controle} &
+\textbf{Cliente} &
+\textbf{Serviço} &
+\textbf{Data de Recebimento Cliente} &
+\textbf{Data de Depósito} &
+\textbf{Valor} \\
+
+\hline
+<% valor_total = 0 %>
+<% @cartoes.group_by(&:bandeira_verbose).each_pair do |k, v| %>
+
+\multicolumn{6}{|c|}{\textbf{Operadora:} <%= k %>} \\
+
+\hline
+<% valor_total_cartao = 0 %>
+<% v.each do |cartao| %>
+
+<%=hl cartao.parcela.conta.numero_de_controle %> &
+<%=hl cartao.parcela.conta.pessoa.nome %> &
+<%=hl cartao.parcela.servico %> &
+<%=hl cartao.parcela.data_da_baixa %> &
+<%=hl cartao.data_do_deposito %> &
+<%=hl preco_formatado(cartao.parcela.valor_liquido, 'R$') %> \\
+<% valor_total_cartao +=  cartao.parcela.valor_liquido %>
+\hline
+<% end %>
+
+<% valor_total += valor_total_cartao %>
+\multicolumn{5}{|r|}{Total..>>} &
+<%=hl preco_formatado(valor_total_cartao, 'R$') %>\\
+\hline
+
+<% end %>
+\multicolumn{5}{|r|}{\textbf{Total..>>}} &
+\textbf{<%=hl preco_formatado(valor_total, 'R$') %>}\\
+\hline
+
+\end{longtable}
+\end{center}

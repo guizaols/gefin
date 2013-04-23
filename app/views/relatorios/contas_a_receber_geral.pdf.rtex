@@ -1,0 +1,101 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo]) %>}
+\fontsize{8pt}{12pt}\selectfont
+
+\begin{longtable}{|p{5.5cm}|p{5.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.6cm}|p{1.6cm}|p{5.5cm}|p{2.5cm}|}
+\hline
+\textbf{Cliente} & \textbf{Contrato} & \textbf{Juros} & \textbf{Multa} & \textbf{Honorário} & \textbf{Protesto} & \textbf{Outros} & \textbf{Desconto} & \textbf{Boleto} & \textbf{Vcto} & \textbf{Data Rec.} & \textbf{Vendedor} & \textbf{Val. Receb.} \\
+\hline
+
+<% total_geral = 0 %>
+<% total_geral_juros = 0 %>
+<% total_geral_multa = 0 %>
+<% total_geral_honorarios = 0 %>
+<% total_geral_protesto = 0 %>
+<% total_geral_outros = 0 %>
+<% total_geral_desconto = 0 %>
+<% total_geral_taxa_boleto = 0 %>
+<% cont = 0 %>
+
+<% @parcelas.each do |grupo, parcelas| %>
+    <% cont += 1 %>
+    \multicolumn{4}{|c}{\textbf{Entidade:} <%=hl parcelas.first.unidade.entidade.nome %>} &
+    \multicolumn{4}{c}{\textbf{Unidade:} <%=hl parcelas.first.unidade.nome %>} &
+    \multicolumn{3}{c}{\textbf{Serviço:} <%=hl grupo %>} &
+    \multicolumn{2}{c|}{\textbf{Modalidade:} <%=hl parcelas.first.conta.servico.modalidade %>} \\
+    \hline
+
+    <% total_multa = 0 %>
+    <% total_juros = 0 %>
+    <% total_desconto = 0 %>
+    <% total_honorarios = 0%>
+    <% total_protesto = 0%>
+    <% total_taxa_boleto = 0%>
+    <% total_outros = 0 %>
+    <% total_grupo = 0 %>
+
+    <% parcelas.each do |parcela| %>
+        <% cont += 1 %>
+        <%=hl parcela.conta.pessoa.nome %> &
+        <%=hl parcela.conta.numero_de_controle %> &
+        <%=hl preco_formatado_com_ponto(parcela.valor_dos_juros) %> &
+        <%=hl preco_formatado_com_ponto(parcela.valor_da_multa) %> &
+        <%=hl preco_formatado_com_ponto(parcela.honorarios) %> &
+        <%=hl preco_formatado_com_ponto(parcela.protesto) %> &
+        <%=hl preco_formatado_com_ponto(parcela.outros_acrescimos) %> &
+        <%=hl preco_formatado_com_ponto(parcela.valor_do_desconto) %> &
+        <%=hl preco_formatado_com_ponto(parcela.taxa_boleto) %> &
+        <%=hl parcela.data_vencimento %> &
+        <%=hl parcela.data_da_baixa %> &
+        <%=hl parcela.conta.nome_vendedor %> &
+        <%=hl preco_formatado(parcela.valor_liquido, 'R$') %> \\
+
+        <% total_juros += parcela.valor_dos_juros %>
+        <% total_multa += parcela.valor_da_multa %>
+        <% total_honorarios += parcela.honorarios %>
+        <% total_protesto += parcela.protesto %>
+        <% total_outros += parcela.outros_acrescimos %>
+        <% total_desconto += parcela.valor_do_desconto %>
+        <% total_taxa_boleto += parcela.taxa_boleto %>
+        <% total_grupo += parcela.valor_liquido %>
+        \hline
+
+        <% if cont > 35 %>
+            \newpage
+            <% cont = 0 %>
+        <% end %>
+    <% end %>
+
+    \multicolumn{13}{|r|}{\textbf{Total Atividade...>> <%=hl preco_formatado(total_grupo, 'R$') %>}} \\
+    \hline
+
+    <% total_geral_juros += total_juros %>
+    <% total_geral_multa += total_multa %>
+    <% total_geral_honorarios += total_honorarios %>
+    <% total_geral_protesto += total_protesto %>
+    <% total_geral_outros += total_outros %>
+    <% total_geral_desconto += total_desconto %>
+    <% total_geral_taxa_boleto += total_taxa_boleto %>
+    <% total_geral += total_grupo %>
+
+<% end %>
+
+\multicolumn{2}{|r}{\textbf{Totais...>>}} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_juros, 'R$') %>} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_multa, 'R$') %>} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_honorarios, 'R$') %>} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_protesto, 'R$') %>} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_outros, 'R$') %>} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_desconto, 'R$') %>} &
+\multicolumn{1}{r}{<%=hl preco_formatado(total_geral_taxa_boleto, 'R$') %>} &
+\multicolumn{3}{r}{} &
+\multicolumn{1}{r|}{<%=hl preco_formatado(total_geral, 'R$') %>} \\
+\hline
+
+\end{longtable}
+\end{center}

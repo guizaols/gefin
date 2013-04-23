@@ -1,0 +1,76 @@
+<% javascript_tag do %>
+  var controle_de_itens = 1;
+  var controle=0;
+  function criaItemRateio(partial,numero_de_itens)
+  {
+
+  if(numero_de_itens > 0 && controle != 1)
+  {
+  controle_de_itens = numero_de_itens + 1;
+  controle = 1;
+  }
+  var view;
+  view = partial.replace(/index/g,controle_de_itens);
+  var elemento = document.getElementById('tbody_itens_do_rateio');
+  new Insertion.Bottom(elemento, view);
+  controle_de_itens ++;
+  verificaSeElementoEstaVisivel($('itens_rateio'));
+  }
+<% end %>
+
+<% content_for :titulo, "Rateio" %>
+
+<% form_tag @conta.is_a?(PagamentoDeConta) ? gravar_rateio_pagamento_de_conta_parcela_path(@conta.id, @parcela.id) : gravar_rateio_recebimento_de_conta_parcela_path(@conta.id, @parcela.id), :method => :get do %>
+  <%= error_messages_for :parcela %>
+  <br />
+
+  <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && @parcela.situacao != Parcela::ESTORNADA %>
+    <p>
+      <b>Itens do Rateio</b> 
+      <%= (link_to_function 'Incluir' do |page| page << link_para_imposto_rateio('rateio', @parcela) end) %>
+    </p>
+  <% end %>
+
+  <table id="itens_rateio" <%= "style=display:none" if @parcela.dados_do_rateio.blank? %> >
+    <thead>
+      <tr>
+        <td><b>Conta Contábil</b></td>
+        <td><b>Unidade</b></td>
+        <td><b>Centro</b></td>
+        <td><b>Valor</b></td>
+      </tr>
+    </thead>
+      <tfoot>
+      <tr>
+        <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && @parcela.data_da_baixa.blank? && @parcela.situacao != Parcela::ESTORNADA %>
+          <td colspan="4" style="text-align: right;"><%= link_to_function 'Incluir' do |page| page << link_para_imposto_rateio('rateio',@parcela) end %></td>
+        <% end %>
+      </tr>
+    </tfoot>
+    <tbody id="tbody_itens_do_rateio">
+      <% if @parcela.dados_do_rateio %>
+        <% @parcela.dados_do_rateio.each do |chave,conteudo| %>
+          <%= render(:partial => 'parcelas/itens_rateio', :locals => { :valor => conteudo["valor"], :indice => chave, :conta_contabil_id => conteudo["conta_contabil_id"], :nome_centro => conteudo["centro_nome"], :nome_conta_contabil => conteudo["conta_contabil_nome"], :nome_unidade_organizacional => conteudo["unidade_organizacional_nome"], :centro_id => conteudo["centro_id"], :unidade_organizacional_id => conteudo["unidade_organizacional_id"], :data_da_baixa => @parcela.data_da_baixa }) %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+  <p>
+    <b>Valor da Parcela:</b>R$
+    <span id="valor_da_parcela" class="valor_rateio_invalido"><%= format("%.2f", @parcela.valor/100.0) %></span>
+    <b>Valor do Rateio:</b>R$
+    <span id="soma_total_do_rateio" class="valor_rateio_invalido"> </span>
+  </p>
+  <%=  hidden_field_tag "replicar_para_todos", 0%>
+  <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && @parcela.situacao != Parcela::ESTORNADA %>
+    <% if @parcela.numero == '1' && @conta.numero_de_parcelas > 1 %>
+      <%= submit_tag "Enviar", :onclick => "confirmarAlteracao();" %>
+    <% else %>
+      <%= submit_tag "Enviar" %>
+    <% end %> |
+  <% end %>
+  <%= link_to 'Voltar', (@conta.is_a?(PagamentoDeConta) ? pagamento_de_conta_path(@conta.id) : recebimento_de_conta_path(@conta.id)) %>
+  <% javascript_tag do %>
+    valor_total_do_rateio();
+  <% end %>
+<% end %>

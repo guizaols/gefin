@@ -1,0 +1,6 @@
+<h1>Contas a Receber - Clientes ao SPC</h1>
+
+<p>
+  Clique <%= link_to_remote '<b>aqui</b>', :url => clientes_ao_spc_relatorios_path, :loading => "Element.show('loading_clientes_spc');", :success => "Element.hide('loading_clientes_spc');" %> para gerar um documento no formato <i>xls</i> com todos os clientes selecionados para o SPC.<br />
+  Este documento pode ser aberto no Microsoft Office Excel 2003 ou superior. <%= loading_image('clientes_spc') %>
+</p>

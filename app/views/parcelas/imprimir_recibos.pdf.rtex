@@ -1,0 +1,57 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\textbf{RECIBO}\\
+\end{center}
+\text{Recebemos do(a) Sr(a)} <%=hl @pessoa.nome %><%=hl @pessoa.fisica? ? ", CPF #{@pessoa.cpf}" : ", CNPJ #{@pessoa.cnpj}" %>{, a importância de R\$}<%=hl preco_formatado(@parcelas.sum{|parcela| parcela.valor_liquido}) %>{(}<%=hl ((@parcelas.sum{|parcela| parcela.valor_liquido})/100.0).por_extenso_em_reais %>{), referente ao pagamento do serviço }<%=hl @conta.servico.descricao %>.\\ (Aluno: <%=hl @parcelas.first.conta.dependente.try(:nome) %>)\\
+\vspace{10pt}
+\hline
+\vspace{10pt}
+
+\begin{center}
+\begin{tabular}[cols]{|r|c|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Descrição do Valor Recebido(R\$)}}\\
+\hline
+\text{Valor: }&
+<%=hl preco_formatado(@parcelas.sum(&:valor)) %>\\
+\text{Multa: }&
+<%=hl preco_formatado(@parcelas.sum(&:valor_da_multa)) %>\\
+\text{Juros: }&
+<%=hl preco_formatado(@parcelas.sum(&:valor_dos_juros)) %>\\
+\text{Outros: }&
+<%=hl preco_formatado(@parcelas.sum(&:outros_acrescimos)) %>\\
+\text{Descontos: }&
+<%=hl preco_formatado(@parcelas.sum(&:valor_do_desconto)) %>\\
+\hline
+\textbf{Total: }&
+\textbf{<%=hl preco_formatado(@parcelas.sum(&:valor_liquido)) %>} \\
+\hline
+\end{tabular}
+\end{center}
+\vspace{20pt}\\
+\text{Parcelas pagas das seguintes formas:}
+\begin{center}
+\begin{tabular}{|p{1.0cm}|p{1.5cm}|p{2.0cm}|p{2.0cm}|p{2.5cm}|p{7.5cm}|}
+\hline
+\multicolumn{6}{|l|}{\textbf{Fornecedor/Cliente:} <%=hl @pessoa.nome %>}\\
+\hline
+\textbf{Parcela} & \textbf{Forma} & \textbf{Vencto} & \textbf{Pagto} & \textbf{Vl.Recebido} & \textbf{Observações}\\
+<% @parcelas.each do |parcela| %>
+\hline
+<%=hl parcela.parcela_mae_id.blank? ? parcela.numero : parcela.numero_parcela_filha %> & <%=hl parcela.forma_de_pagamento_verbose %> & <%=hl parcela.data_vencimento %> & <%=hl parcela.data_da_baixa %> & <%=hl preco_formatado(parcela.valor_liquido) %> & <%=hl parcela.observacoes %>\linebreak{<%=hl parcela.dados_da_baixa%>}\\
+\hline
+<% end %>
+\end{tabular}
+\end{center}
+\vspace{10pt}\\
+\text{OBS: Em caso de recebimento em cheque, só terá validade após a compensação do mesmo.}\\
+\vspace{5pt}\\
+\text{Por ser verdade firmo o presente }\\
+\text{}<%=hl @conta.unidade.localidade.nome %>{, }<%=hl @data.to_date.day %>{ de }<%=hl @data.to_date.strftime("%B") %>{ de }<%=hl @data.to_date.year %>\\
+\vspace{10pt}\\
+\\
+\overline{\textbf{Assinatura e Carimbo}}\\
+
+

@@ -1,0 +1,28 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{a4wide}
+\usepackage{setspace}
+\usepackage[top=0.2cm, bottom=2.5cm, left=1cm, right=1cm]{geometry}
+\fancyfoot{}
+\renewcommand{\familydefault}{\sfdefault}
+
+\begin{document}
+
+\begin{center}
+
+\includegraphics[scale=0.5]{<%=h RAILS_ROOT + "/public/images/#{@unidade.entidade.sigla}.png" %>}
+
+\textbf{<%=hl @conta.unidade.nome.upcase %>}
+
+\textbf{<%=hl @conta.unidade.cnpj %>}
+
+\end{center}
+
+<%= yield %>
+
+\end{document}

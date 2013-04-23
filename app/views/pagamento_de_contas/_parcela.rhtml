@@ -1,0 +1,14 @@
+<tr>
+  <th>
+    <%= calendar_date_select_tag_com_mascara "parcela[#{chave.to_s}][data_vencimento]", (params["parcela"]["#{chave.to_s}"]["data_vencimento"] rescue data_vencimento), :size => 10,
+      :readonly => [Parcela::RENEGOCIADA, Parcela::CANCELADA, Parcela::QUITADA].include?(situacao.to_i) ? true : false %>
+  </th>
+  <th>
+    <%= text_field_tag "parcela[#{chave.to_s}][valor]", (params["parcela"]["#{chave.to_s}"]["valor"] rescue valor.real.to_s), :lang => situacao.to_i, :class => "valor", :size => 5, :onchange => "valor_total_das_parcelas();",
+      :readonly => [Parcela::RENEGOCIADA, Parcela::CANCELADA, Parcela::QUITADA].include?(situacao.to_i) ? true : false, :onkeypress => "return(MascaraMoeda(parcela_#{chave.to_s}_valor, \".\",\",\", event))" %>
+  </th>
+  <th>
+    <%= label_tag situacao_verbose %>
+  </th>
+</tr>
+<%#= mascara_para_valor("parcela_#{chave.to_s}_valor") %>

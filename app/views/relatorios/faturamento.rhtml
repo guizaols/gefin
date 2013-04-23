@@ -1,0 +1,12 @@
+<% content_for :titulo, 'Faturamento' %>
+
+<% form_remote_tag :url => faturamento_relatorios_path, :loading => "Element.show('loading_fatur');", :success => "Element.hide('loading_fatur');" do %>
+  <table>
+    <%= campo_de_cadastro "Mês", (select_tag "busca[mes]", meses_para_selecao) %>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_fatur", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>

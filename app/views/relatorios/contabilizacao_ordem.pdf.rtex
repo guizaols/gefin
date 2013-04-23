@@ -1,0 +1,38 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+<%#=hl gera_filtros_dos_relatorios(params[:movimento], params[:action]) %>
+
+\center{\textbf{<%# =hl gera_periodo_relatorio(params[:movimento][:data_inicial], params[:movimento][:data_final]) %>}}
+
+<% @movimentos.each do |movimento| %>
+    \vspace{20pt}
+    \scriptsize
+    \setlength{\belowcaptionskip}{5pt}
+    \begin{longtable}{|p{1.0cm}|p{4.5cm}|p{4.5cm}|p{5.5cm}|p{2.0cm}|}
+    \hline
+    <% if !movimento.parcela_id.blank? %>
+        \multicolumn{5}{|l|}{\textbf{Número da Parcela:} <%=hl movimento.parcela.parcela_mae_id.blank? ? movimento.parcela.numero : movimento.parcela.numero_parcela_filha %>}\\
+    <% else %>
+        \multicolumn{5}{|l|}{\textbf{Número da Parcela:} <%=hl movimento.numero_da_parcela %>}\\
+    <% end %>
+    \multicolumn{5}{|l|}{\textbf{Data do Lançamento:} <%=hl movimento.data_lancamento %>}\\
+    \multicolumn{5}{|l|}{\textbf{Número de Controle:} <%=hl movimento.numero_de_controle %>}\\
+    \multicolumn{5}{|l|}{\textbf{Fornecedor/Cliente:} <%=hl movimento.pessoa.nome %>}\\
+    \multicolumn{5}{|l|}{\textbf{Histórico:} <%=hl movimento.historico %>}\\
+
+    \hline
+    \textbf{D/C} & \textbf{Conta Contábil} & \textbf{Unidade Organizacional} & \textbf{Centro de Responsabilidade} & \textbf{Valor (R\$)} \\
+    \hline
+    <% movimento.itens_movimentos.each do |item| %>
+        <%= hl item.tipo_verbose %> &
+        <%= hl "#{item.plano_de_conta.codigo_contabil} - #{item.plano_de_conta.nome}" %> &
+        <%= hl "#{item.unidade_organizacional.codigo_da_unidade_organizacional} - #{item.unidade_organizacional.nome}" %> &
+        <%= hl "#{item.centro.codigo_centro} - #{item.centro.nome}" %> &
+        <%= hl preco_formatado(item.valor, 'R$') %>\\
+    <% end %>
+    \hline
+    \multicolumn{5}{|r|}{\textbf{Valor Total: }<%= hl preco_formatado(movimento.valor_total, 'R$') %>} \\
+    \hline
+    \end{longtable}
+<% end %>

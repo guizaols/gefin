@@ -1,0 +1,28 @@
+<h1>Impressão de Recibo</h1>
+<% form_tag  :action=> :imprimir_recibos do %>
+  <% listagem_table :headers => ['Sel','Nº', 'Vencimento', 'Valor', 'Retenção', 'Valor Líquido', 'Pago em', 'Valor Pago', 'Multa', 'Juros', 'Outros', 'Desconto', 'Situação'], :ocultar_ultima_th => true, :style => "width: 50%; text-align:center" do %>
+    <% @parcelas.each do |parcela| %>
+      <tr id="parcela_<%=h parcela.id %>" style="color:<%= parcela.recibo_impresso ? 'grey' : 'black' %>;" class="<%= cycle('impar', 'par')%>">
+        <td><%= check_box_tag "recibo_impresso[]", parcela.id, nil, :class=>'selecionados' %></td>
+        <td><%=h parcela.parcela_mae_id.blank? ? parcela.numero : parcela.numero_parcela_filha %></td>
+        <td><%= h(data_formatada(parcela.data_vencimento)) %></td>
+        <td><%= h(preco_formatado(parcela.valor)) %></td>
+        <td><%= h(preco_formatado(parcela.soma_impostos_da_parcela)) %></td>
+        <td><%= h(preco_formatado(parcela.calcula_valor_liquido_da_parcela)) %></td>
+        <td><%=h parcela.data_da_baixa if parcela.data_da_baixa %></td>
+        <td><%=h preco_formatado(parcela.valor_liquido) if parcela.valor_liquido %></td>
+        <td><%=h preco_formatado(parcela.valor_da_multa) if parcela.valor_da_multa %></td>
+        <td><%=h preco_formatado(parcela.valor_dos_juros) if parcela.valor_dos_juros %></td>
+        <td><%=h preco_formatado(parcela.outros_acrescimos) if parcela.outros_acrescimos %></td>
+        <td><%=h preco_formatado(parcela.valor_do_desconto) if parcela.valor_do_desconto %></td>
+        <td><%= h(parcela.situacao_verbose) %></td>
+      </tr>
+    <% end %>
+    <% listagem_tr do %>
+    <td><%= link_to_function 'Todas' do |page|page.select('.selecionados').each {|item| item.checked = true}; end %> <%= link_to_function 'Nenhum' do |page|page.select('.selecionados').each {|item| item.checked = false}; end %></td>
+    <td><%= link_to 'Voltar', recebimento_de_conta_path(@conta.id) %></td>  
+    <td colspan="13" style="text-align: right;" > Data da Emissão: <%= calendar_date_select_tag :data, Date.today.to_s_br %> <%= submit_tag "Imprimir"%></td>  
+  <% end %>
+<% end %>
+<% end %>
+

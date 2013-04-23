@@ -1,0 +1,75 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+
+\begin{center}
+\begin{longtable}{|p{9.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|p{1.0cm}|}
+
+    \hline
+    \multicolumn{15}{|c|}{\textbf{DADOS DO CLIENTE}} \\
+    \multicolumn{3}{|l}{\textbf{<%= @recebimento_de_conta.pessoa.fisica? ? 'CPF:' : 'CNPJ:' %>} <%=hl @recebimento_de_conta.pessoa.fisica? ? @recebimento_de_conta.pessoa.cpf : @recebimento_de_conta.pessoa.cnpj  %>} &
+    \multicolumn{5}{l}{\textbf{Cliente:} <%=hl @recebimento_de_conta.pessoa.nome %>} &
+    \multicolumn{7}{l|}{\textbf{Aluno:} <%=hl @recebimento_de_conta.dependente.try(:nome) %>} \\
+
+    \hline
+    \multicolumn{15}{|c|}{\textbf{Endereço do Cliente}} \\
+    \multicolumn{5}{|l}{\textbf{Endereço:} <%=hl "#{@recebimento_de_conta.pessoa.endereco}, #{@recebimento_de_conta.pessoa.numero if @recebimento_de_conta.pessoa.numero}" %>} &
+    \multicolumn{5}{l}{\textbf{Bairro:} <%=hl @recebimento_de_conta.pessoa.bairro %>} &
+    \multicolumn{5}{l|}{\textbf{Cidade:} <%=hl @recebimento_de_conta.pessoa.localidade.nome_localidade if @recebimento_de_conta.pessoa.localidade %>} \\
+    \multicolumn{2}{|l}{\textbf{Complemento:} <%=hl @recebimento_de_conta.pessoa.complemento %>} &
+    \multicolumn{2}{l}{\textbf{CEP:} <%=hl @recebimento_de_conta.pessoa.cep %>} &
+    \multicolumn{5}{l}{\textbf{Email:} <%=hl @recebimento_de_conta.pessoa.email.join(", ") %>} &
+    \multicolumn{6}{l|}{\textbf{Telefones:} <%=hl @recebimento_de_conta.pessoa.telefone.join(", ") %>} \\
+
+    \hline
+    \multicolumn{15}{|c|}{\textbf{DADOS DO CONTRATO}} \\
+    \multicolumn{2}{|l}{\textbf{Contrato:} <%=hl @recebimento_de_conta.numero_de_controle %>} &
+    \multicolumn{3}{l}{\textbf{Unidade:} <%=hl @recebimento_de_conta.unidade.nome %>} &
+    \multicolumn{10}{l|}{\textbf{Valor Total:} <%=hl preco_formatado(@recebimento_de_conta.valor_do_documento, 'R$') %>} \\
+    \multicolumn{4}{|l}{\textbf{Serviço:} <%=hl @recebimento_de_conta.servico.descricao %>} &
+    \multicolumn{11}{l|}{\textbf{Situação:} <%=hl @recebimento_de_conta.situacao_verbose %>} \\
+
+    \hline
+
+\end{longtable}
+
+<% if @recebimento_de_conta.parcelas.length > 0 %>
+    \small
+    \begin{longtable}{|p{1.2cm}|p{2.0cm}|p{2.0cm}|p{2.0cm}|p{2.3cm}|p{1.7cm}|p{1.7cm}|p{2.0cm}|p{1.8cm}|p{1.7cm}|p{1.7cm}|p{1.7cm}|p{1.7cm}|p{1.7cm}|p{3.5cm}|}
+
+    \hline
+    \textbf{Parc} & \textbf{Dt. Venc.} & \textbf{Valor Par.} & \textbf{Recebido} & \textbf{Vl. Recebido} &
+    \textbf{Multa} & \textbf{Juros} & \textbf{Val. Multa} & \textbf{Val. Juros} & \textbf{Honorários} & \textbf{Protesto} &
+    \textbf{Boleto} & \textbf{Desconto} & \textbf{Outros} & \textbf{Situação} \\
+    \hline
+
+    <% @recebimento_de_conta.parcelas.sort_by {|a| a.numero.nil? ? a.numero_parcela_filha.real.to_f : a.numero.real.to_f}.each do |parcela| %>
+        <%=hl parcela.numero %> &
+        <%=hl data_formatada(parcela.data_vencimento) %> &
+        <%=hl preco_formatado(parcela.valor) %> &
+        <%=hl parcela.data_da_baixa if parcela.data_da_baixa %> &
+        <%=hl preco_formatado(parcela.valor_liquido) if parcela.valor_liquido %> &
+        <%=hl parcela.conta.multa_por_atraso %> &
+        <%=hl parcela.conta.juros_por_atraso %> &
+        <%=hl preco_formatado(parcela.valor_da_multa) if parcela.valor_da_multa %> &
+        <%=hl preco_formatado(parcela.valor_dos_juros) if parcela.valor_dos_juros %> &
+        <%=hl preco_formatado(parcela.honorarios) if parcela.honorarios %> &
+        <%=hl preco_formatado(parcela.protesto) if parcela.protesto %> &
+        <%=hl preco_formatado(parcela.taxa_boleto) if parcela.taxa_boleto %> &
+        <%=hl preco_formatado(parcela.outros_acrescimos) if parcela.outros_acrescimos %> &
+        <%=hl preco_formatado(parcela.valor_do_desconto) if parcela.valor_do_desconto %> &
+        <%=hl parcela.situacao_verbose %> \\
+        \hline
+    <% end %>
+
+    \multicolumn{4}{|l|}{\textbf{Total Recebido:} <%=hl preco_formatado(@recebimento_de_conta.parcelas.collect {|p| p.valor_liquido if p.situacao == Parcela::QUITADA}.compact.sum, 'R$') %>} &
+    \multicolumn{4}{|l|}{\textbf{Descontos:} <%=hl preco_formatado(@recebimento_de_conta.parcelas.collect {|p| p.valor_do_desconto if p.valor_do_desconto}.compact.sum, 'R$') %>} &
+    \multicolumn{3}{|l|}{\textbf{Acréscimos:} <%=hl preco_formatado(@recebimento_de_conta.parcelas.collect {|p| (p.valor_da_multa + p.valor_dos_juros + p.outros_acrescimos + p.honorarios + p.protesto + p.taxa_boleto) if p.outros_acrescimos}.compact.sum, 'R$') %>} &
+    \multicolumn{4}{|l|}{\textbf{Total a Receber:} <%=hl preco_formatado(@recebimento_de_conta.parcelas.collect {|p| p.valor if p.verifica_situacoes}.compact.sum, 'R$') %>} \\
+    \hline
+
+\end{longtable}
+\small
+
+<% end %>
+
+\end{center}

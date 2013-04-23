@@ -1,0 +1,45 @@
+\begin{table}{\vspace{40pt}}
+\end{table}
+<%# =hl gera_filtros_dos_relatorios(params[:busca], params[:action]) %>
+\begin{center}
+\textbf{<%=hl gera_periodo_relatorio(params[:busca][:periodo_min], params[:busca][:periodo_max], params[:busca][:periodo]) %>}
+\fontsize{7pt}{12pt}\selectfont
+\begin{longtable}{|p{4.5cm}|p{4.5cm}|p{4.0cm}|p{3.0cm}|p{2.0cm}|p{2.0cm}|p{2.3cm}|p{2.0cm}|}
+\hline
+    \textbf{Unidade}
+    & \textbf{Cliente}
+    & \textbf{Banco}
+    & \textbf{Cheque}
+    & \textbf{<%= (params["busca"]["situacao"] == Cheque::DEVOLVIDO)? "Devol" : "Rcbto" %>}
+    & \textbf{Vencimento}
+    & \textbf{Valor}
+    & \textbf{Situação} \\
+\hline
+
+<% @cheques.each do |cheque| %>
+
+<% if cheque.situacao == Cheque::BAIXADO || cheque.situacao == Cheque::REAPRESENTADO %>
+    <% data = cheque.data_do_deposito %>
+<% elsif cheque.situacao == Cheque::GERADO %>
+    <% data = cheque.data_de_recebimento %>
+<% elsif cheque.situacao == Cheque::DEVOLVIDO %>
+    <% data = cheque.data_devolucao %>
+<% elsif cheque.situacao == Cheque::ABANDONADO %>
+    <% data = cheque.data_abandono %>
+<% end %>
+
+   <%=hl cheque.parcela.conta.unidade.nome %> &
+   <%=hl cheque.parcela.conta.nome_pessoa %> &
+   <%=hl cheque.banco.descricao %> &
+   <%=hl cheque.numero %> &
+   <%=hl data %> &
+   <%=hl cheque.parcela.data_vencimento %> &
+   <%=hl preco_formatado(cheque.parcela.valor_liquido,"R\$") %> &
+   <%=hl cheque.situacao_verbose %> &
+
+\hline
+
+<% end %>
+
+\end{longtable}
+\end{center}

@@ -1,0 +1,31 @@
+<h1>Prorrogar Contratos</h1>
+<% form_remote_tag :url => prorrogar_servicos_path, :loading => "Element.show('loading_prorrog');", :success => "Element.hide('loading_prorrog');" do %>
+  <table>
+    <tr>
+      <td class="field_descriptor">Serviço:</td>
+      <td>
+        <%= auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <%= campo_de_cadastro 'Período de datas', select_tag('busca[datas]', options_for_select([['', ''], ['Data Inicial do Serviço', 'inicio_servico'], ['Data Final do Serviço', 'final_servico'], ['Intervalo de Datas', 'intervalo']]), :onchange => "verifica_tipo_de_data()") %>
+      </td>
+    </tr>
+    <tr id="datas" style="display: none">
+      <td class="field_descriptor">De:</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data(:data) %>
+      </td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td>
+        <%= submit_tag 'Pesquisar' %> | <%= link_to 'Voltar', '/main' %> <%= loading_image('prorrog') %>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<div id="resultados_pesquisa_prorrogacao"></div>

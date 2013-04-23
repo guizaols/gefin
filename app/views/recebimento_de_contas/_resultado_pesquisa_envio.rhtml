@@ -1,0 +1,50 @@
+<div id="resultado_pesquisa_envio">
+  <%= hidden_field_tag 'recebimento_de_contas[data_inicial]', params[:busca][:data_inicial] %>
+  <%= hidden_field_tag 'recebimento_de_contas[data_final]', params[:busca][:data_final] %>
+  <% if @recebimento_de_contas.length > 0 %>
+    <p>
+      <b>Enviar para:</b><br />
+      <label for="radio_dr">DR</label>
+      <%= radio_button_tag 'recebimento_de_contas[dr_ou_terceirizada]', RecebimentoDeConta::DR, true, :id => 'radio_dr' %>
+      <label for="radio_terceirizada">Terceirizada</label>
+      <%= radio_button_tag 'recebimento_de_contas[dr_ou_terceirizada]', RecebimentoDeConta::TERCEIRIZADA, false, :id => 'radio_terceirizada' %>
+    </p>
+    <% listagem_table :headers => ['Sel', 'Número de Controle', 'Cliente', 'Serviço', 'Início', 'Valor do Contrato', 'Parcelas Atrasadas', 'Situação'], :ocultar_ultima_th => true do %>
+      <% @recebimento_de_contas.each do |recebimento_de_conta| %>
+        <tr class="<%= cycle('impar', 'par')%>">
+          <td><%= check_box_tag 'recebimento_de_contas[ids][]', recebimento_de_conta.id, false, :class => 'selecionados' %></td>
+          <td><%= link_to h(recebimento_de_conta.numero_de_controle), recebimento_de_conta %></td>
+          <td><%= link_to h(recebimento_de_conta.pessoa.nome), pessoa_path(recebimento_de_conta.pessoa), :permissoes => Perfil::Pessoas %></td>
+          <td><%=h recebimento_de_conta.servico.descricao %></td>
+          <td><%=h recebimento_de_conta.data_inicio %></td>
+          <td><%=h preco_formatado(recebimento_de_conta.valor_do_documento) %></td>
+          <td><%=h recebimento_de_conta.numero_de_parcelas_atrasadas %></td>
+          <td><%=h recebimento_de_conta.situacoes %></td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>
+          <%= link_to_function 'Todas' do |page| page << "marcaOuDesmarcaParcelas(true);" end %>
+          <%= link_to_function 'Nenhuma' do |page| page << "marcaOuDesmarcaParcelas(false);" end %>
+        </td>
+      </tr>
+    <% end %>
+    <p>
+      <%= submit_tag 'Enviar ao DR/Terceirizada' %>
+    </p>
+  <% else %>
+    <p>
+      Não foram encontrados contratos que para serem enviados para o DR/Terceirizada.<br />
+      Se você deseja gerar um arquivo com os contratos que já foram enviados que respeitam o período de data especificado na consulta selecione o envio para DR ou Terceirizada e clique no botão Re-enviar ao DR/Terceirizada.
+      <br />
+      <b>Re-enviar para:</b><br />
+      <label for="radio_dr">DR</label>
+      <%= radio_button_tag 'recebimento_de_contas[dr_ou_terceirizada]', RecebimentoDeConta::DR, true, :id => 'radio_dr' %>
+      <label for="radio_terceirizada">Terceirizada</label>
+      <%= radio_button_tag 'recebimento_de_contas[dr_ou_terceirizada]', RecebimentoDeConta::TERCEIRIZADA, false, :id => 'radio_terceirizada' %>
+    </p>
+    <p>
+      <%= submit_tag 'Re-enviar ao DR/Terceirizada' %>
+    </p>
+  <% end %>
+</div>

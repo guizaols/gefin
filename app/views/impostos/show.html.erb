@@ -1,0 +1,14 @@
+<% content_for :titulo, "Detalhes" %>
+
+<table>
+  <%= show_unless_blank 'Descrição', @imposto.descricao %>
+  <%= show_unless_blank 'Sigla', @imposto.sigla %>
+  <%= show_unless_blank 'Alíquota', @imposto.aliquota %>
+  <%= show_unless_blank 'Tipo', @imposto.tipo_de_aliquota_verbose %>
+  <%= show_unless_blank 'Classificação', @imposto.classificacoes_das_aliquotas_verbose %>
+  <%= show_unless_blank 'Conta Débito', @imposto.nome_conta_debito %>
+  <%= show_unless_blank 'Conta Crédito', @imposto.nome_conta_credito %>
+</table>
+
+<%= link_to 'Alterar', edit_imposto_path(@imposto) %> |
+<%= link_to 'Voltar', impostos_path %>

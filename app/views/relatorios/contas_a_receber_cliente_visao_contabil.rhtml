@@ -1,0 +1,32 @@
+<% content_for :titulo, 'Clientes - Visão Contábil' %>
+
+<% form_remote_tag :url => contas_a_receber_cliente_visao_contabil_relatorios_path, :loading => "Element.show('loading_form_clientes');", :success => "Element.hide('loading_form_clientes');" do %>
+  <table>
+    <%= campo_de_cadastro "Tipo de Cliente", select_tag("busca[tipo_pessoa]", options_for_select([['Ambos', 0], ['Física', 1], ['Jurídica', 2]]))  %>
+    <%= campo_de_cadastro 'Provisão', select_tag('busca[provisao]', options_for_select([['Ambos', ''], ['Sim', 1], ['Não', 2]])) %>
+    <%= campo_de_cadastro "Cliente", auto_complete_tag_para_qualquer_campo("cliente", auto_complete_for_cliente_pessoas_path) %>
+    <tr>
+      <td class="field_descriptor">Período</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo' %>
+        <%#= calendar_date_select_tag_com_mascara('busca[data]', Date.new(session[:ano], Date.today.month, -1).to_s_br, :maxlength => '10') %>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Tipo de Relatório</td>
+      <td>
+        <label for="busca_relatorio_simplificado">
+          <%= radio_button_tag('busca[relatorio]', 'simplificado', true) %>Simplificado
+        </label>
+        <label for="busca_relatorio_detalhado">
+          <%= radio_button_tag('busca[relatorio]', 'detalhado') %>Detalhado
+        </label>
+      </td>
+    </tr>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_print"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Gerar Relatório" %><%= image_tag('loading.gif', :id => "loading_form_clientes", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>

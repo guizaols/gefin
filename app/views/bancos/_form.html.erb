@@ -1,0 +1,11 @@
+<% form_for @banco, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <%= f.text_field :descricao, :label=>"Descrição" %>
+    <%= f.text_field :codigo_do_banco, :label=>"Código do Banco" %>
+    <%= f.check_box :ativo %>
+  <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+  
+<% end %>

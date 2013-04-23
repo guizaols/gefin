@@ -1,0 +1,11 @@
+<% form_for @entidade, :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+
+  <table>
+    <%= f.text_field :nome %>
+    <%= f.text_field :sigla %>
+    <%= f.text_field :codigo_zeus, :label=> 'Código ZEUS' %>
+  <tr><td></td><td><%= f.submit "Salvar" %></td></tr>
+  </table>
+  
+<% end %>

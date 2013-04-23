@@ -1,0 +1,21 @@
+<% content_for :titulo, 'Controle de Cartões' %>
+
+<% form_remote_tag :loading => "Element.show('loading_form_cartoes');", :success => "Element.hide('loading_form_cartoes');", :url => controle_de_cartao_relatorios_path do %>
+  <table>
+    <%= campo_de_cadastro 'Busca Ordenada', (text_field_tag 'busca[texto]', params[:busca][:texto]) %>
+    <%= campo_de_cadastro 'Cartão/Operadora', (select_tag 'busca[bandeira]', options_for_select(Cartao.retorna_bandeiras_para_select,
+        :selected => (params[:busca][:bandeira].to_i rescue ''))) %>
+    <%= campo_de_cadastro 'Período de Recebimento', (campo_para_busca_por_faixa_de_data 'data_de_recebimento') %>
+    <%= campo_de_cadastro 'Situação', (select_tag 'busca[situacao]', options_for_select([['Pendente', Cartao::GERADO], ['Baixado', Cartao::BAIXADO]],
+        :selected => (params[:busca][:situacao].to_i rescue Cartao::GERADO)), :onchange => "mostraOuEscondeElementosEmCheques();") %>
+    <tr id="tr_datas" style="display:none">
+      <td class="field_descriptor">Data do Depósito</td>
+      <td><%= campo_para_busca_por_faixa_de_data 'data_do_deposito' %></td>
+    </tr>
+    <tr><td class="field_descriptor">Opção de Impressão:</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr><td></td><td><%= submit_tag 'Pesquisar' %><%= image_tag('loading.gif', :id => "loading_form_cartoes", :style => "display:none") %></td></tr>
+  </table>
+
+<% end %>
+
+<%= javascript_tag "mostraOuEscondeElementosEmCheques();" %>

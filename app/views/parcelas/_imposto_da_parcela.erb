@@ -1,0 +1,34 @@
+<tr id="imposto_da_parcela_<%= chave.blank? ? 'index' : chave %>" class="itens_do_imposto" >
+
+  <td>
+    <%= (select_tag "dados_do_imposto[#{chave.blank? ? 'index' : chave}][imposto_id]", options_for_select([""] + (Imposto.find(:all, :conditions=>["entidade_id = ?", entidade_id]).collect{|c| [c.descricao, "#{c.id}##{c.aliquota}##{c.classificacao}"]}), Parcela.retorna_selecao((imposto_id rescue params["dados_do_imposto"][chave.to_s]["imposto_id"] rescue nil))), :class => 'combo', :disabled => (current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && (data_da_baixa.blank?)) ? false : true , :onchange => "atualiza_item_de_lancamento_de_imposto(#{valor_imposto.real.to_f rescue 0},#{valor_doc}, #{parcela}, #{chave.blank? ? 'index' : chave})") %>
+  </td>
+
+  <td>
+    <%= calendar_date_select_tag "dados_do_imposto[#{chave.blank? ? 'index' : chave}][data_de_recolhimento]", Parcela.retorna_data("#{data_de_recolhimento rescue nil}"), :readonly => (current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && (data_da_baixa.blank?)) ? false : true, :onchange => "VerificaData(this);" %>
+  </td>
+
+  <td>
+    <%= text_field_tag "dados_do_imposto[#{chave.blank? ? 'index' : chave}][aliquota]", (aliquota rescue nil), :class => 'aliquota', :readonly => true %>
+  </td>
+
+  <td>
+    <%= text_field_tag "dados_do_imposto[#{chave.blank? ? 'index' : chave}][valor_imposto]", (valor_imposto rescue nil), :class => 'valor', :onblur => "atualiza_cabecalho(#{parcela})", :onkeypress => "return(MascaraMoeda(dados_do_imposto_#{chave.blank? ? 'index' : chave}_valor_imposto, \'.\',\',\', event))" %>
+  </td>
+
+  <td>
+    <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDasParcelas) && data_da_baixa.blank? && @parcela.situacao != Parcela::ESTORNADA %>
+      <%= (link_to_function 'Excluir' do |page|
+          page << "var resultado_confirmacao = confirm('Tem certeza que excluir este item?');"
+          page << "if (resultado_confirmacao == true) {"
+          page << "$(this).up('.itens_do_imposto').remove();"
+          page << "atualiza_cabecalho(#{parcela})"
+          page << "if(verificaSeElementoEstaAparecendo()) { Element.hide('imposto_da_parcela'); }"
+          page << "}"
+        end) %>
+      <%= mascara_para_data("dados_do_imposto_#{chave.blank? ? 'index' : chave}_data_de_recolhimento") %>
+    <% end %>
+  </td>
+  <%= javascript_tag "atualiza_item_de_lancamento_de_imposto(#{h valor_imposto.real.to_f rescue 0},#{h valor_doc}, #{h parcela}, #{h chave.blank? ? 'index' : chave})" %>
+</tr>
+

@@ -1,0 +1,19 @@
+<% content_for :titulo, 'Usuários' %>
+
+<% listagem_table :permissoes => Perfil::ManipularDadosDosUsuarios, :headers => ['Nome', 'Login','', ''], :style => 'width: 70%' do %>
+
+  <% for usuario in @usuarios %>
+    <% listagem_tr :edit => edit_usuario_path(usuario), :destroy => usuario, :permissoes => Perfil::ManipularDadosDosUsuarios do %>
+      <td><%=h usuario.nome %></td>
+      <td><%= link_to h(usuario.login), usuario_path(usuario.id) %></td>
+      <% if current_usuario.possui_permissao_para(Perfil::ManipularDadosDosUsuarios) %>
+        <% if usuario.status == Usuario::ATIVO %>
+          <td><%= link_to_remote 'Inativar Usuário', :url => {:action => "ativa_inativa_usuarios", :id => usuario.id, :ativo_inativo => 'inativar'}, :loading => "Element.show('loading_inativa_#{usuario.id}')", :success => "Element.hide('loading_inativa_#{usuario.id}')" %><%= loading_image "inativa_#{usuario.id}" %></td>
+        <% else %>
+          <td><%= link_to_remote 'Ativar Usuário', :url => {:action => "ativa_inativa_usuarios", :id => usuario.id, :ativo_inativo => 'ativar'}, :loading => "Element.show('loading_ativa_#{usuario.id}')", :success => "Element.hide('loading_ativa_#{usuario.id}')" %><%= loading_image "ativa_#{usuario.id}" %></td>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+<% end %>

@@ -1,0 +1,31 @@
+<div style="text-align: center;width: auto">
+  <b>Período: <%=h params[:busca][:emissao_min].blank? ? '' : params[:busca][:emissao_min] %> a <%=h params[:busca][:emissao_max].blank? ? '' : params[:busca][:emissao_max] %></b>
+</div>
+<br /><br />
+
+
+<table border="1px" style="font-size: 11px;" width="1000px">
+  <tr align="center" style="font-size: 12px;">
+    <th style="width: 250px">Unidade</th>
+    <th style="width: 150px">Contrato</th>
+    <th style="width: 350px">Cliente</th>
+    <th style="width: 100px">Emitido em</th>
+    <th style="width: 50px">Carta</th>
+  </tr>
+
+  <% @historico_operacoes.group_by{|historico| historico.retorna_agrupamento_para_pesquisa(params[:busca][:agrupar])}.each do |key, value| %>
+    <tr align="center" style="font-size: 12px;">
+      <td colspan="5" style="text-align: center"><b><%=h params[:busca][:agrupar] %>: </b><%=h key.nome %></td>
+    </tr>
+    <% value.each do |historico| %>
+    <tr align="left" style="font-size: 12px">
+      <td style="text-align: left; padding-left: 4px"><%=h historico.conta.unidade.nome %></td>
+      <td style="text-align: left; padding-left: 4px"><%=h historico.conta.numero_de_controle %></td>
+      <td style="text-align: left; padding-left: 4px"><%=h historico.conta.pessoa.fisica? ? historico.conta.pessoa.nome : historico.conta.pessoa.razao_social %></td>
+      <td style="text-align: left; padding-left: 4px"><%=h historico.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+      <td style="text-align: center"><%=h historico.numero_carta_cobranca %></td>
+    </tr>
+    <% end %>
+  <% end %>
+</table>
+<br />

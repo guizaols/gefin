@@ -1,0 +1,16 @@
+<% content_for :titulo, 'Contas a Receber - Recuperação de Crédito' %>
+
+<% form_remote_tag :url => recuperacao_credito_relatorios_path, :loading => "Element.show('loading_rec_cred');", :success => "Element.hide('loading_rec_cred');" do %>
+  <table>
+    <%= campo_de_cadastro "Tipo Relatório", (select_tag "busca[tipo_do_relatorio]", options_for_select([['Resumido', 0], ['Detalhado', 1]]))  %>
+    <%= campo_de_cadastro "Ano", (text_field_tag "busca[ano]", nil, :size => 4,:onkeyup=>"this.value = this.value.replace(/[a-z]/g,'');") %>
+    <%= campo_de_cadastro "Mês Inicial", (select_tag "busca[mes_inicial]", meses_para_selecao) %>
+    <%= campo_de_cadastro "Mês Final", (select_tag "busca[mes_final]", meses_para_selecao) %>
+    <%= campo_de_cadastro 'Modalidade', auto_complete_tag_para_qualquer_campo(:modalidade, auto_complete_for_modalidade_servicos_path) %>
+    <tr><td class="field_descriptor">Opção de Impressão</td><td><label for="tipo_xls"><%= radio_button_tag('tipo','xls') %> Excel </label><label for="tipo_pdf"><%= radio_button_tag('tipo','print',true) %> PDF </label></td></tr>
+    <tr>
+      <td></td>
+      <td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_rec_cred", :style => "display:none") %></td>
+    </tr>
+  </table>
+<% end %>

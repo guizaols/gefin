@@ -1,0 +1,13 @@
+<% content_for :titulo, 'Envio ao DR/Terceirizada' %>
+
+<% form_remote_tag :url => pesquisa_para_envio_recebimento_de_contas_path, :id => "form_pesquisa_de_remessas", :loading => "Element.show('loading_form');", :success => "Element.hide('loading_form');" do %>
+  <table>
+    <tr><td class="field_descriptor">Data Inicial</td><td><%= calendar_date_select_tag_com_mascara "busca[data_inicial]", Date.today.to_s_br %></td></tr>
+    <tr><td class="field_descriptor">Data Final</td><td><%= calendar_date_select_tag_com_mascara "busca[data_final]", Date.today.to_s_br %></td></tr>
+    <tr><td></td><td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_form", :style => "display:none") %></td></tr>
+  </table>
+<% end %>
+
+<% form_remote_tag :url => envio_ao_dr_terceirizada_recebimento_de_contas_path do %>
+  <div id="resultado_pesquisa_envio"></div>
+<% end %>

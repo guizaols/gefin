@@ -1,0 +1,46 @@
+<h1>Contas a Receber - Emissão de Cartas</h1>
+
+<% form_remote_tag :loading => "Element.show('loading_form_emissao');", :success => "Element.hide('loading_form_emissao');", :url => pesquisa_emissao_cartas_relatorios_path do %>
+  <table>
+    <%= campo_de_cadastro 'Dias de Atraso', select_tag('busca[dias_de_atraso]', options_for_select([['', 0], ['Entre 20 e 45 dias', RecebimentoDeConta::CARTA_1], ['Entre 45 e 90 dias', RecebimentoDeConta::CARTA_2], ['Mais que 90 dias', RecebimentoDeConta::CARTA_3]]))%>
+    <tr>
+      <td class="field_descriptor">Considerar que já foi impressa</td>
+      <td>
+        <label for="busca_carta_1"><%= check_box_tag "busca[cartas][]", 'carta_1', false, :id => 'busca_carta_1' %> Carta 1</label>
+        <label for="busca_carta_2"><%= check_box_tag "busca[cartas][]", 'carta_2', false, :id => 'busca_carta_2' %> Carta 2</label>
+        <label for="busca_carta_3"><%= check_box_tag "busca[cartas][]", 'carta_3', false, :id => 'busca_carta_3' %> Carta 3</label>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Número de Controle</td>
+      <td>
+        <div class="div_explicativa">
+          <div id="explicacao_busca" class="explicacao_busca" style="display: none">
+            <div id="explicacao_texto"></div>
+            <%= image_tag 'seta_tooltip.gif' %>
+          </div>
+          <%= text_field_tag('busca[pesquisa]', nil, :size => '50px',
+            :onfocus => "exibir_explicacao_para_busca('exibir', 'Você pode realizar a pesquisa inserindo um Número de Controle completo ou apenas uma parte dele.')",
+            :onblur => "exibir_explicacao_para_busca('ocultar', '')") %>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="field_descriptor">Período de Vencimento</td>
+      <td>
+        <%= campo_para_busca_por_faixa_de_data 'periodo_cartas' %>
+      </td>
+    </tr>
+    <%= campo_de_cadastro 'Cliente', auto_complete_tag_para_qualquer_campo(:cliente, auto_complete_for_cliente_pessoas_path) %>
+    <%= campo_de_cadastro 'Serviço', auto_complete_tag_para_qualquer_campo(:servico, auto_complete_for_servico_servicos_path) %>
+    <tr>
+      <td class="field_descriptor">
+        Parcelas acima de
+      </td>
+      <td><%= text_field_tag('busca[numero_dias_atraso]', nil, :size => 3) %> <b>dias de atraso</b></td>
+    </tr>
+    <tr><td></td><td><%= submit_tag "Pesquisar" %><%= image_tag('loading.gif', :id => "loading_form_emissao", :style => "display:none") %></td></tr>
+  </table>
+<% end %>
+
+<div id="resultado_da_busca"></div>

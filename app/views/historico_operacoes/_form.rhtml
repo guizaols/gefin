@@ -1,0 +1,17 @@
+<% form_for [@conta, @historico_operacao], :builder => TableFormBuilder do |f| %>
+  <%= f.error_messages %>
+  <table>
+    <%= f.text_field :descricao, :label => "Descrição" %>
+    <%= f.text_area :justificativa,:size => "35x5" %>
+    <tr><td class="field_descriptor">Responsável</td><td><%=h current_usuario.funcionario.nome %></td></tr>
+    <tr>
+      <td></td>
+      <td><%= f.submit "Salvar" %> |
+        <%=  link_to_function "Cancelar" do |page|
+          page.toggle :novo_historico
+          page[:historico_operacao_descricao].value = ''
+        end %>
+      </td>
+    </tr>
+  </table>
+<% end %>

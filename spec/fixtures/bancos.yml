@@ -1,0 +1,13 @@
+banco_do_brasil:
+  descricao: Banco do Brasil
+  ativo: true
+  codigo_do_banco: 800
+  codigo_do_zeus: 700
+  digito_verificador: 3
+
+banco_caixa:
+  descricao: Banco Caixa 
+  ativo: false
+  codigo_do_banco: 700
+  codigo_do_zeus: 300
+  digito_verificador: 4
