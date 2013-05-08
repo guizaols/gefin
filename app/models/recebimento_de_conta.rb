@@ -79,7 +79,7 @@ class RecebimentoDeConta < ActiveRecord::Base
 		:data_evasao, :data_registro_evasao
   converte_para_data_para_formato_date :data_inicio, :data_final, :data_venda, :data_primeira_carta,
 		:data_segunda_carta, :data_terceira_carta, :data_final_servico, :data_inicio_servico, :data_cancelamento,
-		:data_evasao, :data_registro_evasao, :data_reversao, :data_reversao_evasao 
+		:data_evasao, :data_registro_evasao, :data_reversao, :data_reversao_evasao
   attr_writer :dados_parcela
   attr_accessor :renegociando, :inserindo_nova_parcela, :ano_contabil_atual, :atualizando_parcelas,
 		:cancelando_parcela, :parando_servico, :mensagem_de_erro, :vincular_carta, :evadindo, :lancando_inicialmente,
@@ -171,7 +171,7 @@ class RecebimentoDeConta < ActiveRecord::Base
       end
     end
   end
-  
+
   def destroy_contrato
     if self.parcelas.length == 0
       self.movimentos.each{|mov| mov.destroy} if self.provisao == SIM
@@ -283,7 +283,7 @@ class RecebimentoDeConta < ActiveRecord::Base
     errors.add :cobrador, 'não é funcionário' if cobrador && !cobrador.funcionario?
     errors.add :valor_do_documento, 'não pode ser alterado porque o contrato está cancelado.' if self.valor_do_documento_changed? && self.situacao == Cancelado
     errors.add :situacao, 'do contrato é cancelado.' if self.situacao_was == Cancelado && self.cancelado_pela_situacao_fiemt_was != true
-    
+
 p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
    # errors.add :data_inicio_servico, 'não pode ter mês diferente do mês vigente' if !self.data_inicio_servico.blank? && (( self.data_inicio_servico.to_date + self.unidade.lancamentoscontasreceber) < Date.today ) && self.new_record?
 
@@ -297,7 +297,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
     if self.numero_de_renegociacoes_changed?
       errors.add :base, 'Para efetuação da renegociação, deve ser alterado o campo número da parcela ou o campo valor.' if (self.numero_de_parcelas_changed? == false) && (self.valor_do_documento_changed? == false)
     end
-    
+
 
     if self.liberacao_dr_faixa_de_dias_permitido != true && !self.prorrogando && !self.evadindo && !self.abdicando &&
         !self.iniciando_servicos && !self.cancelando_parcela && !self.revertendo && !self.revertendo_evasao
@@ -423,13 +423,13 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
     begin
       n = 0
       c = 0
-      RecebimentoDeConta.transaction do        
+      RecebimentoDeConta.transaction do
         if recebimentos_de_conta.respond_to?(:each)
           recebimentos_de_conta.each do |recebimento_de_conta|
             if [Normal, Juridico, Renegociado, Permuta, Baixa_do_conselho, Desconto_em_folha, Devedores_Duvidosos_Ativos, Enviado_ao_DR].include?(recebimento_de_conta.situacao_fiemt)
               intervalo = recebimento_de_conta.data_inicio_servico.to_date..recebimento_de_conta.data_final_servico.to_date
               total_dias = (intervalo.last - intervalo.first).to_i + 1
-              
+
               result_hash = {}
               ultimo_mes = {:ano => 0, :mes => 0}
               (intervalo).collect do |date|
@@ -470,7 +470,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
                           if contas.respond_to?(:each)
                             contas.each do |conta_id, valor_rateio|
                               plano_de_conta_rateio = PlanoDeConta.find_by_id(conta_id)
-                              
+
                               porcentagem_rateio = ((valor_rateio / (recebimento_de_conta.valor_original.real.to_f / 100)).round(2) / 100.0)
 
 
@@ -494,7 +494,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
                   end
                 end
               end
-              
+
               if recebimento_de_conta.rateio == NAO
                 if total < recebimento_de_conta.valor_original
                   diferenca = recebimento_de_conta.valor_original - total
@@ -800,13 +800,13 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
 
   def cancelamento_especial_1?
     parc = self.parcelas
-    num_parc = 0 
+    num_parc = 0
 
     self.parcelas.each do |p|
      if !p.cartoes.blank? && p.situacao == Parcela::QUITADA
        num_parc += 1
      end
-    end    
+    end
 
 
     i = 0
@@ -816,7 +816,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
       if p.situacao == Parcela::QUITADA
         i+=1
       end
-     
+
         j+=1
       end
     end
@@ -837,7 +837,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
       if p.situacao == Parcela::QUITADA && data_abdicacao.to_date >= p.data_vencimento.to_date
         i+=1
       end
-     
+
         j+=1
       end
     end
@@ -862,8 +862,8 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
             if justificativa.blank?
               return 'O campo justificativa deve ser preenchido.'
             else
-              if self.validar_datas(data_abdicacao.to_date) || self.validar_datas_entre_limites(data_abdicacao.to_date)                
-              
+              if self.validar_datas(data_abdicacao.to_date) || self.validar_datas_entre_limites(data_abdicacao.to_date)
+
 
               if self.cancelamento_especial_1?
                 p "Entrei no cancelamento 1"
@@ -875,7 +875,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
                     parcelas_para_estorno << p  if !p.cartoes.blank? && p.cartoes.first.situacao == 1
                   end
 
-                
+
                   parcelas_para_estorno.each do |p1|
                    retorno =   p1.estorna_parcela(@usuario_corrente,"Estorno Cartão Pendente",data_abdicacao,false,true)
                   end
@@ -914,7 +914,7 @@ p "ENtrei no cancelamento 2"
                     parcelas_para_estorno << p if !p.cartoes.blank? && p.cartoes.first.situacao == 1
                   end
 
-                 
+
                   parcelas_para_estorno.each do |p1|
                    retorno =   p1.estorna_parcela(@usuario_corrente,"Estorno Cartão Pendente",data_abdicacao,false,true)
                   end
@@ -939,7 +939,6 @@ p "ENtrei no cancelamento 2"
                 self.abdicando = true
                 self.save!
                 HistoricoOperacao.cria_follow_up("Contrato cancelado em #{data_abdicacao}", usuario_corrente, self, justificativa)
-               
 
 
 
@@ -952,7 +951,8 @@ p "ENtrei no cancelamento 2"
 
 
 
-              
+
+
                 soma_parcelas_em_aberto = 0
                 soma_parcelas_pendentes = 0
                 self.parcelas.each do |parcela|
@@ -968,7 +968,7 @@ p "ENtrei no cancelamento 2"
                     parcela.situacao_antiga = parcela.situacao
                     parcela.situacao = Parcela::CANCELADA
                     parcela.save!
-                    
+
                     if parcela.parcela_original
                       parcela.parcela_original.situacao = Parcela::CANCELADA
                       parcela.parcela_original.save false
@@ -1212,7 +1212,7 @@ p "ENtrei no cancelamento 2"
                   #                    end
                   #                    mov_estorno_reneg.save!
                   #                  end
-                  
+
                   if self.parcelas.all?{|parc| parc.situacao == Parcela::QUITADA}
                     valor_todas_parcela_quitadas = self.parcelas.inject(0){|sum, parc| sum + parc.valor}
                     if valor_todas_parcela_quitadas > 0
@@ -1345,7 +1345,7 @@ p "ENtrei no cancelamento 2"
       [false, e.message]
     end
   end
-  
+
   def contrato_evadido?
     !self.data_evasao.blank?
   end
@@ -1579,7 +1579,7 @@ p "ENtrei no cancelamento 2"
           nova_parcela.conta_type = 'RecebimentoDeConta'
           nova_parcela.numero = contador.to_s
           nova_parcela.valor = valor_da_entrada
-          
+
           if params['data_entrada'] == 'amanha'
             nova_parcela.data_vencimento = (Date.today + 1)
           else
@@ -1903,7 +1903,7 @@ p "ENtrei no cancelamento 2"
     soma_das_parcelas_pendentes = parcelas.sum(:valor, :conditions => {:situacao => [Parcela::PENDENTE,
           Parcela::JURIDICO, Parcela::PERMUTA, Parcela::BAIXA_DO_CONSELHO, Parcela::DESCONTO_EM_FOLHA,
           Parcela::ENVIADO_AO_DR, Parcela::DEVEDORES_DUVIDOSOS_ATIVOS]})
-    
+
     soma.round.to_i != soma_das_parcelas_pendentes
   end
 
@@ -1916,12 +1916,12 @@ p "ENtrei no cancelamento 2"
       @sqls << "(recebimento_de_contas.numero_de_controle LIKE ?)"
       @variaveis << parametros['pesquisa'].formatar_para_like
     end
-    
+
     unless parametros['numero_de_renegociacoes'].blank?
       @sqls << "(recebimento_de_contas.numero_de_renegociacoes >= ?)"
       @variaveis << parametros['numero_de_renegociacoes']
     end
-    
+
     unless parametros['texto'].blank?
       if ordem == 'situacao'
         @sqls << "(recebimento_de_contas.situacao = ? OR recebimento_de_contas.situacao_fiemt = ?)"
@@ -2057,7 +2057,7 @@ p "ENtrei no cancelamento 2"
     end
 
     cartoes = []
-    parc.each do |p| 
+    parc.each do |p|
        unless p.cartoes.blank?
         p.cartoes.each do |c|
           cartoes << c
@@ -2275,7 +2275,7 @@ p "ENtrei no cancelamento 2"
     #    @sqls << '(recebimento_de_contas.situacao_fiemt IN (?))'
     #    @variaveis << situacoes
     @sqls << '(recebimento_de_contas.situacao_fiemt NOT IN (?))'
-    @variaveis << [Cancelado, Evadido, Inativo]    
+    @variaveis << [Cancelado, Evadido, Inativo]
     @sqls << '(recebimento_de_contas.situacao NOT IN (?))'
     @variaveis << [Cancelado, Evadido, Inativo]
     @sqls << '((recebimento_de_contas.contabilizacao_da_receita = ?) OR (recebimento_de_contas.contabilizacao_da_receita IS NULL))'
@@ -2310,11 +2310,11 @@ p "ENtrei no cancelamento 2"
     #@sqls << 'recebimento_de_contas.id IN(32830)'
     #@sqls << 'recebimento_de_contas.id IN(27002)'
     #@sqls << 'recebimento_de_contas.id IN(38110)'
-    
-    
+
+
     #ESTRANHO
     #@sqls << 'recebimento_de_contas.id IN(1702)'
-    
+
     RecebimentoDeConta.all :conditions => [@sqls.join(" AND ")] + @variaveis, :include => :servico, :order => 'servicos.descricao ASC'#, :limit => 70
   end
 
@@ -2426,7 +2426,7 @@ p "ENtrei no cancelamento 2"
       @variaveis << RecebimentoDeConta::Evadido
       @variaveis << params[:periodo_min].to_date
       @variaveis << params[:periodo_max].to_date
-    
+
     end
     cancelados_evadidos = RecebimentoDeConta.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :pessoa], :order => 'pessoas.nome ASC, pessoas.razao_social ASC')
     cancelados_evadidos
@@ -2437,10 +2437,11 @@ p "ENtrei no cancelamento 2"
     @variaveis = []
     @sqls = []
 
-
     #@sqls << '(recebimento_de_contas.unidade_id = ?)'
     #@sqls << unidade_id
 
+    #@sqls << '(recebimento_de_contas.numero_de_controle IN(?))'
+    #@variaveis << ['SCBA-CTR09/120059', 'SCBA-CTR09/120034']
 
     @sqls << '((recebimento_de_contas.unidade_id = ?) AND YEAR(movimentos.data_lancamento) = ? AND
               (movimentos.tipo_lancamento = ?) AND (movimentos.lancamento_inicial IS NULL))'
@@ -2448,9 +2449,6 @@ p "ENtrei no cancelamento 2"
     @variaveis << ano
     @variaveis << 'C'
 
-
-
-    
     numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
     if numero_mes.include?(params['mes'])
       data = Date.new(ano, params['mes'].to_i, 1)
@@ -2471,7 +2469,7 @@ p "ENtrei no cancelamento 2"
     end
     #p "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
     #p [@sqls.join(' AND ')] + @variaveis
-    
+
     # @sqls << "(MONTH(recebimento_de_contas.data_cancelamento) <> #{params['mes'].to_i})"
     faturados = RecebimentoDeConta.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :pessoa], :order => 'pessoas.nome ASC, pessoas.razao_social ASC')
     #p "**************"
@@ -2485,6 +2483,9 @@ p "ENtrei no cancelamento 2"
     @sqls = []
     @sqls << '(recebimento_de_contas.unidade_id = ?) AND (movimentos.lancamento_inicial IS NOT NULL)'
     @variaveis << unidade_id
+
+    #@sqls << '(recebimento_de_contas.numero_de_controle IN(?))'
+    #@variaveis << ['SCBA-CTR09/120059', 'SCBA-CTR09/120034']
 
     numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
     if numero_mes.include?(params['mes'])
@@ -2686,7 +2687,7 @@ p "ENtrei no cancelamento 2"
   def self.importar_arquivo_xml(arquivo_xml, unidade_sessao, current_usuario, ano_contabil)
     exceptions = ''
     begin
-      RecebimentoDeConta.transaction do        
+      RecebimentoDeConta.transaction do
         return [false, 'Deve ser inserido um arquivo para a importação!'] if arquivo_xml.blank?
         begin
           xml = Hash.from_xml(arquivo_xml)
@@ -2760,7 +2761,7 @@ p "ENtrei no cancelamento 2"
                 if dependente.valid?
                   dependente.save
                 else
-                  exceptions += "Problemas no dependente: #{contrato['dependente']['nome']}, do cliente #{contrato['cliente']['nome_razao']}\n\n"                
+                  exceptions += "Problemas no dependente: #{contrato['dependente']['nome']}, do cliente #{contrato['cliente']['nome_razao']}\n\n"
                   exceptions += dependente.errors.full_messages.collect{|erro| "* #{erro}"}.join("\n")
                   exceptions += "\n\n"
                   exceptions += '-----------------------------------------------------------------------------------------------'

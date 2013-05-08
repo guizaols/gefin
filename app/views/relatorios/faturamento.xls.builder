@@ -15,7 +15,7 @@ xml.Workbook({
         xml.Cell{};xml.Cell{};xml.Cell{};
         xml.Cell {xml.Data @titulo, 'ss:Type'=>'String'}
       end
-      xml.Row do        
+      xml.Row do
       end
       xml.Row do
         xml.Cell{};xml.Cell{};xml.Cell{};xml.Cell{};
@@ -52,31 +52,38 @@ xml.Workbook({
       total_geral_contratos = 0
       total_saldo_final = 0
       total_geral_executado = 0
-      total_contratos_mes = 0 
+      total_contratos_mes = 0
       total_executado_porcentagem = 0
       total_saldo_anterior = 0
-      saldo_mes_final = 0 
+      saldo_mes_final = 0
 
-               
+
       @recebimentos.each do |grupo_servico, contas|
         valor_movimento = 0
 
         contas.each do |conta|
           contrato = RecebimentoDeConta.find(conta)
-          
-          array_valor_movimento_do_mes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month == params['busca']['mes'].to_i && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} 
-          valor_movimento_do_mes = array_valor_movimento_do_mes.max == 0 ? 0 : array_valor_movimento_do_mes.max 
-          array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} 
-          porcentagem = valor_movimento_do_mes == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params['busca']['mes'].to_i) 
-          saldo = conta.valor_do_documento - array_contabilizacoes.sum 
-          if saldo < 0 
-            saldo = conta.valor_original - array_contabilizacoes.sum 
-          end 
-          # saldo_anterior = saldo + valor_movimento_do_mes 
+
+          array_valor_movimento_do_mes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month == params['busca']['mes'].to_i && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0}
+          valor_movimento_do_mes = array_valor_movimento_do_mes.max == 0 ? 0 : array_valor_movimento_do_mes.max
+          #array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0}
+
+        # CORREÇÃO
+          array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C'}.compact.sum
+          array_contabilizacoes_anos_anteriores = contrato.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.year < Date.today.year && movimento.tipo_lancamento == 'C'}.compact.sum
+        # CORREÇÃO
+
+          porcentagem = valor_movimento_do_mes == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params['busca']['mes'].to_i)
+          saldo = conta.valor_do_documento - (array_contabilizacoes + array_contabilizacoes_anos_anteriores)
+          if saldo < 0
+            saldo = conta.valor_original - (array_contabilizacoes + array_contabilizacoes_anos_anteriores)
+          end
+
+          # saldo_anterior = saldo + valor_movimento_do_mes
           if (params['busca']['mes'].to_i == conta.data_inicio.to_date.month.to_i) && (conta.data_inicio.to_date.year == Date.today.year)
-             saldo_anterior = 0 
-          else 
-            saldo_anterior = saldo + valor_movimento_do_mes 
+             saldo_anterior = 0
+          else
+            saldo_anterior = saldo + valor_movimento_do_mes
           end
 
           nome = conta.pessoa.fisica? ? conta.pessoa.nome : conta.pessoa.razao_social
@@ -90,10 +97,10 @@ xml.Workbook({
             xml.Cell {xml.Data conta.data_inicio_servico, 'ss:Type'=>'String'}
             xml.Cell {xml.Data conta.data_final_servico, 'ss:Type'=>'String'}
             xml.Cell {xml.Data preco_formatado_com_decimal_ponto(conta.valor_do_documento), 'ss:Type'=>'Number'}
-            xml.Cell {xml.Data preco_formatado_com_decimal_ponto(saldo_anterior), 'ss:Type'=>'Number'}            
+            xml.Cell {xml.Data preco_formatado_com_decimal_ponto(saldo_anterior), 'ss:Type'=>'Number'}
             a= conta.data_inicio.to_date.month == params['busca']['mes'].to_i && conta.data_inicio.to_date.year == Date.today.year ? preco_formatado_com_decimal_ponto(conta.valor_do_documento) : 0
             xml.Cell {xml.Data a, 'ss:Type'=>'Number'}
-           
+
             saldo_mes_final += conta.data_inicio.to_date.month == params['busca']['mes'].to_i && conta.data_inicio.to_date.year == Date.today.year ? conta.valor_do_documento : 0
 
             b= porcentagem == 0 ? 0 : porcentagem
@@ -111,7 +118,7 @@ xml.Workbook({
         total_saldo_anterior += saldo_anterior
         total_geral_executado += valor_movimento_do_mes
         total_geral_contratos += conta.valor_do_documento
-        total_saldo_final += saldo 
+        total_saldo_final += saldo
 
 
 

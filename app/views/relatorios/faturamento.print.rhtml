@@ -19,7 +19,6 @@
     <th style="width: 100px">Executado (%)</th>
     <th style="width: 100px">Valor Executado</th>
     <th style="width: 130px">Saldo Final</th>
-
   </tr>
 
   <% total_geral_contratos = 0 %>
@@ -36,21 +35,26 @@
       <% contrato = RecebimentoDeConta.find(conta) %>
       <% array_valor_movimento_do_mes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month == params['busca']['mes'].to_i && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} %>
       <% valor_movimento_do_mes = array_valor_movimento_do_mes.max == 0 ? 0 : array_valor_movimento_do_mes.max %>
-      <% array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} %>
+      <%# array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C' ? movimento.valor_total : 0} %>
+
+    <!-- CORREÇÃO -->
+      <% array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C'}.compact.sum %>
+      <% array_contabilizacoes_anos_anteriores = contrato.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.year < Date.today.year && movimento.tipo_lancamento == 'C'}.compact.sum %>
+    <!-- CORREÇÃO -->
+
       <% porcentagem = valor_movimento_do_mes == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params['busca']['mes'].to_i) %>
-      <% saldo = conta.valor_do_documento - array_contabilizacoes.sum %>
+      <% saldo = conta.valor_do_documento - (array_contabilizacoes + array_contabilizacoes_anos_anteriores) %>
       <% if saldo < 0 %>
-        <% saldo = conta.valor_original - array_contabilizacoes.sum %>
+        <% saldo = conta.valor_original - (array_contabilizacoes + array_contabilizacoes_anos_anteriores) %>
       <% end %>
-      
+
       <%# saldo_anterior = saldo + valor_movimento_do_mes %>
 
-      <%if (params['busca']['mes'].to_i == conta.data_inicio.to_date.month.to_i) && (conta.data_inicio.to_date.year == Date.today.year)%>
+      <% if (params['busca']['mes'].to_i == conta.data_inicio.to_date.month.to_i) && (conta.data_inicio.to_date.year == Date.today.year) %>
         <% saldo_anterior = 0 %>
-      <%else %>
+      <% else %>
         <% saldo_anterior = saldo + valor_movimento_do_mes %>
-      <%end%>
-
+      <% end %>
 
       <tr style="text-align: left; font-size: 10px">
         <td style="padding-left: 4px"><%=h conta.numero_de_controle %></td>
@@ -62,10 +66,9 @@
         <td style="text-align: center"><%=h conta.data_final_servico %></td>
         <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(conta.valor_do_documento) %></td>
         <td style="text-align: right; padding-right: 4px"><%=h preco_formatado(saldo_anterior) %></td>
-        <td style="text-align: right; padding-right: 4px"><%=h conta.data_inicio.to_date.month == params['busca']['mes'].to_i && conta.data_inicio.to_date.year == Date.today.year ? preco_formatado(conta.valor_do_documento) : '--' %>
-          <%saldo_mes_final += conta.data_inicio.to_date.month == params['busca']['mes'].to_i && conta.data_inicio.to_date.year == Date.today.year ? conta.valor_do_documento : 0%>
-
-
+        <td style="text-align: right; padding-right: 4px">
+          <%=h conta.data_inicio.to_date.month == params['busca']['mes'].to_i && conta.data_inicio.to_date.year == Date.today.year ? preco_formatado(conta.valor_do_documento) : '--' %>
+          <% saldo_mes_final += ((conta.data_inicio.to_date.month == params['busca']['mes'].to_i && conta.data_inicio.to_date.year == Date.today.year) ? conta.valor_do_documento : 0) %>
         </td>
         <td style="text-align: right; padding-right: 4px"><%=h porcentagem == 0 ? '--' : porcentagem %></td>
         <td style="text-align: right; padding-right: 4px"><%=h valor_movimento_do_mes == 0 ? '--' : preco_formatado(valor_movimento_do_mes) %></td>
