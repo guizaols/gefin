@@ -2346,9 +2346,6 @@ p "ENtrei no cancelamento 2"
     self.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :servico, :pessoa, :unidade_organizacional, :centro, :conta_contabil_receita], :order => 'pessoas.nome ASC, pessoas.razao_social ASC, recebimento_de_contas.numero_de_controle ASC')
   end
 
-
-
-
   def self.pesquisa_contabilizacao_receitas(contar_ou_retornar, unidade_id, params, ano)
     @variaveis = []
     @sqls = []
@@ -2384,11 +2381,12 @@ p "ENtrei no cancelamento 2"
 
   def porcentagem_contabilizacao_receitas(ano, mes)
     data = Date.new(ano, mes.to_i, 1)
-    movimento = self.movimentos.collect{|mov| mov if mov.data_lancamento.to_date <= data.end_of_month && mov.tipo_lancamento == 'C' && !mov.lancamento_inicial}
-    objeto = movimento.blank? ? 0 : movimento.compact.first
-    valor_movimento = objeto.valor_total.real.to_f rescue 0
+    #movimento = self.movimentos.collect{|mov| mov if mov.data_lancamento.to_date <= data.end_of_month && mov.tipo_lancamento == 'C' && !mov.lancamento_inicial}
+    valor_movimento = self.movimentos.collect{|mov| mov.valor_total if mov.data_lancamento.to_date <= data.end_of_month && mov.tipo_lancamento == 'C' && !mov.lancamento_inicial}.compact.sum
+    #objeto = movimento.blank? ? 0 : movimento.compact.first
+    #valor_movimento = objeto.valor_total.real.to_f rescue 0
     porcentagem = (valor_movimento * 100.0) / self.valor_original
-    format('%.2f', porcentagem)
+    format('%.2f', porcentagem).gsub('.', ',')
   end
 
   def self.pesquisa_contratos_vendidos(contar_ou_retornar,unidade_id, params)
