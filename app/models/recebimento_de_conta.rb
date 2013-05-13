@@ -360,7 +360,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
 				end
 			end
 		rescue Exception => e
-			p e
+			#p e
 		end
 	end
 
@@ -866,11 +866,11 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
 
 
               if self.cancelamento_especial_1?
-                p "Entrei no cancelamento 1"
+                  #p "Entrei no cancelamento 1"
                   parcelas_para_estorno = []
                   self.parcelas.each do |p|
-                    p  p.data_vencimento.to_date
-                    p data_abdicacao.to_date
+                    #p  p.data_vencimento.to_date
+                    #p data_abdicacao.to_date
                     #p self.data_cancelamento.to_date
                     parcelas_para_estorno << p  if !p.cartoes.blank? && p.cartoes.first.situacao == 1
                   end
@@ -894,26 +894,17 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
                   #        :tipo_documento => self.tipo_de_documento,
                    #       :provisao => Movimento::PROVISAO, :pessoa_id => self.pessoa_id},
                    #     lancamento_debito, lancamento_credito], self.unidade_id)
-
-
-
-
-
-
-
                end
 
-
                if self.cancelamento_especial_2?
-p "ENtrei no cancelamento 2"
+                  #p "Entrei no cancelamento 2"
                   parcelas_para_estorno = []
                   self.parcelas.each do |p|
-                    p  p.data_vencimento.to_date
-                    p data_abdicacao.to_date
+                    #p  p.data_vencimento.to_date
+                    #p data_abdicacao.to_date
                     #p self.data_cancelamento.to_date
                     parcelas_para_estorno << p if !p.cartoes.blank? && p.cartoes.first.situacao == 1
                   end
-
 
                   parcelas_para_estorno.each do |p1|
                    retorno =   p1.estorna_parcela(@usuario_corrente,"Estorno Cartão Pendente",data_abdicacao,false,true)
@@ -927,9 +918,6 @@ p "ENtrei no cancelamento 2"
 
                end
 
-
-
-
                 lancamento_credito = []
                 lancamento_debito = []
                 usuario_corrente = @usuario_corrente
@@ -940,29 +928,9 @@ p "ENtrei no cancelamento 2"
                 self.save!
                 HistoricoOperacao.cria_follow_up("Contrato cancelado em #{data_abdicacao}", usuario_corrente, self, justificativa)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                 soma_parcelas_em_aberto = 0
                 soma_parcelas_pendentes = 0
                 self.parcelas.each do |parcela|
-
-
-
-
-
-
-
 
                   if parcela.verifica_situacoes && parcela.data_vencimento.to_date >= data_abdicacao.to_date
                     parcela.situacao_antiga = parcela.situacao
@@ -1253,6 +1221,7 @@ p "ENtrei no cancelamento 2"
       RecebimentoDeConta.transaction do
         if self.validar_datas(data_reversao) || self.validar_datas_entre_limites(data_reversao)
           self.situacao_fiemt = Normal
+          self.data_cancelamento = nil
           self.revertendo = true
           self.data_reversao = data_reversao
           self.save!
@@ -2440,6 +2409,7 @@ p "ENtrei no cancelamento 2"
 
     #@sqls << '(recebimento_de_contas.numero_de_controle IN(?))'
     #@variaveis << ['SCBA-CTR09/120059', 'SCBA-CTR09/120034']
+    #@variaveis << ['SCBA-CTR02/130111'] #CANCELADO/REVERTIDO
 
     @sqls << '((recebimento_de_contas.unidade_id = ?) AND YEAR(movimentos.data_lancamento) = ? AND
               (movimentos.tipo_lancamento = ?) AND (movimentos.lancamento_inicial IS NULL))'
@@ -2470,11 +2440,12 @@ p "ENtrei no cancelamento 2"
 
     # @sqls << "(MONTH(recebimento_de_contas.data_cancelamento) <> #{params['mes'].to_i})"
     faturados = RecebimentoDeConta.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :pessoa], :order => 'pessoas.nome ASC, pessoas.razao_social ASC')
-    #p "**************"
-    #p faturados
     if faturados.is_a?(Array)
-      faturados = faturados.delete_if {|f|  !f.data_cancelamento.blank? && f.data_cancelamento.to_date >= data.to_date && f.data_cancelamento.to_date <= data.end_of_month.to_date }
+      faturados = faturados.delete_if {|f| f.situacao_fiemt == Cancelado && f.data_cancelamento.present? && f.data_cancelamento.to_date >= data.to_date && f.data_cancelamento.to_date <= data.end_of_month.to_date }
     end
+    #p "****FATURADOS****"
+    #p faturados
+
     #-------
     #p "Passei"
     @variaveis = []
@@ -2484,6 +2455,8 @@ p "ENtrei no cancelamento 2"
 
     #@sqls << '(recebimento_de_contas.numero_de_controle IN(?))'
     #@variaveis << ['SCBA-CTR09/120059', 'SCBA-CTR09/120034']
+    #@variaveis << ['SCBA-CTR02/130111'] #CANCELADO/REVERTIDO
+
 
     numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
     if numero_mes.include?(params['mes'])
@@ -2497,9 +2470,9 @@ p "ENtrei no cancelamento 2"
     end
     antigos = RecebimentoDeConta.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :pessoa], :order => 'pessoas.nome ASC, pessoas.razao_social ASC')
     if antigos.is_a?(Array)
-      antigos = antigos.delete_if {|f|  !f.data_cancelamento.blank? && f.data_cancelamento.to_date >= data.to_date && f.data_cancelamento.to_date <= data.end_of_month.to_date }
+      antigos = antigos.delete_if {|f| f.situacao_fiemt == Cancelado && f.data_cancelamento.present? && f.data_cancelamento.to_date >= data.to_date && f.data_cancelamento.to_date <= data.end_of_month.to_date }
     end
-    #p "****ANTIGOS**********"
+    #p "****ANTIGOS****"
     #p antigos
 
     faturados + antigos
@@ -2635,8 +2608,8 @@ p "ENtrei no cancelamento 2"
       begin
         historico_follow_up = HistoricoOperacao.find(:first, :conditions => ['conta_id = ? AND conta_type = ? AND descricao LIKE ?', self.id, 'RecebimentoDeConta', 'Geradas%'])
         numero_de_parcelas = historico_follow_up.descricao.split("\s")[1].to_i
-        p "NÚMERO DE PARCELASSSSSSS"
-        p numero_de_parcelas
+        #p "NÚMERO DE PARCELASSSSSSS"
+        #p numero_de_parcelas
         self.valor_do_documento = self.valor_original
         self.numero_de_parcelas = numero_de_parcelas
         self.renegociando = true
@@ -2646,14 +2619,14 @@ p "ENtrei no cancelamento 2"
         self.parcelas.each do |parc|
           if parc.situacao == Parcela::RENEGOCIADA && (parc.numero.to_i < numero_de_parcelas || parc.numero_parcela_filha.to_i < numero_de_parcelas)
             parc.situacao = Parcela::PENDENTE
-            p "Volta para pendente"
-            p parc.numero
+            #p "Volta para pendente"
+            #p parc.numero
             parc.save false
           else
             if parc.situacao == Parcela::PENDENTE && (parc.numero.to_i > numero_de_parcelas || parc.numero_parcela_filha.to_i > numero_de_parcelas)
              parc.destroy
-             p "É excluídaaaa"
-             p parc.numero
+             #p "É excluídaaaa"
+             #p parc.numero
             end
             #nao voltar isto daqui parc.destroy if parc.situacao == Parcela::PENDENTE && data_parcela_renegociada.to_date > parc.created_at.to_date
           end

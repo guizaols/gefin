@@ -40,6 +40,7 @@
     <!-- CORREÇÃO -->
       <% array_contabilizacoes = contrato.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.month <= params['busca']['mes'].to_i && movimento.data_lancamento.to_date.year == Date.today.year && movimento.tipo_lancamento == 'C'}.compact.sum %>
       <% array_contabilizacoes_anos_anteriores = contrato.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.year < Date.today.year && movimento.tipo_lancamento == 'C'}.compact.sum %>
+      <%# array_contabilizacoes_anos_anteriores = 0 %>
     <!-- CORREÇÃO -->
 
       <% porcentagem = valor_movimento_do_mes == 0 ? 0 : contrato.porcentagem_contabilizacao_receitas(session[:ano], params['busca']['mes'].to_i) %>
@@ -82,8 +83,11 @@
     <% end %>
   <% end %>
 
-  <% para_percent = total_geral_contratos - total_saldo_final %>
-  <% total_executado_porcentagem = format('%.2f', ((para_percent * 100.0) / total_geral_contratos)).gsub('.', ',') %>
+  <% total_executado_porcentagem = format('%.2f', 0).gsub('.', ',') %>
+  <% if total_geral_contratos > 0 %>
+    <% para_percent = total_geral_contratos - total_saldo_final %>
+    <% total_executado_porcentagem = format('%.2f', ((para_percent * 100.0) / total_geral_contratos)).gsub('.', ',') %>
+  <% end %>
 
   <tr style="font-weight: bold">
     <td style="text-align: right; padding-right: 4px" colspan="7">Totalização</td>
