@@ -94,7 +94,7 @@ require 'brazilian-rails'
 require 'brI18n'
 require '_libs'
 require 'prawn/core'
-#require 'prawn/labels'
+require 'prawn/labels'
 require 'brcobranca'
 require 'audit_plus'
 
