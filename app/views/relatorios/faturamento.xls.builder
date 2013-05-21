@@ -82,6 +82,13 @@ xml.Workbook({
              saldo_anterior = 0
           else
             saldo_anterior = saldo + valor_movimento_do_mes
+            if valor_movimento_do_mes > saldo_anterior
+              valor_movimento_do_mes = saldo_anterior
+            end
+          end
+
+          if saldo < 0
+            saldo = 0
           end
 
           nome = contrato.pessoa.fisica? ? contrato.pessoa.nome : contrato.pessoa.razao_social

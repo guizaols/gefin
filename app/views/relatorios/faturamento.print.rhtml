@@ -53,6 +53,13 @@
         <% saldo_anterior = 0 %>
       <% else %>
         <% saldo_anterior = saldo + valor_movimento_do_mes %>
+        <% if valor_movimento_do_mes > saldo_anterior %>
+          <% valor_movimento_do_mes = saldo_anterior %>
+        <% end %>
+      <% end %>
+
+      <% if saldo < 0 %>
+        <% saldo = 0 %>
       <% end %>
 
       <tr style="text-align: left; font-size: 10px">

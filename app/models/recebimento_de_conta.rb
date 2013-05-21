@@ -2355,6 +2355,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
     #objeto = movimento.blank? ? 0 : movimento.compact.first
     #valor_movimento = objeto.valor_total.real.to_f rescue 0
     porcentagem = (valor_movimento * 100.0) / self.valor_original
+    porcentagem = porcentagem > 100 ? 100 : porcentagem
     format('%.2f', porcentagem).gsub('.', ',')
   end
 
@@ -2410,6 +2411,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
     #@sqls << '(recebimento_de_contas.numero_de_controle IN(?))'
     #@variaveis << ['SCBA-CTR09/120059', 'SCBA-CTR09/120034']
     #@variaveis << ['SCBA-CTR02/130111'] #CANCELADO/REVERTIDO
+    #@variaveis << ['SCBA-CTR08/120169']  #EXECUTADO > 100%
 
     @sqls << '((recebimento_de_contas.unidade_id = ?) AND YEAR(movimentos.data_lancamento) = ? AND
               (movimentos.tipo_lancamento = ?) AND (movimentos.lancamento_inicial IS NULL))'
@@ -2456,6 +2458,7 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
     #@sqls << '(recebimento_de_contas.numero_de_controle IN(?))'
     #@variaveis << ['SCBA-CTR09/120059', 'SCBA-CTR09/120034']
     #@variaveis << ['SCBA-CTR02/130111'] #CANCELADO/REVERTIDO
+    #@variaveis << ['SCBA-CTR08/120169']  #EXECUTADO > 100%
 
 
     numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
