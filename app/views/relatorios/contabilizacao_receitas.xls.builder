@@ -63,8 +63,6 @@ xml.Workbook({
             xml.Cell {xml.Data "#{conta.centro.codigo_centro} - #{conta.centro.nome}", 'ss:Type'=>'String' }
             xml.Cell {xml.Data porcentagem.gsub(',', '.'), 'ss:Type'=>'Number' }
 
-            total_contrato
-
             total_contrato += conta.valor_do_documento
             total_parcela += valor_movimento
           end
