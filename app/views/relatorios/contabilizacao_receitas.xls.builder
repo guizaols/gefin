@@ -61,7 +61,7 @@ xml.Workbook({
             xml.Cell {xml.Data "#{conta.conta_contabil_receita.codigo_contabil} - #{conta.conta_contabil_receita.nome}", 'ss:Type'=>'String' }
             xml.Cell {xml.Data "#{conta.unidade_organizacional.codigo_da_unidade_organizacional} - #{conta.unidade_organizacional.nome}", 'ss:Type'=>'String' }
             xml.Cell {xml.Data "#{conta.centro.codigo_centro} - #{conta.centro.nome}", 'ss:Type'=>'String' }
-            xml.Cell {xml.Data format("%.2f", porcentagem), 'ss:Type'=>'Number' }
+            xml.Cell {xml.Data porcentagem.gsub(',', '.'), 'ss:Type'=>'Number' }
 
             total_contrato
 
