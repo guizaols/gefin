@@ -6,11 +6,9 @@
 </div>
 <br /><br />
 
-
-
 <table border="1px" style="font-size: 11px;" width="100%">
   <tr align="center" style="font-size: 12px;">
-    <th style="width: 300px">Número de Controle</th> 
+    <th style="width: 300px">Número de Controle</th>
     <th style="width: 300px">Cliente</th>
     <th style="width: 250px">Serviço</th>
     <th style="width: 200px">Vigência - Início</th>
@@ -31,14 +29,16 @@
     <% total_executado = 0 %>
 
     <% contas.each do |conta| %>
-      <% array_valor_movimento = conta.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.month == params["busca"]["mes"].to_i && !movimento.lancamento_inicial}.compact %>
+
+      <%# array_valor_movimento = conta.movimentos.collect{|movimento| movimento.valor_total if movimento.data_lancamento.to_date.month == params["busca"]["mes"].to_i && !movimento.lancamento_inicial}.compact %>
+      <% array_valor_movimento = conta.movimentos.collect{|movimento| movimento.data_lancamento.to_date.month == params['busca']['mes'].to_i && !movimento.lancamento_inicial ? movimento.valor_total : 0} %>
+
       <% valor_movimento = array_valor_movimento.max == 0 ? 0 : array_valor_movimento.max %>
-      <% porcentagem = valor_movimento == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params["busca"]["mes"].to_i) %>
+      <% porcentagem = valor_movimento == 0 ? 0 : conta.porcentagem_contabilizacao_receitas(session[:ano], params['busca']['mes'].to_i) %>
 
       <tr>
-         <td><%=h conta.numero_de_controle %></td>
-       
-	<td><%=h conta.pessoa.nome %></td>
+        <td><%=h conta.numero_de_controle %></td>
+        <td><%=h conta.pessoa.nome %></td>
         <td><%=h conta.servico.descricao %></td>
         <td><%=h conta.data_inicio %></td>
         <td><%=h conta.data_final %></td>
@@ -51,9 +51,8 @@
         <td><%=h "#{conta.centro.codigo_centro} - #{conta.centro.nome}" %></td>
         <td><%=h porcentagem %></td>
       </tr>
-
-        <% total_contrato += conta.valor_do_documento %>
-        <% total_parcela += valor_movimento %>
+      <% total_contrato += conta.valor_do_documento %>
+      <% total_parcela += valor_movimento %>
     <% end %>
 
     <% total_executado = (total_parcela * 100.0) / total_contrato %>
@@ -65,7 +64,7 @@
       <td colspan="1"><b><%=h preco_formatado(total_contrato, 'R$') %></b></td>
       <td colspan="1"><b><%=h preco_formatado(total_parcela, 'R$') %></b></td>
       <td colspan="3"></td>
-      <td colspan="1"><b><%=h format("%.2f", total_executado) %></b></td>
+      <td colspan="1"><b><%=h format('%.2f', total_executado) %></b></td>
     </tr>
 
     <% total_geral_contratos += total_contrato %>
@@ -81,7 +80,7 @@
     <td colspan="1"><b><%=h preco_formatado(total_geral_contratos, 'R$') %></b></td>
     <td colspan="1"><b><%=h preco_formatado(total_geral_parcelas, 'R$') %></b></td>
     <td colspan="3"></td>
-    <td colspan="1"><b><%=h format("%.2f", total_geral_executado) %></b></td>
+    <td colspan="1"><b><%=h format('%.2f', total_geral_executado) %></b></td>
   </tr>
 </table>
 

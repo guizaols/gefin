@@ -2323,19 +2323,8 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
     @variaveis << unidade_id
     @variaveis << 'C'
 
-    numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
-    @sqls << 'YEAR(movimentos.data_lancamento) = ?'
-    @variaveis << ano
-
-    @sqls << '(recebimento_de_contas.situacao_fiemt NOT IN (?))'
-    @variaveis << [Cancelado, Evadido]
-
-    if numero_mes.include?(params["mes"])
-      data = Date.new(ano, params["mes"].to_i, 1)
-      @sqls << '(movimentos.data_lancamento >= ?) AND (movimentos.data_lancamento <= ?)'
-      @variaveis << data
-      @variaveis << data.end_of_month
-    end
+    #@sqls << 'recebimento_de_contas.numero_de_controle IN(?)'
+    #@variaveis << 'SCBA-CTR03/130052'
 
     ordenacao = []
 
@@ -2345,7 +2334,48 @@ p (Date.today - self.data_inicio_servico.to_date).days.to_i rescue nil
       end
     end
 
-    self.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :servico, :pessoa, :unidade_organizacional, :centro, :conta_contabil_receita], :order => ordenacao.blank? ? 'recebimento_de_contas.id' : ordenacao.join(','))
+    numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
+    if numero_mes.include?(params['mes'])
+      data = Date.new(ano, params['mes'].to_i, 1)
+
+      @sqls << '(
+                  (movimentos.data_lancamento BETWEEN ? AND ? AND recebimento_de_contas.situacao_fiemt NOT IN (?)) OR
+                  (movimentos.created_at > ? AND recebimento_de_contas.situacao_fiemt IN (?))
+                )'
+      @variaveis << data
+      @variaveis << data.end_of_month
+      @variaveis << [Cancelado, Evadido]
+      @variaveis << data.end_of_month
+      @variaveis << [Cancelado, Evadido]
+
+      @sqls << '((recebimento_de_contas.data_inicio <= ?) OR (recebimento_de_contas.data_inicio_servico <= ?))'
+      @variaveis << data.end_of_month
+      @variaveis << data.end_of_month
+    end
+
+    faturados = RecebimentoDeConta.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :servico, :pessoa, :unidade_organizacional, :centro, :conta_contabil_receita], :order => ordenacao.blank? ? 'recebimento_de_contas.id' : ordenacao.join(','))
+    if faturados.is_a?(Array)
+      faturados = faturados.delete_if {|f| f.situacao_fiemt == Cancelado && f.data_cancelamento.present? && f.data_cancelamento.to_date >= data.to_date && f.data_cancelamento.to_date <= data.end_of_month.to_date }
+    end
+
+    @variaveis = []
+    @sqls = []
+    @sqls << '(recebimento_de_contas.unidade_id = ?) AND (movimentos.lancamento_inicial IS NOT NULL)'
+    @variaveis << unidade_id
+
+    numero_mes = Date::MONTHNAMES.collect{|monthname| (Date::MONTHNAMES.index(monthname) + 1).to_s}
+    if numero_mes.include?(params['mes'])
+      data = Date.new(ano, params['mes'].to_i, 1)
+      @sqls << '(recebimento_de_contas.data_inicio_servico > ?) AND (recebimento_de_contas.data_inicio <= ?)'
+      @variaveis << data.end_of_month
+      @variaveis << data.end_of_month
+    end
+    antigos = RecebimentoDeConta.send(contar_ou_retornar, :conditions => [@sqls.join(' AND ')] + @variaveis, :include => [:movimentos, :servico, :pessoa, :unidade_organizacional, :centro, :conta_contabil_receita], :order => ordenacao.blank? ? 'recebimento_de_contas.id' : ordenacao.join(','))
+    if antigos.is_a?(Array)
+      antigos = antigos.delete_if {|f| f.situacao_fiemt == Cancelado && f.data_cancelamento.present? && f.data_cancelamento.to_date >= data.to_date && f.data_cancelamento.to_date <= data.end_of_month.to_date }
+    end
+
+    faturados + antigos
   end
 
   def porcentagem_contabilizacao_receitas(ano, mes)
